@@ -7,20 +7,23 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
   <style>
-    /* --- ALL YOUR PREVIOUS CSS GOES HERE --- */
     :root {
       --color-bg-light: #f8fafc; 
       --color-surface: rgba(255, 255, 255, 0.85);
       --color-surface-solid: #ffffff;
+      
       --color-primary: #0A2540; 
+      --color-primary-hover: #11365c;
       --color-primary-soft: rgba(10, 37, 64, 0.06);
       --color-accent: #D4AF37; 
       --color-accent-soft: rgba(212, 175, 55, 0.15);
+      
       --color-text-dark: #0f172a;
       --color-text-muted: #475569;
       --color-border: rgba(10, 37, 64, 0.12);
@@ -28,6 +31,7 @@
       --color-success: #166534; --color-success-bg: #dcfce7;
       --color-warning: #b45309; --color-warning-bg: #fef9c3;
       --color-error: #b91c1c;   --color-error-bg: #fee2e2;
+      --color-pending: #475569; --color-pending-bg: #e2e8f0;
 
       --shadow-sm: 0 2px 10px rgba(10, 37, 64, 0.03);
       --shadow-soft: 0 8px 30px rgba(10, 37, 64, 0.06);
@@ -44,13 +48,14 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; overflow: hidden; }
-    body { font-family: var(--font-body); color: var(--color-text-dark); background-color: var(--color-bg-light); line-height: 1.6; -webkit-font-smoothing: antialiased; background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2000&auto=format&fit=crop'); background-size: cover; background-position: center; }
-    body::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(248, 250, 252, 0.94); z-index: -2; pointer-events: none; }
-    button, input, textarea, select { font: inherit; color: inherit; outline: none;}
-    button { cursor: pointer; border: none; background: none; }
-    a { text-decoration: none; color: inherit; }
     
-    /* BACKGROUND */
+    body {
+      font-family: var(--font-body); color: var(--color-text-dark); background-color: var(--color-bg-light); line-height: 1.6; -webkit-font-smoothing: antialiased;
+      background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2000&auto=format&fit=crop'); background-size: cover; background-position: center;
+    }
+    body::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(248, 250, 252, 0.94); z-index: -2; pointer-events: none; }
+
+    /* BACKGROUND TRENDLINES */
     .dgv-background { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; opacity: 0.5; }
     .dgv-background svg { width: 100%; height: 100%; }
     .dgv-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 4000; stroke-dashoffset: 4000; animation: drawDGV 20s ease-in-out infinite alternate; }
@@ -58,65 +63,149 @@
     .dgv-line-2 { stroke: var(--color-primary); stroke-width: 1px; opacity: 0.15; animation-delay: -5s; }
     @keyframes drawDGV { 0% { stroke-dashoffset: 4000; } 100% { stroke-dashoffset: 0; } }
 
-    /* ── NEW: LOGIN SCREEN STYLES ── */
+    button, input, textarea, select { font: inherit; color: inherit; outline: none;}
+    button { cursor: pointer; border: none; background: none; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── 1. LOGIN SCREEN STYLES ── */
     #loginScreen {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      z-index: 9999; background: rgba(248, 250, 252, 0.8);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      transition: opacity 0.5s ease;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center;
+      z-index: 9999; background: rgba(248, 250, 252, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); transition: opacity 0.5s ease;
     }
-    .login-card {
-      background: var(--color-surface-solid); border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg); padding: 3rem 2.5rem; width: 100%; max-width: 400px;
-      box-shadow: var(--shadow-lg); text-align: center;
-    }
+    .login-card { background: var(--color-surface-solid); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 3rem 2.5rem; width: 100%; max-width: 400px; box-shadow: var(--shadow-lg); text-align: center; }
     .login-card h2 { font-family: var(--font-heading); color: var(--color-primary); font-size: 1.8rem; margin-bottom: 0.5rem; }
     .login-card p { font-size: 0.9rem; color: var(--color-text-muted); margin-bottom: 2rem; }
-    .login-input {
-      width: 100%; padding: 0.9rem 1.2rem; border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm); margin-bottom: 1rem; font-family: var(--font-body);
-      background: var(--color-bg-light); transition: var(--transition);
-    }
+    .login-input { width: 100%; padding: 0.9rem 1.2rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); margin-bottom: 1rem; font-family: var(--font-body); background: var(--color-bg-light); transition: var(--transition); }
     .login-input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); background: #fff;}
-    .login-btn {
-      width: 100%; padding: 0.9rem; background: linear-gradient(135deg, #E6C265, #D4AF37);
-      color: var(--color-primary); font-weight: 700; border-radius: var(--radius-sm);
-      margin-top: 1rem; font-family: var(--font-subheading); transition: var(--transition);
-    }
+    .login-btn { width: 100%; padding: 0.9rem; background: linear-gradient(135deg, #E6C265, #D4AF37); color: var(--color-primary); font-weight: 700; border-radius: var(--radius-sm); margin-top: 1rem; font-family: var(--font-subheading); transition: var(--transition); }
     .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px var(--color-accent-soft); }
     #loginError { color: var(--color-error); font-size: 0.85rem; margin-top: 1rem; display: none; font-weight: 600;}
 
-    /* Hide app initially */
+    /* ── LAYOUT (Hidden until login) ── */
     #appContent { display: none; opacity: 0; transition: opacity 0.5s ease; height: 100%; }
     .show-app { display: grid !important; opacity: 1 !important; }
 
-    /* ── EXISTING LAYOUT & APP STYLES (Minified for space) ── */
-    .dashboard { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: 80px 1fr; height: 100%; position: relative; z-index: 10; }
-    .sidebar { grid-row: 1 / -1; background: var(--color-surface); backdrop-filter: blur(20px); border-right: 1px solid var(--color-border); padding: 1.5rem; display: flex; flex-direction: column; }
+    .dashboard { grid-template-columns: 280px 1fr; grid-template-rows: 80px 1fr; position: relative; z-index: 10; }
+    .sidebar { grid-row: 1 / -1; background: var(--color-surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-right: 1px solid var(--color-border); padding: 1.5rem; display: flex; flex-direction: column; overflow-y: auto; }
     .header { grid-column: 2; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; border-bottom: 1px solid var(--color-border); background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 5; }
     .main { grid-column: 2; overflow: auto; padding: 2.5rem; display: grid; gap: 2rem; align-content: start; }
     .page { display: none; } .page.active { display: contents; }
+
+    /* ── SIDEBAR & HEADER ── */
     .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 2.5rem; padding-left: 0.5rem; }
     .brand-text { font-family: var(--font-heading); font-style: italic; font-weight: 600; font-size: 1.5rem; background: linear-gradient(to right, #B78D3C, #F4DB95, #B78D3C); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .brand-text::after { content: '.'; color: var(--color-primary); -webkit-text-fill-color: var(--color-primary); }
     .nav-group { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
     .nav-item { display: flex; align-items: center; gap: 12px; padding: 0.9rem 1.2rem; color: var(--color-text-muted); font-family: var(--font-subheading); font-size: 0.95rem; font-weight: 500; border-radius: var(--radius-sm); transition: var(--transition); width: 100%; text-align: left; }
+    .nav-item i { font-size: 1.1rem; width: 20px; text-align: center; }
     .nav-item:hover, .nav-item.active { background: var(--color-primary); color: #fff; box-shadow: 0 4px 12px var(--color-primary-soft); }
     .logout-btn { color: var(--color-error); margin-top: auto; border: 1px solid var(--color-error-bg); background: var(--color-error-bg); }
     .logout-btn:hover { background: var(--color-error); color: #fff; box-shadow: none;}
+    
+    .sidebar-note { margin-top: 2rem; padding: 1.2rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-primary-soft); font-size: 0.8rem; color: var(--color-primary); font-family: var(--font-body); }
+    .sidebar-note strong { font-family: var(--font-subheading); display: block; margin-bottom: 0.5rem; }
+
     .header-title h1 { font-family: var(--font-heading); font-size: 1.8rem; color: var(--color-primary); margin-bottom: 0.2rem; }
     .header-title p { font-family: var(--font-subheading); font-size: 0.9rem; color: var(--color-text-muted); }
+    .header-actions { display: flex; gap: 1rem; align-items: center; }
+    
     .btn { border-radius: var(--radius-pill); padding: 0.7rem 1.4rem; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); font-family: var(--font-subheading); }
     .btn-primary { background: linear-gradient(135deg, #E6C265, #D4AF37); color: var(--color-primary); box-shadow: 0 4px 15px var(--color-accent-soft); }
     .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); }
     .btn-secondary { border: 1px solid var(--color-primary); color: var(--color-primary); background: transparent; }
     .btn-secondary:hover { background: var(--color-primary); color: #fff; }
+
+    /* ── STATS & PANELS ── */
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1.5rem; }
+    .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); backdrop-filter: blur(16px); }
+    .stat-card { padding: 1.5rem; position: relative; overflow: hidden; }
+    .stat-card::after { content: ''; position: absolute; right: -20px; bottom: -20px; width: 100px; height: 100px; border-radius: 50%; background: var(--color-primary-soft); }
+    .stat-label { font-family: var(--font-subheading); font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-value { font-family: var(--font-tech); font-size: 2.2rem; font-weight: 700; color: var(--color-primary); margin-top: 0.5rem; }
+    .stat-help { font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.3rem; }
+
+    .add-page-wrap { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; align-items: start; }
+    .panel { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .panel-head h2 { font-family: var(--font-heading); font-size: 1.5rem; color: var(--color-primary); }
+    .panel-head p { font-family: var(--font-subheading); font-size: 0.9rem; color: var(--color-text-muted); margin-top: 0.3rem; }
     
-    /* ... (Keep your existing .stats, .card, .form-grid, .table etc. styles here perfectly intact) ... */
-    .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); padding: 2rem;}
-    .toast { position: fixed; right: 20px; bottom: 20px; background: var(--color-success); color: #fff; padding: 1rem 1.5rem; border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); opacity: 0; transform: translateY(20px); transition: all var(--transition); z-index: 2000; font-weight: 600; }
+    .form-grid { display: grid; gap: 1.2rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .field label { font-family: var(--font-subheading); font-size: 0.85rem; font-weight: 600; color: var(--color-primary); }
+    .input, .textarea { padding: 0.8rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: rgba(255,255,255,0.6); font-family: var(--font-body); font-size: 0.95rem; transition: var(--transition); }
+    .input:focus, .textarea:focus { background: #fff; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
+    .textarea { min-height: 80px; resize: vertical; }
+
+    /* ── FULL CLIENT ROSTER UI ── */
+    .clients-wrap { display: grid; gap: 1.5rem; }
+    .toolbar { display: grid; grid-template-columns: 1fr auto auto auto; gap: 1rem; align-items: center; }
+    .search { padding: 0.8rem 1.2rem; border: 1px solid var(--color-border); border-radius: var(--radius-pill); background: var(--color-surface-solid); width: 100%; transition: var(--transition); font-family: var(--font-body); }
+    .search:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+    .select-filter { padding: 0.8rem 1.2rem; border: 1px solid var(--color-border); border-radius: var(--radius-pill); background: var(--color-surface-solid); font-family: var(--font-body); font-weight: 500;}
+    
+    .client-list { display: grid; gap: 1.5rem; }
+    .client-card { padding: 1.8rem; display: grid; gap: 1.5rem; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-sm); transition: var(--transition); backdrop-filter: blur(12px);}
+    .client-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-soft); border-color: var(--color-accent); }
+    
+    .client-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+    .client-name { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.3rem;}
+    .client-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .badge { display: inline-flex; align-items: center; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; background: var(--color-primary-soft); color: var(--color-primary); font-family: var(--font-tech); border: 1px solid rgba(10,37,64,0.1); }
+    
+    .client-actions { display: flex; gap: 0.5rem; }
+    .mini-btn { padding: 0.5rem 1rem; border-radius: var(--radius-pill); border: 1px solid var(--color-border); background: var(--color-surface-solid); font-size: 0.8rem; font-weight: 600; transition: var(--transition); font-family: var(--font-subheading); }
+    .mini-btn:hover { background: var(--color-surface-solid); }
+    .mini-btn-edit { color: var(--color-primary); }
+    .mini-btn-edit:hover { background: var(--color-primary); color: #fff; }
+    .mini-btn-danger { color: var(--color-error); }
+    .mini-btn-danger:hover { background: var(--color-error); color: #fff; border-color: var(--color-error); }
+
+    .details-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
+    .detail { padding: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: rgba(255,255,255,0.5); }
+    .detail-label { font-family: var(--font-subheading); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 600; margin-bottom: 0.3rem; }
+    .detail-value { font-size: 0.9rem; font-weight: 500; color: var(--color-text-dark); word-break: break-word; }
+
+    /* Tasks Grid & Inline Picker */
+    .tasks-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1rem; }
+    .task-card { padding: 1.2rem; border-radius: var(--radius-md); background: var(--color-surface-solid); border: 1px solid var(--color-border); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
+    .task-title { font-family: var(--font-subheading); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); }
+    .task-info { font-size: 0.8rem; color: var(--color-text-muted); font-family: var(--font-tech); }
+    .task-bottom { margin-top: auto; padding-top: 0.8rem; border-top: 1px dashed var(--color-border); display: flex; flex-direction: column; gap: 0.5rem;}
+    
+    .status-pill { padding: 0.2rem 0.6rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700; font-family: var(--font-subheading); text-transform: uppercase;}
+    .status-done { background: var(--color-success-bg); color: var(--color-success); border: 1px solid #bbf7d0; }
+    .status-upcoming { background: var(--color-warning-bg); color: var(--color-warning); border: 1px solid #fde047; }
+    .status-overdue { background: var(--color-error-bg); color: var(--color-error); border: 1px solid #fecaca; }
+    .status-pending { background: var(--color-pending-bg); color: var(--color-pending); border: 1px solid #cbd5e1; }
+
+    .done-text { font-size: 0.8rem; font-weight: 600; color: var(--color-success); display: flex; align-items: center; gap: 5px; }
+    .date-input-group { display: flex; gap: 4px; width: 100%; align-items: center;}
+    .date-input-group input[type="date"] { flex: 1; padding: 0.4rem; border: 1px solid var(--color-border); border-radius: 4px; font-family: var(--font-body); font-size: 0.75rem; outline: none;}
+    .date-input-group input[type="date"]:focus { border-color: var(--color-primary); }
+
+    /* ── MODALS & TOAST ── */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(10, 37, 64, 0.4); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 2rem; opacity: 0; transition: opacity 0.3s ease; }
+    .modal-backdrop.open { display: flex; opacity: 1; }
+    .modal { background: var(--color-surface-solid); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-lg); width: 100%; max-width: 600px; transform: translateY(20px); transition: transform 0.3s ease; }
+    .modal-backdrop.open .modal { transform: translateY(0); }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .modal-head h2 { font-family: var(--font-heading); font-size: 1.5rem; color: var(--color-primary); }
+    .modal-close { font-size: 1.5rem; color: var(--color-text-muted); transition: var(--transition); }
+    .modal-close:hover { color: var(--color-error); }
+
+    .empty { padding: 4rem 2rem; text-align: center; border: 1px dashed var(--color-border); border-radius: var(--radius-lg); background: rgba(255,255,255,0.5); }
+    .empty h3 { font-family: var(--font-heading); font-size: 1.4rem; color: var(--color-primary); margin-bottom: 0.5rem; }
+    
+    .toast { position: fixed; right: 20px; bottom: 20px; background: var(--color-success); color: #fff; padding: 1rem 1.5rem; border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); opacity: 0; transform: translateY(20px); transition: all var(--transition); z-index: 2000; font-family: var(--font-subheading); font-weight: 600; }
     .toast.error { background: var(--color-error); }
     .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1200px) { .tasks-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media(max-width:980px) { .add-page-wrap { grid-template-columns: 1fr; } .toolbar { grid-template-columns: 1fr 1fr auto auto; } }
+    @media(max-width:850px) { html, body { overflow: auto; height: auto; } .dashboard { display: block; height: auto; } .sidebar { display: none; } .main { overflow: visible; padding: 1.5rem; } .details-grid { grid-template-columns: 1fr; } }
+    @media(max-width:640px) { .header { padding: 1rem 1.5rem; height: auto; flex-wrap: wrap; gap: 1rem; } .header-actions { width: 100%; justify-content: flex-start; } .stats, .form-row, .toolbar { grid-template-columns: 1fr; } .client-top { flex-direction: column; } .tasks-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -130,7 +219,7 @@
 
   <div id="loginScreen">
     <div class="login-card">
-      <img src="logo.png" alt="Logo" style="width: 60px; border-radius: 8px; margin-bottom: 1rem;">
+      <img src="logo.png" alt="Logo" style="width: 60px; border-radius: 8px; margin-bottom: 1rem;" onerror="this.style.display='none'">
       <h2>Admin Portal</h2>
       <p>Secure CMS Access Required</p>
       <form id="loginForm">
@@ -143,14 +232,23 @@
   </div>
 
   <div id="appContent" class="dashboard">
+    
     <aside class="sidebar">
       <div class="brand"><span class="brand-text">growitharshiee</span></div>
       <nav class="nav-group">
-        <button class="nav-item active" onclick="showPage('dashboard')"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></button>
+        <button class="nav-item active" onclick="showPage('dashboard')"><i class="fa-solid fa-chart-pie"></i><span>Dashboard Overview</span></button>
         <button class="nav-item" onclick="showPage('add')"><i class="fa-solid fa-user-plus"></i><span>Add Client</span></button>
         <button class="nav-item" onclick="showPage('clients')"><i class="fa-solid fa-users"></i><span>View Clients</span></button>
+        <button class="nav-item" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i><span>Export Excel</span></button>
         <button class="nav-item logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button>
       </nav>
+      <div class="sidebar-note">
+        <strong>Filing Rules Matrix:</strong>
+        • GSTR-1: <span>11th</span> of next month<br>
+        • GSTR-3B: <span>20th</span> of next month<br>
+        • TDS Challan: <span>7th</span> of next month<br>
+        • TDS Filing: <span>Last day</span> of month following quarter end.
+      </div>
     </aside>
 
     <header class="header">
@@ -158,51 +256,155 @@
         <h1 id="pageHeadTitle">Overview</h1>
         <p id="pageHeadSub">Monitor your active clients and compliance statuses.</p>
       </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" onclick="exportExcel()"><i class="fa-solid fa-download"></i> Export Data</button>
+        <button class="btn btn-primary" onclick="showPage('add')"><i class="fa-solid fa-plus"></i> New Client</button>
+      </div>
     </header>
 
     <main class="main">
+
       <div class="page active" id="pageDashboard">
-        <div class="card" style="text-align: center; padding: 4rem 2rem;">
-          <i class="fa-solid fa-cloud-arrow-down" style="font-size: 3rem; color: var(--color-primary); margin-bottom: 1rem;"></i>
-          <h2>Cloud Database Connected</h2>
-          <p style="color: var(--color-text-muted);">Your data is successfully synced with Google Firebase.</p>
-          <p id="clientCountText" style="font-family: var(--font-tech); color: var(--color-accent); font-weight: 600; margin-top: 1rem;">Loading clients...</p>
+        <section class="stats">
+          <div class="card stat-card">
+            <div class="stat-label">Total Active Clients</div>
+            <div class="stat-value" id="statClients">0</div>
+            <div class="stat-help">Registered in system</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Tasks Due Soon</div>
+            <div class="stat-value" id="statDueWeek" style="color: var(--color-warning);">0</div>
+            <div class="stat-help">Approaching deadlines (15 Days)</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Overdue Compliances</div>
+            <div class="stat-value" id="statOverdue" style="color: var(--color-error);">0</div>
+            <div class="stat-help">Requires immediate action</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Completed Today</div>
+            <div class="stat-value" id="statCompletedToday" style="color: var(--color-success);">0</div>
+            <div class="stat-help">Tasks marked as done</div>
+          </div>
+        </section>
+
+        <div class="card panel">
+          <div class="panel-head">
+            <h2>System Overview</h2>
+            <p>Your client roster summary. Head to 'View Clients' to manage tasks.</p>
+          </div>
+          <div id="dashboardSummary"></div>
         </div>
       </div>
 
       <div class="page" id="pageAdd">
-        <div class="card">
-          <h2>Register New Client</h2>
-          <form id="clientForm" style="margin-top: 1.5rem;">
-            <input type="text" id="name" class="login-input" placeholder="Business Name *" required>
-            <input type="email" id="email" class="login-input" placeholder="Email Address">
-            <input type="text" id="gst" class="login-input" placeholder="GSTIN Number">
-            <button type="submit" class="btn btn-primary">Save to Cloud Database</button>
-          </form>
+        <div class="add-page-wrap">
+          <div class="card panel">
+            <div class="panel-head">
+              <h2>Register New Client</h2>
+              <p>Enter business details to initialize the compliance tracker in the cloud.</p>
+            </div>
+            <form id="clientForm" class="form-grid" autocomplete="off">
+              <div class="field">
+                <label for="name">Business / Client Name *</label>
+                <input class="input" id="name" required placeholder="e.g. Growitharshiee Financial" />
+              </div>
+              <div class="field">
+                <label for="address">Registered Address</label>
+                <textarea class="textarea" id="address" placeholder="Full address with state..."></textarea>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label for="email">Contact Email</label>
+                  <input class="input" id="email" type="email" placeholder="contact@business.in" />
+                </div>
+                <div class="field">
+                  <label for="phone">Phone Number</label>
+                  <input class="input" id="phone" placeholder="+91 XXXXX XXXXX" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label for="gst">GSTIN Number</label>
+                  <input class="input" id="gst" placeholder="29ABCDE1234F1Z7" maxlength="15" />
+                </div>
+                <div class="field">
+                  <label for="pan">PAN Number</label>
+                  <input class="input" id="pan" placeholder="ABCDE1234F" maxlength="10" />
+                </div>
+              </div>
+              <div class="field" style="width: 50%;">
+                <label for="tan">TAN Number</label>
+                <input class="input" id="tan" placeholder="BLRA12345B" maxlength="10" />
+              </div>
+              <div class="form-actions" style="margin-top: 1rem;">
+                <button class="btn btn-primary" type="submit" id="saveBtn">Save to Cloud Database</button>
+                <button class="btn btn-secondary" type="button" onclick="document.getElementById('clientForm').reset();">Clear Fields</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 
       <div class="page" id="pageClients">
-        <div class="card">
-          <h2>Client Roster</h2>
-          <div id="clientList" style="margin-top: 1.5rem;">
+        <div class="clients-wrap">
+          <div class="card panel" style="padding: 1.5rem 2rem;">
+            <div class="toolbar">
+              <input class="search" id="searchInput" placeholder="Search by name, GSTIN, PAN, Email..." />
+              <select class="select-filter" id="filterSelect">
+                <option value="all">All Clients</option>
+                <option value="overdue">Overdue Tasks</option>
+                <option value="dueSoon">Due Soon (<= 15 Days)</option>
+              </select>
+              <button class="btn btn-secondary" onclick="clearFilter()">Clear</button>
+              <button class="btn btn-primary" onclick="showPage('add')"><i class="fa-solid fa-plus"></i> Add New</button>
             </div>
+          </div>
+          <div id="clientList"></div>
         </div>
       </div>
+
     </main>
+  </div>
+
+  <div class="modal-backdrop" id="editModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Edit Client Details</h2>
+        <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="editForm" class="form-grid" autocomplete="off">
+        <input type="hidden" id="editClientId" />
+        <div class="field"><label for="editName">Client Name *</label><input class="input" id="editName" required /></div>
+        <div class="field"><label for="editAddress">Address</label><textarea class="textarea" id="editAddress" style="min-height: 60px;"></textarea></div>
+        <div class="form-row">
+          <div class="field"><label for="editEmail">Email</label><input class="input" id="editEmail" type="email" /></div>
+          <div class="field"><label for="editPhone">Phone Number</label><input class="input" id="editPhone" /></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label for="editGst">GSTIN</label><input class="input" id="editGst" maxlength="15" /></div>
+          <div class="field"><label for="editPan">PAN</label><input class="input" id="editPan" maxlength="10" /></div>
+        </div>
+        <div class="field"><label for="editTan">TAN</label><input class="input" id="editTan" maxlength="10" /></div>
+        <div class="form-actions" style="justify-content: flex-end; margin-top: 1rem;">
+          <button class="btn btn-secondary" type="button" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary" type="submit">Update Record</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <div class="toast" id="toast">Notification</div>
 
   <script type="module">
-    // 1. IMPORT FIREBASE (Ensure you keep the versions identical)
+    // 1. IMPORT FIREBASE (DO NOT CHANGE VERSIONS)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, getDocs, setDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // 2. PASTE YOUR FIREBASE CONFIG HERE
+    // 2. PASTE YOUR FIREBASE CONFIG HERE:
     const firebaseConfig = {
-      apiKey: "AIzaSyDbPLh1NZLFxNeDRnS89NVOX554aTPJkgE",
+       apiKey: "AIzaSyDbPLh1NZLFxNeDRnS89NVOX554aTPJkgE",
   authDomain: "growitharshiee-cms.firebaseapp.com",
   projectId: "growitharshiee-cms",
   storageBucket: "growitharshiee-cms.firebasestorage.app",
@@ -215,139 +417,323 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    window.clients = []; // Global state
+    window.clients = [];
 
-    // ── AUTHENTICATION LOGIC ──
+    // ── AUTHENTICATION ──
     const loginScreen = document.getElementById('loginScreen');
     const appContent = document.getElementById('appContent');
     const errorMsg = document.getElementById('loginError');
 
-    // Listen for Auth State Changes
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is logged in
         loginScreen.style.opacity = '0';
-        setTimeout(() => {
-          loginScreen.style.display = 'none';
-          appContent.classList.add('show-app');
-        }, 500);
-        showToast(`Welcome back, Admin.`);
-        fetchClientsFromCloud(); // Fetch data ONLY after login
+        setTimeout(() => { loginScreen.style.display = 'none'; appContent.classList.add('show-app'); }, 500);
+        showToast(`Secure Connection Established.`);
+        fetchClientsFromCloud(); 
       } else {
-        // User is logged out
         appContent.classList.remove('show-app');
         loginScreen.style.display = 'flex';
         setTimeout(() => { loginScreen.style.opacity = '1'; }, 50);
       }
     });
 
-    // Handle Login Form Submit
     document.getElementById('loginForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value;
       const pass = document.getElementById('loginPassword').value;
       const btn = document.getElementById('loginBtnText');
-      
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
       errorMsg.style.display = 'none';
 
       signInWithEmailAndPassword(auth, email, pass)
-        .then(() => {
-          btn.innerHTML = '<i class="fa-solid fa-lock"></i> Secure Login';
-        })
-        .catch((error) => {
-          errorMsg.style.display = 'block';
-          errorMsg.innerText = "Access Denied: " + error.message;
-          btn.innerHTML = '<i class="fa-solid fa-lock"></i> Secure Login';
-        });
+        .then(() => { btn.innerHTML = '<i class="fa-solid fa-lock"></i> Secure Login'; })
+        .catch((error) => { errorMsg.style.display = 'block'; errorMsg.innerText = "Access Denied: " + error.message; btn.innerHTML = '<i class="fa-solid fa-lock"></i> Secure Login'; });
     });
 
-    // Handle Logout
     document.getElementById('logoutBtn').addEventListener('click', () => {
-      signOut(auth).then(() => {
-        showToast("Logged out successfully.");
-        window.clients = []; // Clear local data on logout
-      });
+      signOut(auth).then(() => { window.clients = []; showToast("Logged out successfully."); });
     });
 
-    // ── DATABASE LOGIC ──
+    // ── DATE & COMPLIANCE LOGIC ──
+    const todayISO = () => new Date().toISOString().split('T')[0];
+    const parseDate = (v) => new Date(v + 'T00:00:00');
+    const daysDiff = (v) => {
+      const today = new Date(); today.setHours(0,0,0,0);
+      const target = parseDate(v); return Math.ceil((target - today) / (1000*60*60*24));
+    };
 
-    // Fetch from Cloud
+    function dateOnDay(year, month, day) {
+      const last = new Date(year, month + 1, 0).getDate();
+      return new Date(year, month, Math.min(day, last)).toISOString().split('T')[0];
+    }
+
+    const nextDueFns = {
+      gstr1: (fromISO) => dateOnDay(parseDate(fromISO).getFullYear(), parseDate(fromISO).getMonth() + 1, 11),
+      gstr3b: (fromISO) => dateOnDay(parseDate(fromISO).getFullYear(), parseDate(fromISO).getMonth() + 1, 20),
+      tdsChallan: (fromISO) => dateOnDay(parseDate(fromISO).getFullYear(), parseDate(fromISO).getMonth() + 1, 7),
+      tdsFiling: (fromISO) => {
+        const d = parseDate(fromISO); const m = d.getMonth(); 
+        let tYr = d.getFullYear(); let tMo;
+        if(m>=3&&m<=5){tMo=6;}else if(m>=6&&m<=8){tMo=9;}else if(m>=9&&m<=11){tMo=0;tYr+=1;}else{tMo=4;}
+        return new Date(tYr, tMo + 1, 0).toISOString().split('T')[0];
+      }
+    };
+
+    function makeDefaultTasks() {
+      const now = todayISO();
+      return {
+        gstr1: { label:'GSTR-1', dueDate: nextDueFns.gstr1(now), lastCompleted: '' },
+        gstr3b: { label:'GSTR-3B', dueDate: nextDueFns.gstr3b(now), lastCompleted: '' },
+        tdsChallan: { label:'TDS Challan', dueDate: nextDueFns.tdsChallan(now), lastCompleted: '' },
+        tdsFiling: { label:'TDS Filing', dueDate: nextDueFns.tdsFiling(now), lastCompleted: '' }
+      };
+    }
+
+    function getTaskState(task) {
+      const dToDue = daysDiff(task.dueDate);
+      if (dToDue < 0) return { text: 'Overdue', cls: 'status-overdue', isDone: false };
+      if (dToDue <= 15) return { text: 'Upcoming', cls: 'status-upcoming', isDone: false };
+      if (task.lastCompleted) return { text: 'Done', cls: 'status-done', isDone: true };
+      return { text: 'Pending', cls: 'status-pending', isDone: false };
+    }
+
+    // ── DATABASE OPERATIONS ──
     async function fetchClientsFromCloud() {
-      document.getElementById('clientCountText').innerText = "Syncing...";
       try {
         const querySnapshot = await getDocs(collection(db, "clients"));
         window.clients = [];
-        querySnapshot.forEach((doc) => {
-          window.clients.push(doc.data());
-        });
-        document.getElementById('clientCountText').innerText = `Tracking ${window.clients.length} Active Clients`;
-        renderClients();
-      } catch (error) {
-        console.error("Error: ", error);
-        showToast("Database connection error.", true);
-      }
+        querySnapshot.forEach((doc) => { window.clients.push(doc.data()); });
+        renderDashboard();
+        if (document.getElementById('pageClients').classList.contains('active')) renderClients();
+      } catch (error) { showToast("Error syncing from cloud.", true); }
     }
 
-    // Save to Cloud
+    async function syncClientToCloud(c) {
+      try { await setDoc(doc(db, "clients", c.id), c); } 
+      catch (error) { showToast("Error saving to cloud.", true); }
+    }
+
+    // Add Client
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const newClient = {
         id: Date.now().toString(),
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        gst: document.getElementById('gst').value,
+        name: document.getElementById('name').value.trim(),
+        address: document.getElementById('address').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        gst: document.getElementById('gst').value.trim().toUpperCase(),
+        pan: document.getElementById('pan').value.trim().toUpperCase(),
+        tan: document.getElementById('tan').value.trim().toUpperCase(),
+        completedToday: 0,
+        tasks: makeDefaultTasks()
       };
       
-      showToast("Saving to cloud...");
-      try {
-        await setDoc(doc(db, "clients", newClient.id), newClient);
-        document.getElementById('clientForm').reset();
-        fetchClientsFromCloud();
-        showToast("Client saved securely.");
-      } catch(e) {
-        showToast("Error saving data.", true);
-      }
+      window.clients.unshift(newClient);
+      document.getElementById('clientForm').reset();
+      showToast("Syncing new client to cloud...");
+      await syncClientToCloud(newClient);
+      renderDashboard();
+      showToast("Client added successfully.");
     });
 
-    // Delete from Cloud (Exposed to window for inline onclick)
-    window.deleteClient = async function(id) {
-      if(!confirm("Delete this client permanently?")) return;
-      try {
-        await deleteDoc(doc(db, "clients", id));
-        fetchClientsFromCloud();
-        showToast("Client deleted from cloud.", true);
-      } catch(e) {
-        showToast("Error deleting data.", true);
-      }
+    // Update Client (Expose globally)
+    window.confirmTask = async function(cId, key) {
+      const dateInput = document.getElementById(`date-${cId}-${key}`).value;
+      if(!dateInput) { showToast("Select a valid date.", true); return; }
+      
+      const c = window.clients.find(x => x.id === cId);
+      const t = c.tasks[key];
+      t.lastCompleted = dateInput;
+      t.dueDate = nextDueFns[key](t.dueDate);
+      c.completedToday = (c.completedToday || 0) + 1;
+      
+      renderClients(); // instant local update
+      await syncClientToCloud(c); // push to firebase
+      showToast(`Task Complete! Deadline advanced to ${formatDate(t.dueDate)}`);
     }
 
-    // UI Helpers
-    window.showPage = function(pageId) {
+    window.deleteClient = async function(id) {
+      if(!confirm("Permanently delete this client from cloud?")) return;
+      try {
+        await deleteDoc(doc(db, "clients", id));
+        window.clients = window.clients.filter(c => c.id !== id);
+        renderClients();
+        showToast("Client deleted from cloud.", true);
+      } catch(e) { showToast("Error deleting data.", true); }
+    }
+
+    // ── UI RENDERING & ACTIONS ──
+    const formatDate = (v) => v ? parseDate(v).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+    const escHtml = (s) => String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+    window.showPage = function(name) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById('page' + pageId.charAt(0).toUpperCase() + pageId.slice(1)).classList.add('active');
+      document.getElementById('page' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      
+      const config = { dashboard: {t:'Dashboard Overview',s:'Monitor active clients'}, add: {t:'Register Client',s:'Add new record to database'}, clients: {t:'Client Roster',s:'Manage all tracking data'} };
+      document.getElementById('pageHeadTitle').textContent = config[name].t;
+      document.getElementById('pageHeadSub').textContent = config[name].s;
+      
+      if (name === 'dashboard') renderDashboard();
+      if (name === 'clients') renderClients();
+    }
+
+    function renderDashboard() {
+      let dueSoon=0, overdue=0, completedToday=0;
+      window.clients.forEach(c => {
+        completedToday += c.completedToday||0;
+        Object.values(c.tasks).forEach(t => {
+          const st = getTaskState(t);
+          if (st.cls === 'status-overdue') overdue++;
+          if (st.cls === 'status-upcoming') dueSoon++;
+        });
+      });
+      document.getElementById('statClients').textContent = window.clients.length;
+      document.getElementById('statDueWeek').textContent = dueSoon;
+      document.getElementById('statOverdue').textContent = overdue;
+      document.getElementById('statCompletedToday').textContent = completedToday;
+
+      const el = document.getElementById('dashboardSummary');
+      if (!window.clients.length) {
+        el.innerHTML = `<div class="empty"><h3>No Active Clients</h3><p>Syncing or none exist.</p></div>`; return;
+      }
+      el.innerHTML = `<div class="client-list">${window.clients.map(c => `
+        <article class="client-card" style="padding: 1.2rem; cursor:default;">
+          <div class="client-top" style="align-items: center;">
+            <div>
+              <div class="client-name" style="font-size: 1.1rem;">${escHtml(c.name)}</div>
+              <div style="font-size:0.8rem; color:var(--color-text-muted);">GST: ${escHtml(c.gst) || 'N/A'}</div>
+            </div>
+            <button class="btn btn-secondary" style="padding: 0.4rem 1rem;" onclick="showPage('clients')">Manage</button>
+          </div>
+        </article>`).join('')}</div>`;
     }
 
     function renderClients() {
       const list = document.getElementById('clientList');
-      if(!window.clients.length) {
-        list.innerHTML = "<p>No clients found.</p>"; return;
-      }
-      list.innerHTML = window.clients.map(c => `
-        <div style="padding: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); margin-bottom: 1rem; display:flex; justify-content: space-between; align-items:center;">
-          <div>
-            <strong>${c.name}</strong><br>
-            <span style="font-size:0.8rem; color: var(--color-text-muted);">GST: ${c.gst || 'N/A'}</span>
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      const f = document.getElementById('filterSelect').value;
+      
+      const filtered = window.clients.filter(c => {
+        const ok = !q || [c.name,c.address,c.email,c.phone,c.gst,c.pan,c.tan].join(' ').toLowerCase().includes(q);
+        let fOk = true;
+        if (f === 'overdue') fOk = Object.values(c.tasks).some(t => getTaskState(t).cls === 'status-overdue');
+        if (f === 'dueSoon') fOk = Object.values(c.tasks).some(t => getTaskState(t).cls === 'status-upcoming');
+        return ok && fOk;
+      });
+
+      if (!filtered.length) { list.innerHTML = `<div class="empty"><h3>No Records Found</h3></div>`; return; }
+      
+      list.innerHTML = filtered.map(c => `
+        <article class="client-card">
+          <div class="client-top">
+            <div>
+              <div class="client-name">${escHtml(c.name)}</div>
+              <div class="client-meta">
+                ${c.gst ? `<span class="badge">GST: ${escHtml(c.gst)}</span>` : ''}
+                ${c.pan ? `<span class="badge">PAN: ${escHtml(c.pan)}</span>` : ''}
+                ${c.tan ? `<span class="badge">TAN: ${escHtml(c.tan)}</span>` : ''}
+              </div>
+            </div>
+            <div class="client-actions">
+              <button class="mini-btn mini-btn-edit" onclick="openEditModal('${c.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
+              <button class="mini-btn mini-btn-danger" onclick="deleteClient('${c.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
+            </div>
           </div>
-          <button class="btn btn-secondary" onclick="deleteClient('${c.id}')" style="border-color: var(--color-error); color: var(--color-error); padding: 0.4rem 1rem;">Delete</button>
-        </div>
-      `).join('');
+          <div class="details-grid">
+            <div class="detail"><div class="detail-label">Address</div><div class="detail-value">${escHtml(c.address||'—')}</div></div>
+            <div class="detail"><div class="detail-label">Email</div><div class="detail-value">${escHtml(c.email||'—')}</div></div>
+            <div class="detail"><div class="detail-label">Phone</div><div class="detail-value">${escHtml(c.phone||'—')}</div></div>
+          </div>
+          <div class="tasks-grid">
+            ${Object.entries(c.tasks).map(([key,task]) => {
+              const st = getTaskState(task);
+              let actionUI = st.isDone 
+                ? `<span class="done-text"><i class="fa-solid fa-circle-check"></i> Done (${formatDate(task.lastCompleted)})</span>`
+                : `<button class="mini-btn" style="width:100%; border-color: var(--color-primary);" onclick="showDatePicker('${c.id}','${key}')"><i class="fa-solid fa-check"></i> Mark Complete</button>`;
+
+              return `
+              <div class="task-card">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                  <div class="task-title">${escHtml(task.label)}</div>
+                  <span class="status-pill ${st.cls}">${st.text}</span>
+                </div>
+                <div class="task-info" style="margin-top:0.5rem; color:var(--color-primary);">Due: ${formatDate(task.dueDate)}</div>
+                <div class="task-bottom" id="action-area-${c.id}-${key}">${actionUI}</div>
+              </div>`;
+            }).join('')}
+          </div>
+        </article>`).join('');
+    }
+
+    // Modal, Export & UI Actions
+    window.showDatePicker = function(cId, key) {
+      document.getElementById(`action-area-${cId}-${key}`).innerHTML = `
+        <div class="date-input-group">
+          <input type="date" id="date-${cId}-${key}" value="${todayISO()}">
+          <button class="mini-btn mini-btn-edit" style="padding:0.4rem 0.6rem;" onclick="confirmTask('${cId}', '${key}')" title="Save"><i class="fa-solid fa-save"></i></button>
+          <button class="mini-btn" style="padding:0.4rem 0.6rem;" onclick="renderClients()" title="Cancel">✕</button>
+        </div>`;
+    }
+
+    window.openEditModal = function(id) {
+      const c = window.clients.find(x => x.id === id);
+      document.getElementById('editClientId').value = c.id;
+      document.getElementById('editName').value = c.name || '';
+      document.getElementById('editAddress').value = c.address || '';
+      document.getElementById('editEmail').value = c.email || '';
+      document.getElementById('editPhone').value = c.phone || '';
+      document.getElementById('editGst').value = c.gst || '';
+      document.getElementById('editPan').value = c.pan || '';
+      document.getElementById('editTan').value = c.tan || '';
+      document.getElementById('editModal').classList.add('open');
+    }
+
+    window.closeModal = function() { document.getElementById('editModal').classList.remove('open'); }
+
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('editClientId').value;
+      let c = window.clients.find(x => x.id === id);
+      c.name = document.getElementById('editName').value.trim();
+      c.address = document.getElementById('editAddress').value.trim();
+      c.email = document.getElementById('editEmail').value.trim();
+      c.phone = document.getElementById('editPhone').value.trim();
+      c.gst = document.getElementById('editGst').value.trim().toUpperCase();
+      c.pan = document.getElementById('editPan').value.trim().toUpperCase();
+      c.tan = document.getElementById('editTan').value.trim().toUpperCase();
+      
+      closeModal(); renderClients();
+      await syncClientToCloud(c);
+      showToast('Client updated securely in cloud.');
+    });
+
+    window.clearFilter = function() { document.getElementById('searchInput').value=''; document.getElementById('filterSelect').value='all'; renderClients(); }
+    document.getElementById('searchInput').addEventListener('input', renderClients);
+    document.getElementById('filterSelect').addEventListener('change', renderClients);
+
+    window.exportExcel = function() {
+      if (!window.clients.length) { showToast('No records to export', true); return; }
+      const rows = window.clients.map(c => ({
+        'Business Name': c.name, 'Email Address': c.email, 'Phone': c.phone, 'GST': c.gst, 'PAN': c.pan, 'TAN': c.tan, 'Address': c.address,
+        'GSTR-1 Due': c.tasks.gstr1.dueDate, 'GSTR-1 Last Done': c.tasks.gstr1.lastCompleted,
+        'GSTR-3B Due': c.tasks.gstr3b.dueDate, 'GSTR-3B Last Done': c.tasks.gstr3b.lastCompleted,
+        'TDS Challan Due': c.tasks.tdsChallan.dueDate, 'TDS Challan Last Done': c.tasks.tdsChallan.lastCompleted,
+        'TDS Filing Due': c.tasks.tdsFiling.dueDate, 'TDS Filing Last Done': c.tasks.tdsFiling.lastCompleted
+      }));
+      const wb = XLSX.utils.book_new(); const ws = XLSX.utils.json_to_sheet(rows);
+      ws['!cols'] = [30,25,15,20,15,15,40,15,15,15,15,15,15,15,15].map(w => ({ wch: w }));
+      XLSX.utils.book_append_sheet(wb, ws, 'CMS_Data');
+      XLSX.writeFile(wb, 'Growitharshiee_Client_DB.xlsx');
+      showToast('Cloud Data Exported to Excel.');
     }
 
     function showToast(msg, isError = false) {
       const t = document.getElementById('toast');
-      t.textContent = msg; 
-      t.className = `toast show ${isError ? 'error' : ''}`;
+      t.textContent = msg; t.className = `toast show ${isError ? 'error' : ''}`;
       setTimeout(() => t.classList.remove('show'), 3000);
     }
   </script>
