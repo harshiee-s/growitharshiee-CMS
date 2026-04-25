@@ -3,213 +3,966 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Secure CMS Login | Growitharshiee</title>
-  
+  <title>CA Control Panel | Growitharshiee</title>
+
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
-      --color-bg-light: #f8fafc; 
-      --color-surface: rgba(255, 255, 255, 0.85);
+      --color-bg-light: #f8fafc;
+      --color-surface: rgba(255, 255, 255, 0.9);
       --color-surface-solid: #ffffff;
-      
-      --color-primary: #0A2540; 
-      --color-primary-hover: #11365c;
-      --color-primary-soft: rgba(10, 37, 64, 0.06);
-      --color-accent: #D4AF37; 
-      --color-accent-soft: rgba(212, 175, 55, 0.15);
-      
+      --color-primary: #0A2540;
+      --color-primary-soft: rgba(10,37,64,0.06);
+      --color-accent: #D4AF37;
+      --color-accent-soft: rgba(212,175,55,0.16);
       --color-text-dark: #0f172a;
-      --color-text-muted: #475569;
-      --color-border: rgba(10, 37, 64, 0.12);
-      
-      --color-success: #166534; --color-success-bg: #dcfce7;
-      --color-warning: #b45309; --color-warning-bg: #fef9c3;
-      --color-error: #b91c1c;   --color-error-bg: #fee2e2;
-      --color-pending: #475569; --color-pending-bg: #e2e8f0;
+      --color-text-muted: #64748b;
+      --color-border: rgba(15, 23, 42, 0.12);
+      --color-success: #15803d;
+      --color-success-bg: #dcfce7;
+      --color-warning: #b45309;
+      --color-warning-bg: #fef3c7;
+      --color-error: #b91c1c;
+      --color-error-bg: #fee2e2;
+      --color-info: #2563eb;
+      --color-info-bg: #dbeafe;
+      --color-gray-soft: #f1f5f9;
 
-      --shadow-sm: 0 2px 10px rgba(10, 37, 64, 0.03);
-      --shadow-soft: 0 8px 30px rgba(10, 37, 64, 0.06);
-      --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
-      
-      --radius-lg: 20px; --radius-md: 12px; --radius-sm: 8px; --radius-pill: 999px;
-      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow-sm: 0 2px 10px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
+
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --radius-pill: 999px;
+
+      --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
 
       --font-heading: "Playfair Display", serif;
       --font-subheading: "Poppins", sans-serif;
       --font-body: "Inter", sans-serif;
-      --font-tech: 'JetBrains Mono', monospace;
+      --font-tech: "JetBrains Mono", monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; overflow: hidden; }
-    
+
     body {
-      font-family: var(--font-body); color: var(--color-text-dark); background-color: var(--color-bg-light); line-height: 1.6; -webkit-font-smoothing: antialiased;
-      background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2000&auto=format&fit=crop'); background-size: cover; background-position: center;
+      font-family: var(--font-body);
+      color: var(--color-text-dark);
+      background-color: var(--color-bg-light);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2000&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
     }
-    body::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(248, 250, 252, 0.94); z-index: -2; pointer-events: none; }
 
-    /* BACKGROUND TRENDLINES */
-    .dgv-background { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; opacity: 0.5; }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(248, 250, 252, 0.95);
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    /* Background lines simplifed */
+    .dgv-background {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.45;
+    }
     .dgv-background svg { width: 100%; height: 100%; }
-    .dgv-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 4000; stroke-dashoffset: 4000; animation: drawDGV 20s ease-in-out infinite alternate; }
-    .dgv-line-1 { stroke: var(--color-accent); stroke-width: 2px; opacity: 0.4; }
+    .dgv-line {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 4000;
+      stroke-dashoffset: 4000;
+      animation: drawDGV 20s ease-in-out infinite alternate;
+    }
+    .dgv-line-1 { stroke: var(--color-accent); stroke-width: 2px; opacity: 0.3; }
     .dgv-line-2 { stroke: var(--color-primary); stroke-width: 1px; opacity: 0.15; animation-delay: -5s; }
-    @keyframes drawDGV { 0% { stroke-dashoffset: 4000; } 100% { stroke-dashoffset: 0; } }
 
-    button, input, textarea, select { font: inherit; color: inherit; outline: none;}
+    @keyframes drawDGV {
+      0% { stroke-dashoffset: 4000; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    button, input, textarea, select { font: inherit; color: inherit; outline: none; }
     button { cursor: pointer; border: none; background: none; }
     a { text-decoration: none; color: inherit; }
 
-    /* ── 1. LOGIN SCREEN STYLES ── */
+    /* LOGIN */
     #loginScreen {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center;
-      z-index: 9999; background: rgba(248, 250, 252, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); transition: opacity 0.5s ease;
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      background: rgba(248, 250, 252, 0.9);
+      backdrop-filter: blur(18px);
+      transition: opacity 0.45s ease;
     }
-    .login-card { background: var(--color-surface-solid); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 3rem 2.5rem; width: 100%; max-width: 400px; box-shadow: var(--shadow-lg); text-align: center; }
-    .login-card h2 { font-family: var(--font-heading); color: var(--color-primary); font-size: 1.8rem; margin-bottom: 0.5rem; }
-    .login-card p { font-size: 0.9rem; color: var(--color-text-muted); margin-bottom: 2rem; }
-    .login-input { width: 100%; padding: 0.9rem 1.2rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); margin-bottom: 1rem; font-family: var(--font-body); background: var(--color-bg-light); transition: var(--transition); }
-    .login-input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); background: #fff;}
-    .login-btn { width: 100%; padding: 0.9rem; background: linear-gradient(135deg, #E6C265, #D4AF37); color: var(--color-primary); font-weight: 700; border-radius: var(--radius-sm); margin-top: 1rem; font-family: var(--font-subheading); transition: var(--transition); }
-    .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px var(--color-accent-soft); }
-    #loginError { color: var(--color-error); font-size: 0.85rem; margin-top: 1rem; display: none; font-weight: 600;}
 
-    /* ── LAYOUT (Hidden until login) ── */
-    #appContent { display: none; opacity: 0; transition: opacity 0.5s ease; height: 100%; }
+    .login-card {
+      background: var(--color-surface-solid);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-md);
+      padding: 2.4rem 2rem;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+
+    .login-logo-wrap {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 1rem;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(15,23,42,0.05));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .login-logo-wrap img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
+    .login-card h2 {
+      font-family: var(--font-heading);
+      color: var(--color-primary);
+      font-size: 1.75rem;
+      margin-bottom: 0.4rem;
+    }
+    .login-card p {
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      margin-bottom: 1.6rem;
+    }
+    .login-input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      margin-bottom: 0.9rem;
+      background: #f9fafb;
+      transition: var(--transition);
+    }
+    .login-input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px var(--color-primary-soft);
+      background: #ffffff;
+    }
+    .login-btn {
+      width: 100%;
+      padding: 0.85rem;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #E6C265, #D4AF37);
+      color: var(--color-primary);
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .login-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px var(--color-accent-soft);
+    }
+    #loginError {
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+      color: var(--color-error);
+      display: none;
+    }
+
+    /* LAYOUT */
+    #appContent {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.45s ease;
+      height: 100%;
+    }
     .show-app { display: grid !important; opacity: 1 !important; }
 
-    .dashboard { grid-template-columns: 280px 1fr; grid-template-rows: 80px 1fr; position: relative; z-index: 10; }
-    .sidebar { grid-row: 1 / -1; background: var(--color-surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-right: 1px solid var(--color-border); padding: 1.5rem; display: flex; flex-direction: column; overflow-y: auto; }
-    .header { grid-column: 2; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; border-bottom: 1px solid var(--color-border); background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 5; }
-    .main { grid-column: 2; overflow: auto; padding: 2.5rem; display: grid; gap: 2rem; align-content: start; }
-    .page { display: none; } .page.active { display: contents; }
+    .dashboard {
+      grid-template-columns: 270px 1fr;
+      grid-template-rows: 70px 1fr;
+      position: relative;
+      z-index: 10;
+    }
 
-    /* ── SIDEBAR & HEADER ── */
-    .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 2.5rem; padding-left: 0.5rem; }
-    .brand-text { font-family: var(--font-heading); font-style: italic; font-weight: 600; font-size: 1.5rem; background: linear-gradient(to right, #B78D3C, #F4DB95, #B78D3C); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .brand-text::after { content: '.'; color: var(--color-primary); -webkit-text-fill-color: var(--color-primary); }
-    .nav-group { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
-    .nav-item { display: flex; align-items: center; gap: 12px; padding: 0.9rem 1.2rem; color: var(--color-text-muted); font-family: var(--font-subheading); font-size: 0.95rem; font-weight: 500; border-radius: var(--radius-sm); transition: var(--transition); width: 100%; text-align: left; }
-    .nav-item i { font-size: 1.1rem; width: 20px; text-align: center; }
-    .nav-item:hover, .nav-item.active { background: var(--color-primary); color: #fff; box-shadow: 0 4px 12px var(--color-primary-soft); }
-    .logout-btn { color: var(--color-error); margin-top: auto; border: 1px solid var(--color-error-bg); background: var(--color-error-bg); }
-    .logout-btn:hover { background: var(--color-error); color: #fff; box-shadow: none;}
-    
-    .sidebar-note { margin-top: 2rem; padding: 1.2rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-primary-soft); font-size: 0.8rem; color: var(--color-primary); font-family: var(--font-body); }
-    .sidebar-note strong { font-family: var(--font-subheading); display: block; margin-bottom: 0.5rem; }
+    .sidebar {
+      grid-row: 1 / -1;
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 1.2rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
 
-    .header-title h1 { font-family: var(--font-heading); font-size: 1.8rem; color: var(--color-primary); margin-bottom: 0.2rem; }
-    .header-title p { font-family: var(--font-subheading); font-size: 0.9rem; color: var(--color-text-muted); }
-    .header-actions { display: flex; gap: 1rem; align-items: center; }
-    
-    .btn { border-radius: var(--radius-pill); padding: 0.7rem 1.4rem; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); font-family: var(--font-subheading); }
-    .btn-primary { background: linear-gradient(135deg, #E6C265, #D4AF37); color: var(--color-primary); box-shadow: 0 4px 15px var(--color-accent-soft); }
-    .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); }
-    .btn-secondary { border: 1px solid var(--color-primary); color: var(--color-primary); background: transparent; }
-    .btn-secondary:hover { background: var(--color-primary); color: #fff; }
+    .header {
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.6rem;
+      border-bottom: 1px solid var(--color-border);
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 6;
+    }
 
-    /* ── STATS & PANELS ── */
-    .stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1.5rem; }
-    .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); backdrop-filter: blur(16px); }
-    .stat-card { padding: 1.5rem; position: relative; overflow: hidden; }
-    .stat-card::after { content: ''; position: absolute; right: -20px; bottom: -20px; width: 100px; height: 100px; border-radius: 50%; background: var(--color-primary-soft); }
-    .stat-label { font-family: var(--font-subheading); font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .stat-value { font-family: var(--font-tech); font-size: 2.2rem; font-weight: 700; color: var(--color-primary); margin-top: 0.5rem; }
-    .stat-help { font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.3rem; }
+    .main {
+      grid-column: 2;
+      overflow: auto;
+      padding: 1.6rem;
+      display: grid;
+      gap: 1.2rem;
+      align-content: flex-start;
+    }
 
-    .add-page-wrap { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; align-items: start; }
-    .panel { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
-    .panel-head h2 { font-family: var(--font-heading); font-size: 1.5rem; color: var(--color-primary); }
-    .panel-head p { font-family: var(--font-subheading); font-size: 0.9rem; color: var(--color-text-muted); margin-top: 0.3rem; }
-    
-    .form-grid { display: grid; gap: 1.2rem; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-    .field { display: flex; flex-direction: column; gap: 0.4rem; }
-    .field label { font-family: var(--font-subheading); font-size: 0.85rem; font-weight: 600; color: var(--color-primary); }
-    .input, .textarea { padding: 0.8rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: rgba(255,255,255,0.6); font-family: var(--font-body); font-size: 0.95rem; transition: var(--transition); }
-    .input:focus, .textarea:focus { background: #fff; border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-soft); }
-    .textarea { min-height: 80px; resize: vertical; }
+    .page { display: none; }
+    .page.active { display: block; }
 
-    /* ── FULL CLIENT ROSTER UI ── */
-    .clients-wrap { display: grid; gap: 1.5rem; }
-    .toolbar { display: grid; grid-template-columns: 1fr auto auto auto; gap: 1rem; align-items: center; }
-    .search { padding: 0.8rem 1.2rem; border: 1px solid var(--color-border); border-radius: var(--radius-pill); background: var(--color-surface-solid); width: 100%; transition: var(--transition); font-family: var(--font-body); }
-    .search:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
-    .select-filter { padding: 0.8rem 1.2rem; border: 1px solid var(--color-border); border-radius: var(--radius-pill); background: var(--color-surface-solid); font-family: var(--font-body); font-weight: 500;}
-    
-    .client-list { display: grid; gap: 1.5rem; }
-    .client-card { padding: 1.8rem; display: grid; gap: 1.5rem; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-sm); transition: var(--transition); backdrop-filter: blur(12px);}
-    .client-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-soft); border-color: var(--color-accent); }
-    
-    .client-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-    .client-name { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: var(--color-primary); margin-bottom: 0.3rem;}
-    .client-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .badge { display: inline-flex; align-items: center; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; background: var(--color-primary-soft); color: var(--color-primary); font-family: var(--font-tech); border: 1px solid rgba(10,37,64,0.1); }
-    
-    .client-actions { display: flex; gap: 0.5rem; }
-    .mini-btn { padding: 0.5rem 1rem; border-radius: var(--radius-pill); border: 1px solid var(--color-border); background: var(--color-surface-solid); font-size: 0.8rem; font-weight: 600; transition: var(--transition); font-family: var(--font-subheading); }
-    .mini-btn:hover { background: var(--color-surface-solid); }
-    .mini-btn-edit { color: var(--color-primary); }
-    .mini-btn-edit:hover { background: var(--color-primary); color: #fff; }
-    .mini-btn-danger { color: var(--color-error); }
-    .mini-btn-danger:hover { background: var(--color-error); color: #fff; border-color: var(--color-error); }
+    /* SIDEBAR BRAND */
+    .brand {
+      display: flex;
+      gap: 0.7rem;
+      align-items: center;
+      margin-bottom: 1.4rem;
+    }
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(212,175,55,0.26), rgba(10,37,64,0.08));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .brand-logo img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+    }
+    .brand-copy { display: flex; flex-direction: column; }
+    .brand-text {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      color: var(--color-primary);
+    }
+    .brand-sub {
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      font-family: var(--font-subheading);
+    }
 
-    .details-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
-    .detail { padding: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: rgba(255,255,255,0.5); }
-    .detail-label { font-family: var(--font-subheading); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 600; margin-bottom: 0.3rem; }
-    .detail-value { font-size: 0.9rem; font-weight: 500; color: var(--color-text-dark); word-break: break-word; }
+    .nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.7rem 0.8rem;
+      font-size: 0.86rem;
+      border-radius: var(--radius-sm);
+      color: var(--color-text-muted);
+      transition: var(--transition);
+    }
+    .nav-item i { width: 18px; text-align: center; font-size: 0.95rem; }
+    .nav-item:hover, .nav-item.active {
+      background: var(--color-primary);
+      color: #ffffff;
+      box-shadow: 0 4px 12px var(--color-primary-soft);
+    }
 
-    /* Tasks Grid & Inline Picker */
-    .tasks-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1rem; }
-    .task-card { padding: 1.2rem; border-radius: var(--radius-md); background: var(--color-surface-solid); border: 1px solid var(--color-border); display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
-    .task-title { font-family: var(--font-subheading); font-size: 0.95rem; font-weight: 700; color: var(--color-primary); }
-    .task-info { font-size: 0.8rem; color: var(--color-text-muted); font-family: var(--font-tech); }
-    .task-bottom { margin-top: auto; padding-top: 0.8rem; border-top: 1px dashed var(--color-border); display: flex; flex-direction: column; gap: 0.5rem;}
-    
-    .status-pill { padding: 0.2rem 0.6rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700; font-family: var(--font-subheading); text-transform: uppercase;}
-    .status-done { background: var(--color-success-bg); color: var(--color-success); border: 1px solid #bbf7d0; }
-    .status-upcoming { background: var(--color-warning-bg); color: var(--color-warning); border: 1px solid #fde047; }
-    .status-overdue { background: var(--color-error-bg); color: var(--color-error); border: 1px solid #fecaca; }
-    .status-pending { background: var(--color-pending-bg); color: var(--color-pending); border: 1px solid #cbd5e1; }
+    .logout-btn {
+      margin-top: auto;
+      color: var(--color-error);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-error-bg);
+      background: var(--color-error-bg);
+      justify-content: center;
+    }
+    .logout-btn:hover {
+      background: var(--color-error);
+      color: #ffffff;
+      box-shadow: none;
+    }
 
-    .done-text { font-size: 0.8rem; font-weight: 600; color: var(--color-success); display: flex; align-items: center; gap: 5px; }
-    .date-input-group { display: flex; gap: 4px; width: 100%; align-items: center;}
-    .date-input-group input[type="date"] { flex: 1; padding: 0.4rem; border: 1px solid var(--color-border); border-radius: 4px; font-family: var(--font-body); font-size: 0.75rem; outline: none;}
-    .date-input-group input[type="date"]:focus { border-color: var(--color-primary); }
+    .sidebar-note {
+      margin-top: 1rem;
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      font-size: 0.78rem;
+      background: #fefce8;
+      color: #78350f;
+    }
+    .sidebar-note strong {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-family: var(--font-subheading);
+    }
 
-    /* ── MODALS & TOAST ── */
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(10, 37, 64, 0.4); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 2rem; opacity: 0; transition: opacity 0.3s ease; }
-    .modal-backdrop.open { display: flex; opacity: 1; }
-    .modal { background: var(--color-surface-solid); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-lg); width: 100%; max-width: 600px; transform: translateY(20px); transition: transform 0.3s ease; }
-    .modal-backdrop.open .modal { transform: translateY(0); }
-    .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-    .modal-head h2 { font-family: var(--font-heading); font-size: 1.5rem; color: var(--color-primary); }
-    .modal-close { font-size: 1.5rem; color: var(--color-text-muted); transition: var(--transition); }
-    .modal-close:hover { color: var(--color-error); }
+    /* HEADER */
+    .header-title h1 {
+      font-family: var(--font-heading);
+      font-size: 1.45rem;
+      color: var(--color-primary);
+    }
+    .header-title p {
+      font-size: 0.84rem;
+      color: var(--color-text-muted);
+    }
 
-    .empty { padding: 4rem 2rem; text-align: center; border: 1px dashed var(--color-border); border-radius: var(--radius-lg); background: rgba(255,255,255,0.5); }
-    .empty h3 { font-family: var(--font-heading); font-size: 1.4rem; color: var(--color-primary); margin-bottom: 0.5rem; }
-    
-    .toast { position: fixed; right: 20px; bottom: 20px; background: var(--color-success); color: #fff; padding: 1rem 1.5rem; border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); opacity: 0; transform: translateY(20px); transition: all var(--transition); z-index: 2000; font-family: var(--font-subheading); font-weight: 600; }
-    .toast.error { background: var(--color-error); }
-    .toast.show { opacity: 1; transform: translateY(0); }
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
 
-    /* ── RESPONSIVE ── */
-    @media(max-width:1200px) { .tasks-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
-    @media(max-width:980px) { .add-page-wrap { grid-template-columns: 1fr; } .toolbar { grid-template-columns: 1fr 1fr auto auto; } }
-    @media(max-width:850px) { html, body { overflow: auto; height: auto; } .dashboard { display: block; height: auto; } .sidebar { display: none; } .main { overflow: visible; padding: 1.5rem; } .details-grid { grid-template-columns: 1fr; } }
-    @media(max-width:640px) { .header { padding: 1rem 1.5rem; height: auto; flex-wrap: wrap; gap: 1rem; } .header-actions { width: 100%; justify-content: flex-start; } .stats, .form-row, .toolbar { grid-template-columns: 1fr; } .client-top { flex-direction: column; } .tasks-grid { grid-template-columns: 1fr; } }
+    /* GLOBAL SEARCH */
+    .global-search-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f9fafb;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border);
+      padding: 0.4rem 0.8rem;
+      min-width: 260px;
+    }
+    .global-search-wrap input {
+      border: none;
+      background: transparent;
+      width: 160px;
+      font-size: 0.85rem;
+    }
+    .global-search-wrap input::placeholder {
+      color: #94a3b8;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.1rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      background: #e2e8f0;
+      color: var(--color-primary);
+      transition: var(--transition);
+      font-family: var(--font-subheading);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #E6C265, #D4AF37);
+      color: var(--color-primary);
+      border-color: transparent;
+      box-shadow: 0 3px 10px var(--color-accent-soft);
+    }
+    .btn-primary:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+    .btn-secondary:hover {
+      background: var(--color-primary);
+      color: #ffffff;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+      padding: 1.2rem 1.3rem;
+    }
+
+    .panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .panel-head h2 {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      color: var(--color-primary);
+    }
+    .panel-head p {
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+    }
+
+    /* STAT BLOCKS & WORKLOAD */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 0.9rem;
+    }
+    .stat-card {
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: #ffffff;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-text-muted);
+      font-family: var(--font-subheading);
+    }
+    .stat-value {
+      font-family: var(--font-tech);
+      font-size: 1.4rem;
+      margin-top: 0.2rem;
+      color: var(--color-primary);
+    }
+    .stat-help {
+      margin-top: 0.1rem;
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+    }
+
+    /* TODAY VIEW */
+    .today-section-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .today-column-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--color-text-muted);
+    }
+
+    .today-group-header {
+      font-size: 0.86rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: var(--color-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .today-task-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .today-task-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 0.4rem;
+      border-bottom: 1px dashed var(--color-border);
+      font-size: 0.82rem;
+    }
+    .today-task-item:last-child {
+      border-bottom: none;
+    }
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      background: var(--color-gray-soft);
+      color: #0f172a;
+    }
+    .tag-overdue {
+      background: var(--color-error-bg);
+      color: var(--color-error);
+    }
+    .tag-soon {
+      background: var(--color-warning-bg);
+      color: var(--color-warning);
+    }
+
+    /* FORM GRID */
+    .form-grid { display: grid; gap: 0.95rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.95rem; }
+
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .field label {
+      font-family: var(--font-subheading);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--color-primary);
+    }
+    .input, .textarea, .file-input, .select-input {
+      padding: 0.75rem 0.9rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background: #f9fafb;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .input:focus, .textarea:focus, .file-input:focus, .select-input:focus {
+      border-color: var(--color-primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 2px var(--color-primary-soft);
+    }
+    .textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .muted-note {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+    }
+
+    /* CLIENT LIST / COLLAPSIBLE */
+    .clients-wrap { display: grid; gap: 1rem; }
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.2fr auto auto auto;
+      gap: 0.8rem;
+      align-items: center;
+    }
+    .search {
+      padding: 0.7rem 1rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border);
+      background: #f9fafb;
+      font-size: 0.88rem;
+    }
+    .select-filter {
+      padding: 0.7rem 1rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border);
+      background: #ffffff;
+      font-size: 0.85rem;
+    }
+
+    .client-list { display: grid; gap: 0.7rem; }
+
+    .client-row {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: #ffffff;
+      padding: 0.65rem 0.8rem;
+    }
+
+    .client-row-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      cursor: pointer;
+    }
+    .client-row-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .client-name {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      color: var(--color-primary);
+    }
+    .client-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.1rem;
+      font-size: 0.74rem;
+      color: var(--color-text-muted);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      border: 1px solid #bae6fd;
+      background: #eff6ff;
+      color: #075985;
+    }
+    .status-pill.inactive {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      color: #64748b;
+    }
+
+    .client-row-actions {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .mini-btn {
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      border: 1px solid var(--color-border);
+      background: #f8fafc;
+    }
+    .mini-btn-danger {
+      color: var(--color-error);
+      border-color: var(--color-error-bg);
+      background: var(--color-error-bg);
+    }
+
+    .client-row-body {
+      margin-top: 0.6rem;
+      padding-top: 0.6rem;
+      border-top: 1px solid #e2e8f0;
+      display: none;
+    }
+    .client-row-body.open {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 0.7rem;
+    }
+    .detail {
+      padding: 0.7rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background: #f9fafb;
+      font-size: 0.8rem;
+    }
+    .detail-label {
+      font-size: 0.74rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-text-muted);
+      margin-bottom: 0.2rem;
+    }
+    .detail-value {
+      font-size: 0.85rem;
+    }
+    .mono { font-family: var(--font-tech); font-size: 0.8rem; }
+
+    .password-box {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .password-mask {
+      padding: 0.35rem 0.6rem;
+      border-radius: 8px;
+      background: #e5e7eb;
+      font-family: var(--font-tech);
+      font-size: 0.8rem;
+      letter-spacing: 0.16em;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .docs-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+    .doc-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.32rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+    .doc-tag {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+    }
+
+    /* TASK CARDS */
+    .tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 0.7rem;
+    }
+    .task-card {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: #ffffff;
+      padding: 0.7rem;
+      font-size: 0.82rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .task-title {
+      font-weight: 600;
+      color: var(--color-primary);
+      font-size: 0.85rem;
+    }
+    .task-info {
+      font-family: var(--font-tech);
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+    }
+    .task-bottom {
+      margin-top: auto;
+      padding-top: 0.4rem;
+      border-top: 1px dashed #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .status-pill-task {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .status-overdue { background: var(--color-error-bg); color: var(--color-error); }
+    .status-upcoming { background: var(--color-warning-bg); color: var(--color-warning); }
+    .status-pending { background: #e5e7eb; color: #4b5563; }
+    .status-done { background: var(--color-success-bg); color: var(--color-success); }
+    .status-missed { background: #f3f4f6; color: #6b7280; }
+
+    .done-text {
+      font-size: 0.78rem;
+      color: var(--color-success);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .date-input-group {
+      display: flex;
+      gap: 0.3rem;
+      align-items: center;
+    }
+    .date-input-group input[type="date"] {
+      flex: 1;
+      padding: 0.35rem;
+      border-radius: 6px;
+      border: 1px solid var(--color-border);
+      font-size: 0.78rem;
+    }
+
+    /* NOTES TIMELINE */
+    .notes-wrap {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: #ffffff;
+      padding: 0.7rem;
+      font-size: 0.8rem;
+    }
+    .notes-list {
+      list-style: none;
+      margin: 0.5rem 0 0;
+      padding: 0;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    .note-item {
+      padding: 0.35rem 0;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    .note-item:last-child { border-bottom: none; }
+
+    .note-ts {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+    }
+
+    /* INVOICE TABLE & REVENUE CHART */
+    .invoice-table-wrap {
+      overflow: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: #ffffff;
+    }
+    th, td {
+      padding: 0.72rem 0.8rem;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.82rem;
+      text-align: left;
+    }
+    th {
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.74rem;
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    .chart-wrap {
+      min-height: 260px;
+      position: relative;
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.4);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      z-index: 50;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .modal-backdrop.open {
+      display: flex;
+      opacity: 1;
+    }
+    .modal {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      max-width: 840px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: auto;
+      padding: 1.4rem 1.5rem;
+      box-shadow: var(--shadow-md);
+    }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+    .modal-head h2 {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      color: var(--color-primary);
+    }
+
+    .modal-close {
+      font-size: 1.3rem;
+      color: var(--color-text-muted);
+    }
+
+    /* EMPTY & TOAST */
+    .empty {
+      padding: 2.3rem 1.5rem;
+      text-align: center;
+      border-radius: var(--radius-lg);
+      border: 1px dashed var(--color-border);
+      background: #f9fafb;
+      font-size: 0.88rem;
+    }
+    .empty h3 {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
+      color: var(--color-primary);
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      max-width: 260px;
+      background: var(--color-success);
+      color: #ffffff;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      font-size: 0.82rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: 0.25s ease;
+      z-index: 60;
+    }
+    .toast.error {
+      background: var(--color-error);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1120px) {
+      .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .tasks-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .details-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .today-section-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 860px) {
+      html, body { overflow: auto; height: auto; }
+      .dashboard { display: block; height: auto; }
+      .sidebar { display: none; }
+      .main { padding: 1.1rem; }
+      .header { padding: 0.8rem 1.1rem; flex-wrap: wrap; gap: 0.7rem; }
+      .header-actions { width: 100%; justify-content: flex-start; }
+      .form-row { grid-template-columns: 1fr; }
+      .tasks-grid { grid-template-columns: 1fr; }
+      .toolbar { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .stats { grid-template-columns: 1fr; }
+      .details-grid { grid-template-columns: 1fr; }
+      .toolbar { grid-template-columns: 1fr; }
+      .login-card { margin: 1rem; padding: 2rem 1.5rem; }
+    }
   </style>
 </head>
 <body>
-
+  <!-- SIMPLE BACKGROUND LINES -->
   <div class="dgv-background">
     <svg viewBox="0 0 1440 800" preserveAspectRatio="none">
       <path class="dgv-line dgv-line-1" d="M-100,750 C150,650 300,500 650,450 C1000,400 1200,200 1500,100" />
@@ -217,249 +970,489 @@
     </svg>
   </div>
 
+  <!-- LOGIN -->
   <div id="loginScreen">
     <div class="login-card">
-      <img src="logo.png" alt="Logo" style="width: 60px; border-radius: 8px; margin-bottom: 1rem;" onerror="this.style.display='none'">
-      <h2>Admin Portal</h2>
-      <p>Secure CMS Access Required</p>
+      <div class="login-logo-wrap">
+        <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+      </div>
+      <h2>growitharshiee</h2>
+      <p>Login</p>
       <form id="loginForm">
-        <input type="email" id="loginEmail" class="login-input" placeholder="Admin Email" required>
+        <input type="email" id="loginEmail" class="login-input" placeholder=" Email" required>
         <input type="password" id="loginPassword" class="login-input" placeholder="Password" required>
-        <button type="submit" class="login-btn" id="loginBtnText"><i class="fa-solid fa-lock"></i> Secure Login</button>
+        <button type="submit" class="login-btn" id="loginBtnText">
+          <i class="fa-solid fa-lock"></i> Secure Login
+        </button>
       </form>
       <div id="loginError">Invalid credentials or unauthorized access.</div>
     </div>
   </div>
 
+  <!-- APP -->
   <div id="appContent" class="dashboard">
-    
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-      <div class="brand"><span class="brand-text">growitharshiee</span></div>
+      <div class="brand">
+        <div class="brand-logo">
+          <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+        </div>
+        <div class="brand-copy">
+          <span class="brand-text">growitharshiee</span>
+          <span class="brand-sub"></span>
+        </div>
+      </div>
+
       <nav class="nav-group">
-        <button class="nav-item active" onclick="showPage('dashboard')"><i class="fa-solid fa-chart-pie"></i><span>Dashboard Overview</span></button>
-        <button class="nav-item" onclick="showPage('add')"><i class="fa-solid fa-user-plus"></i><span>Add Client</span></button>
-        <button class="nav-item" onclick="showPage('clients')"><i class="fa-solid fa-users"></i><span>View Clients</span></button>
+        <button class="nav-item active" data-page="today"><i class="fa-solid fa-bolt"></i><span>Today View</span></button>
+        <button class="nav-item" data-page="add"><i class="fa-solid fa-user-plus"></i><span>Add Client</span></button>
+        <button class="nav-item" data-page="clients"><i class="fa-solid fa-users"></i><span>Clients</span></button>
+        <button class="nav-item" data-page="invoices"><i class="fa-solid fa-file-invoice-dollar"></i><span>Invoice Tracker</span></button>
+        <button class="nav-item" data-page="revenue"><i class="fa-solid fa-chart-column"></i><span>Revenue Dashboard</span></button>
         <button class="nav-item" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i><span>Export Excel</span></button>
         <button class="nav-item logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button>
       </nav>
+
       <div class="sidebar-note">
-        <strong>Filing Rules Matrix:</strong>
-        • GSTR-1: <span>11th</span> of next month<br>
-        • GSTR-3B: <span>20th</span> of next month<br>
-        • TDS Challan: <span>7th</span> of next month<br>
-        • TDS Filing: <span>Last day</span> of month following quarter end.
+        <strong>Key Due Dates</strong>
+        GSTR-1: 11th next month<br>
+        GSTR-3B: 20th next month<br>
+        TDS Challan: 7th next month<br>
+        TDS Return: Last day of next month after quarter<br>
+        ESIC & PF: 15th next month<br>
+        PT: 18th next month
       </div>
     </aside>
 
+    <!-- HEADER -->
     <header class="header">
       <div class="header-title">
-        <h1 id="pageHeadTitle">Overview</h1>
-        <p id="pageHeadSub">Monitor your active clients and compliance statuses.</p>
+        <h1 id="pageHeadTitle">Today View</h1>
+        <p id="pageHeadSub">What needs your attention right now.</p>
       </div>
       <div class="header-actions">
-        <button class="btn btn-secondary" onclick="exportExcel()"><i class="fa-solid fa-download"></i> Export Data</button>
-        <button class="btn btn-primary" onclick="showPage('add')"><i class="fa-solid fa-plus"></i> New Client</button>
+        <!-- GLOBAL SEARCH -->
+        <div class="global-search-wrap">
+          <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8;"></i>
+          <input id="globalSearchInput" placeholder="Search name / GST / PAN / TAN" />
+        </div>
+        <button class="btn btn-secondary" onclick="exportExcel()">
+          <i class="fa-solid fa-download"></i> Export
+        </button>
+        <button class="btn btn-primary" onclick="showPage('add')">
+          <i class="fa-solid fa-plus"></i> New Client
+        </button>
       </div>
     </header>
 
+    <!-- MAIN -->
     <main class="main">
-
-      <div class="page active" id="pageDashboard">
-        <section class="stats">
-          <div class="card stat-card">
-            <div class="stat-label">Total Active Clients</div>
-            <div class="stat-value" id="statClients">0</div>
-            <div class="stat-help">Registered in system</div>
-          </div>
-          <div class="card stat-card">
-            <div class="stat-label">Tasks Due Soon</div>
-            <div class="stat-value" id="statDueWeek" style="color: var(--color-warning);">0</div>
-            <div class="stat-help">Approaching deadlines (15 Days)</div>
-          </div>
-          <div class="card stat-card">
-            <div class="stat-label">Overdue Compliances</div>
-            <div class="stat-value" id="statOverdue" style="color: var(--color-error);">0</div>
-            <div class="stat-help">Requires immediate action</div>
-          </div>
-          <div class="card stat-card">
-            <div class="stat-label">Completed Today</div>
-            <div class="stat-value" id="statCompletedToday" style="color: var(--color-success);">0</div>
-            <div class="stat-help">Tasks marked as done</div>
-          </div>
-        </section>
+      <!-- TODAY VIEW (DEFAULT) -->
+      <section class="page active" id="pageToday">
+        <div class="stats" id="workloadSummary"></div>
 
         <div class="card panel">
           <div class="panel-head">
-            <h2>System Overview</h2>
-            <p>Your client roster summary. Head to 'View Clients' to manage tasks.</p>
+            <h2>Today View</h2>
+            <p>Grouped by client, only active clients. Red = overdue, orange = due in next 3 days.</p>
           </div>
-          <div id="dashboardSummary"></div>
+          <div class="today-section-grid" id="todayView"></div>
         </div>
-      </div>
+      </section>
 
-      <div class="page" id="pageAdd">
-        <div class="add-page-wrap">
-          <div class="card panel">
-            <div class="panel-head">
-              <h2>Register New Client</h2>
-              <p>Enter business details to initialize the compliance tracker in the cloud.</p>
+      <!-- ADD CLIENT -->
+      <section class="page" id="pageAdd">
+        <div class="card panel">
+          <div class="panel-head">
+            <h2>Add Client</h2>
+            <p>Keep only what you need: contract value, portals, tags, invoice status.</p>
+          </div>
+
+          <form id="clientForm" class="form-grid" autocomplete="off">
+            <div class="field">
+              <label for="name">Business / Client Name *</label>
+              <input class="input" id="name" required placeholder="e.g. Growitharshiee Financial" />
             </div>
-            <form id="clientForm" class="form-grid" autocomplete="off">
+
+            <div class="field">
+              <label for="address">Registered Address</label>
+              <textarea class="textarea" id="address" placeholder="Full address with state..."></textarea>
+            </div>
+
+            <div class="form-row">
               <div class="field">
-                <label for="name">Business / Client Name *</label>
-                <input class="input" id="name" required placeholder="e.g. Growitharshiee Financial" />
+                <label for="email">Contact Email</label>
+                <input class="input" id="email" type="email" placeholder="contact@business.in" />
               </div>
               <div class="field">
-                <label for="address">Registered Address</label>
-                <textarea class="textarea" id="address" placeholder="Full address with state..."></textarea>
+                <label for="phone">Phone Number</label>
+                <input class="input" id="phone" placeholder="+91 XXXXX XXXXX" />
               </div>
-              <div class="form-row">
-                <div class="field">
-                  <label for="email">Contact Email</label>
-                  <input class="input" id="email" type="email" placeholder="contact@business.in" />
-                </div>
-                <div class="field">
-                  <label for="phone">Phone Number</label>
-                  <input class="input" id="phone" placeholder="+91 XXXXX XXXXX" />
-                </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="gst">GSTIN</label>
+                <input class="input" id="gst" placeholder="29ABCDE1234F1Z7" maxlength="15" />
               </div>
-              <div class="form-row">
-                <div class="field">
-                  <label for="gst">GSTIN Number</label>
-                  <input class="input" id="gst" placeholder="29ABCDE1234F1Z7" maxlength="15" />
-                </div>
-                <div class="field">
-                  <label for="pan">PAN Number</label>
-                  <input class="input" id="pan" placeholder="ABCDE1234F" maxlength="10" />
-                </div>
+              <div class="field">
+                <label for="pan">PAN</label>
+                <input class="input" id="pan" placeholder="ABCDE1234F" maxlength="10" />
               </div>
-              <div class="field" style="width: 50%;">
-                <label for="tan">TAN Number</label>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="tan">TAN</label>
                 <input class="input" id="tan" placeholder="BLRA12345B" maxlength="10" />
               </div>
-              <div class="form-actions" style="margin-top: 1rem;">
-                <button class="btn btn-primary" type="submit" id="saveBtn">Save to Cloud Database</button>
-                <button class="btn btn-secondary" type="button" onclick="document.getElementById('clientForm').reset();">Clear Fields</button>
+              <div class="field">
+                <label for="contractValue">Contract Value (₹)</label>
+                <input class="input" id="contractValue" type="number" min="0" step="0.01" />
               </div>
-            </form>
-          </div>
-        </div>
-      </div>
+            </div>
 
-      <div class="page" id="pageClients">
+            <div class="form-row">
+              <div class="field">
+                <label for="esic">ESIC No.</label>
+                <input class="input" id="esic" />
+              </div>
+              <div class="field">
+                <label for="pf">PF No.</label>
+                <input class="input" id="pf" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="pt">PT No.</label>
+                <input class="input" id="pt" />
+              </div>
+              <div class="field">
+                <label for="status">Client Status</label>
+                <select class="select-input" id="status">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- PASSWORD VAULT INPUTS -->
+            <div class="form-row">
+              <div class="field">
+                <label for="gstPortalPassword">GST Portal Password</label>
+                <input class="input" id="gstPortalPassword" type="text" />
+              </div>
+              <div class="field">
+                <label for="tanPortalPassword">TAN Portal Password</label>
+                <input class="input" id="tanPortalPassword" type="text" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="panPortalPassword">PAN Portal Password</label>
+                <input class="input" id="panPortalPassword" type="text" />
+              </div>
+              <div class="field">
+                <label for="clientDocuments">Attach Documents</label>
+                <input class="file-input" id="clientDocuments" type="file" multiple />
+                <div class="muted-note">Tagging is done below per file (GST / TDS / Audit / Other).</div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Default Invoice Setup</label>
+              <div class="form-row">
+                <div class="field">
+                  <label for="invoiceStatus">Initial Invoice Status</label>
+                  <select class="select-input" id="invoiceStatus">
+                    <option value="not_raised">Not Raised</option>
+                    <option value="raised">Raised</option>
+                    <option value="paid">Paid</option>
+                    <option value="follow_up">Follow-up</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="invoiceAmount">Invoice Amount (₹)</label>
+                  <input class="input" id="invoiceAmount" type="number" min="0" step="0.01" />
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:0.75rem; margin-top:0.6rem; flex-wrap:wrap;">
+              <button class="btn btn-primary" type="submit" id="saveBtn">Save to Cloud</button>
+              <button class="btn btn-secondary" type="button" onclick="document.getElementById('clientForm').reset()">Clear</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- CLIENTS PAGE -->
+      <section class="page" id="pageClients">
         <div class="clients-wrap">
-          <div class="card panel" style="padding: 1.5rem 2rem;">
+          <div class="card panel" style="padding:0.9rem 1rem;">
             <div class="toolbar">
-              <input class="search" id="searchInput" placeholder="Search by name, GSTIN, PAN, Email..." />
-              <select class="select-filter" id="filterSelect">
+              <input class="search" id="searchInput" placeholder="Search by name, GST, PAN, TAN, Email..." />
+              <select class="select-filter" id="filterStatus">
                 <option value="all">All Clients</option>
-                <option value="overdue">Overdue Tasks</option>
-                <option value="dueSoon">Due Soon (<= 15 Days)</option>
+                <option value="active">Active Clients</option>
+                <option value="inactive">Inactive Clients</option>
               </select>
-              <button class="btn btn-secondary" onclick="clearFilter()">Clear</button>
-              <button class="btn btn-primary" onclick="showPage('add')"><i class="fa-solid fa-plus"></i> Add New</button>
+              <select class="select-filter" id="filterTasks">
+                <option value="all">All Tasks</option>
+                <option value="overdue">Overdue</option>
+                <option value="dueSoon">Due in 15 days</option>
+              </select>
+              <button class="btn btn-primary" onclick="showPage('add')">
+                <i class="fa-solid fa-plus"></i> Add New
+              </button>
             </div>
           </div>
           <div id="clientList"></div>
         </div>
-      </div>
+      </section>
 
+      <!-- INVOICE TRACKER -->
+      <section class="page" id="pageInvoices">
+        <div class="card panel">
+          <div class="panel-head">
+            <h2>Invoice Tracker</h2>
+            <p>Status per client: Not Raised, Raised, Paid, Follow-up.</p>
+          </div>
+          <div id="invoiceTrackerWrap"></div>
+        </div>
+      </section>
+
+      <!-- REVENUE DASHBOARD -->
+      <section class="page" id="pageRevenue">
+        <div class="stats" id="revenueStats"></div>
+        <div class="card panel">
+          <div class="panel-head">
+            <h2>Monthly Revenue (Paid vs Unpaid)</h2>
+            <p>Based on invoiceAmount & invoiceStatus, month wise.</p>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 
+  <!-- EDIT MODAL -->
   <div class="modal-backdrop" id="editModal">
     <div class="modal">
       <div class="modal-head">
-        <h2>Edit Client Details</h2>
+        <h2>Edit Client</h2>
         <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
+
       <form id="editForm" class="form-grid" autocomplete="off">
         <input type="hidden" id="editClientId" />
-        <div class="field"><label for="editName">Client Name *</label><input class="input" id="editName" required /></div>
-        <div class="field"><label for="editAddress">Address</label><textarea class="textarea" id="editAddress" style="min-height: 60px;"></textarea></div>
-        <div class="form-row">
-          <div class="field"><label for="editEmail">Email</label><input class="input" id="editEmail" type="email" /></div>
-          <div class="field"><label for="editPhone">Phone Number</label><input class="input" id="editPhone" /></div>
+
+        <div class="field">
+          <label for="editName">Client Name *</label>
+          <input class="input" id="editName" required />
         </div>
-        <div class="form-row">
-          <div class="field"><label for="editGst">GSTIN</label><input class="input" id="editGst" maxlength="15" /></div>
-          <div class="field"><label for="editPan">PAN</label><input class="input" id="editPan" maxlength="10" /></div>
+
+        <div class="field">
+          <label for="editAddress">Address</label>
+          <textarea class="textarea" id="editAddress" style="min-height:60px;"></textarea>
         </div>
-        <div class="field"><label for="editTan">TAN</label><input class="input" id="editTan" maxlength="10" /></div>
-        <div class="form-actions" style="justify-content: flex-end; margin-top: 1rem;">
+
+        <div class="form-row">
+          <div class="field">
+            <label for="editEmail">Email</label>
+            <input class="input" id="editEmail" type="email" />
+          </div>
+          <div class="field">
+            <label for="editPhone">Phone</label>
+            <input class="input" id="editPhone" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="editGst">GSTIN</label>
+            <input class="input" id="editGst" maxlength="15" />
+          </div>
+          <div class="field">
+            <label for="editPan">PAN</label>
+            <input class="input" id="editPan" maxlength="10" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="editTan">TAN</label>
+            <input class="input" id="editTan" maxlength="10" />
+          </div>
+          <div class="field">
+            <label for="editContractValue">Contract Value</label>
+            <input class="input" id="editContractValue" type="number" min="0" step="0.01" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="editEsic">ESIC</label>
+            <input class="input" id="editEsic" />
+          </div>
+          <div class="field">
+            <label for="editPf">PF</label>
+            <input class="input" id="editPf" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="editPt">PT</label>
+            <input class="input" id="editPt" />
+          </div>
+          <div class="field">
+            <label for="editStatus">Status</label>
+            <select class="select-input" id="editStatus">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="editGstPortalPassword">GST Password</label>
+            <input class="input" id="editGstPortalPassword" />
+          </div>
+          <div class="field">
+            <label for="editTanPortalPassword">TAN Password</label>
+            <input class="input" id="editTanPortalPassword" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="editPanPortalPassword">PAN Password</label>
+            <input class="input" id="editPanPortalPassword" />
+          </div>
+          <div class="field">
+            <label for="editDocuments">Attach More Documents</label>
+            <input class="file-input" id="editDocuments" type="file" multiple />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="editNotesNew">Add Note</label>
+          <textarea class="textarea" id="editNotesNew" placeholder="Quick note about client / tasks..."></textarea>
+        </div>
+
+        <div style="display:flex; gap:0.7rem; justify-content:flex-end; margin-top:0.5rem; flex-wrap:wrap;">
           <button class="btn btn-secondary" type="button" onclick="closeModal()">Cancel</button>
-          <button class="btn btn-primary" type="submit">Update Record</button>
+          <button class="btn btn-primary" type="submit">Save Changes</button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- TOAST -->
   <div class="toast" id="toast">Notification</div>
 
+  <!-- APP SCRIPT -->
   <script type="module">
-    // 1. IMPORT FIREBASE (DO NOT CHANGE VERSIONS)
+    // FIREBASE IMPORTS
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, collection, getDocs, setDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // 2. PASTE YOUR FIREBASE CONFIG HERE:
+    // FIREBASE CONFIG (yours)
     const firebaseConfig = {
-       apiKey: "AIzaSyDbPLh1NZLFxNeDRnS89NVOX554aTPJkgE",
-  authDomain: "growitharshiee-cms.firebaseapp.com",
-  projectId: "growitharshiee-cms",
-  storageBucket: "growitharshiee-cms.firebasestorage.app",
-  messagingSenderId: "542993095031",
-  appId: "1:542993095031:web:ef23056cc8dd718819a972"
+      apiKey: "AIzaSyDbPLh1NZLFxNeDRnS89NVOX554aTPJkgE",
+      authDomain: "growitharshiee-cms.firebaseapp.com",
+      projectId: "growitharshiee-cms",
+      storageBucket: "growitharshiee-cms.firebasestorage.app",
+      messagingSenderId: "542993095031",
+      appId: "1:542993095031:web:ef23056cc8dd718819a972"
     };
 
-    // Initialize Firebase
+    // INIT
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // GLOBAL STATE
     window.clients = [];
+    let revenueChartInstance = null;
+    let lastExpandedClientId = null;
 
-    // ── AUTHENTICATION ──
+    // DOM SHORTCUTS
     const loginScreen = document.getElementById('loginScreen');
     const appContent = document.getElementById('appContent');
-    const errorMsg = document.getElementById('loginError');
+    const loginError = document.getElementById('loginError');
 
+    // PAGE CONFIG (for header)
+    const pageConfig = {
+      today:   {t: 'Today View', s: 'What needs your attention right now.'},
+      add:     {t: 'Add Client', s: 'Capture key data once, reuse everywhere.'},
+      clients: {t: 'Clients', s: 'Minimal list, expand only when needed.'},
+      invoices:{t: 'Invoice Tracker', s: 'Status and amounts client-wise.'},
+      revenue: {t: 'Revenue Dashboard', s: 'Paid vs unpaid revenue month wise.'}
+    };
+
+    // NAV EVENTS
+    document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => showPage(btn.dataset.page));
+    });
+
+    // AUTH
     onAuthStateChanged(auth, (user) => {
       if (user) {
         loginScreen.style.opacity = '0';
-        setTimeout(() => { loginScreen.style.display = 'none'; appContent.classList.add('show-app'); }, 500);
-        showToast(`Secure Connection Established.`);
-        fetchClientsFromCloud(); 
+        setTimeout(() => {
+          loginScreen.style.display = 'none';
+          appContent.classList.add('show-app');
+        }, 450);
+        showToast('Secure connection established.');
+        fetchClientsFromCloud();
       } else {
         appContent.classList.remove('show-app');
         loginScreen.style.display = 'flex';
-        setTimeout(() => { loginScreen.style.opacity = '1'; }, 50);
+        setTimeout(() => { loginScreen.style.opacity = '1'; }, 30);
       }
     });
 
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('loginEmail').value;
       const pass = document.getElementById('loginPassword').value;
       const btn = document.getElementById('loginBtnText');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
-      errorMsg.style.display = 'none';
+      loginError.style.display = 'none';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
 
-      signInWithEmailAndPassword(auth, email, pass)
-        .then(() => { btn.innerHTML = '<i class="fa-solid fa-lock"></i> Secure Login'; })
-        .catch((error) => { errorMsg.style.display = 'block'; errorMsg.innerText = "Access Denied: " + error.message; btn.innerHTML = '<i class="fa-solid fa-lock"></i> Secure Login'; });
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+      } catch (err) {
+        loginError.textContent = "Access denied: " + err.message;
+        loginError.style.display = 'block';
+      } finally {
+        btn.innerHTML = '<i class="fa-solid fa-lock"></i> Secure Login';
+      }
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      signOut(auth).then(() => { window.clients = []; showToast("Logged out successfully."); });
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await signOut(auth);
+      window.clients = [];
+      showToast('Logged out.');
     });
 
-    // ── DATE & COMPLIANCE LOGIC ──
+    // DATE HELPERS
     const todayISO = () => new Date().toISOString().split('T')[0];
     const parseDate = (v) => new Date(v + 'T00:00:00');
+    const formatDate = (v) => v ? parseDate(v).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+
     const daysDiff = (v) => {
       const today = new Date(); today.setHours(0,0,0,0);
-      const target = parseDate(v); return Math.ceil((target - today) / (1000*60*60*24));
+      const target = parseDate(v);
+      return Math.ceil((target - today) / (1000*60*60*24));
     };
 
     function dateOnDay(year, month, day) {
@@ -467,56 +1460,283 @@
       return new Date(year, month, Math.min(day, last)).toISOString().split('T')[0];
     }
 
+    function endOfMonth(year, month) {
+      return new Date(year, month + 1, 0).toISOString().split('T')[0];
+    }
+
+    // COMPLIANCE DUE FUNCTIONS
     const nextDueFns = {
-      gstr1: (fromISO) => dateOnDay(parseDate(fromISO).getFullYear(), parseDate(fromISO).getMonth() + 1, 11),
-      gstr3b: (fromISO) => dateOnDay(parseDate(fromISO).getFullYear(), parseDate(fromISO).getMonth() + 1, 20),
-      tdsChallan: (fromISO) => dateOnDay(parseDate(fromISO).getFullYear(), parseDate(fromISO).getMonth() + 1, 7),
-      tdsFiling: (fromISO) => {
-        const d = parseDate(fromISO); const m = d.getMonth(); 
+      gstr1: (fromISO)  => dateOnDay(parseDate(fromISO).getFullYear(), parseDate(fromISO).getMonth() + 1, 11),
+      gstr3b:(fromISO)  => dateOnDay(parseDate(fromISO).getFullYear(), parseDate(fromISO).getMonth() + 1, 20),
+      tdsChallan: (fromISO)=> dateOnDay(parseDate(fromISO).getFullYear(), parseDate(fromISO).getMonth() + 1, 7),
+      tdsFiling: (fromISO)=> {
+        const d = parseDate(fromISO); const m = d.getMonth();
         let tYr = d.getFullYear(); let tMo;
-        if(m>=3&&m<=5){tMo=6;}else if(m>=6&&m<=8){tMo=9;}else if(m>=9&&m<=11){tMo=0;tYr+=1;}else{tMo=4;}
-        return new Date(tYr, tMo + 1, 0).toISOString().split('T')[0];
-      }
+        if (m >= 3 && m <= 5) tMo = 6;
+        else if (m >= 6 && m <= 8) tMo = 9;
+        else if (m >= 9 && m <= 11) { tMo = 0; tYr += 1; }
+        else tMo = 4;
+        return endOfMonth(tYr, tMo + 1);
+      },
+      esic: (fromISO)   => dateOnDay(parseDate(fromISO).getFullYear(), parseDate(fromISO).getMonth() + 1, 15),
+      pf:   (fromISO)   => dateOnDay(parseDate(fromISO).getFullYear(), parseDate(fromISO).getMonth() + 1, 15),
+      pt:   (fromISO)   => dateOnDay(parseDate(fromISO).getFullYear(), parseDate(fromISO).getMonth() + 1, 18)
     };
 
+    // DEFAULT TASKS INCLUDING ESIC/PF/PT
     function makeDefaultTasks() {
       const now = todayISO();
       return {
-        gstr1: { label:'GSTR-1', dueDate: nextDueFns.gstr1(now), lastCompleted: '' },
-        gstr3b: { label:'GSTR-3B', dueDate: nextDueFns.gstr3b(now), lastCompleted: '' },
-        tdsChallan: { label:'TDS Challan', dueDate: nextDueFns.tdsChallan(now), lastCompleted: '' },
-        tdsFiling: { label:'TDS Filing', dueDate: nextDueFns.tdsFiling(now), lastCompleted: '' }
+        gstr1:      { label:'GSTR-1',      dueDate: nextDueFns.gstr1(now),      lastCompleted:'', status:'pending' },
+        gstr3b:     { label:'GSTR-3B',     dueDate: nextDueFns.gstr3b(now),     lastCompleted:'', status:'pending' },
+        tdsChallan: { label:'TDS Challan', dueDate: nextDueFns.tdsChallan(now), lastCompleted:'', status:'pending' },
+        tdsFiling:  { label:'TDS Filing',  dueDate: nextDueFns.tdsFiling(now),  lastCompleted:'', status:'pending' },
+        esic:       { label:'ESIC',        dueDate: nextDueFns.esic(now),       lastCompleted:'', status:'pending' },
+        pf:         { label:'PF',          dueDate: nextDueFns.pf(now),         lastCompleted:'', status:'pending' },
+        pt:         { label:'PT',          dueDate: nextDueFns.pt(now),         lastCompleted:'', status:'pending' },
       };
     }
 
+    // TASK STATE (includes missed)
     function getTaskState(task) {
       const dToDue = daysDiff(task.dueDate);
-      if (dToDue < 0) return { text: 'Overdue', cls: 'status-overdue', isDone: false };
-      if (dToDue <= 15) return { text: 'Upcoming', cls: 'status-upcoming', isDone: false };
-      if (task.lastCompleted) return { text: 'Done', cls: 'status-done', isDone: true };
-      return { text: 'Pending', cls: 'status-pending', isDone: false };
+      if (task.status === 'missed') return { text:'Missed', cls:'status-missed', isDone:false };
+
+      if (task.lastCompleted && dToDue > 15) return { text:'Done', cls:'status-done', isDone:true };
+
+      if (dToDue < 0) return { text:'Overdue', cls:'status-overdue', isDone:false };
+      if (dToDue <= 3) return { text:'Due in 3 days', cls:'status-overdue', isDone:false };
+      if (dToDue <= 15) return { text:'Due soon', cls:'status-upcoming', isDone:false };
+
+      return { text:'Pending', cls:'status-pending', isDone:false };
     }
 
-    // ── DATABASE OPERATIONS ──
+    // SHAPE NORMALISATION
+    function ensureClientShape(c) {
+      c.status = c.status || 'active';
+      c.contractValue = Number(c.contractValue || 0);
+      c.esic = c.esic || '';
+      c.pf = c.pf || '';
+      c.pt = c.pt || '';
+      c.documents = Array.isArray(c.documents) ? c.documents : [];
+      c.portalPasswords = c.portalPasswords || { gst:'', tan:'', pan:'' };
+      c.completedToday = c.completedToday || 0;
+      c.notes = Array.isArray(c.notes) ? c.notes : [];
+      c.tasks = c.tasks || makeDefaultTasks();
+      c.invoiceStatus = c.invoiceStatus || 'not_raised';
+      c.invoiceAmount = Number(c.invoiceAmount || 0);
+      c.invoiceMonth = c.invoiceMonth || currentMonthKey();
+
+      const defaults = makeDefaultTasks();
+      Object.keys(defaults).forEach(k => {
+        if (!c.tasks[k]) c.tasks[k] = defaults[k];
+        if (!c.tasks[k].status) c.tasks[k].status = 'pending';
+      });
+      return c;
+    }
+
+    // FETCH
     async function fetchClientsFromCloud() {
       try {
-        const querySnapshot = await getDocs(collection(db, "clients"));
+        const snap = await getDocs(collection(db, "clients"));
         window.clients = [];
-        querySnapshot.forEach((doc) => { window.clients.push(doc.data()); });
-        renderDashboard();
-        if (document.getElementById('pageClients').classList.contains('active')) renderClients();
-      } catch (error) { showToast("Error syncing from cloud.", true); }
+        snap.forEach(docSnap => {
+          window.clients.push(ensureClientShape(docSnap.data()));
+        });
+        autoRollForwardAll();
+        renderCurrentPage();
+      } catch (e) {
+        showToast('Error syncing from cloud.', true);
+      }
     }
 
     async function syncClientToCloud(c) {
-      try { await setDoc(doc(db, "clients", c.id), c); } 
-      catch (error) { showToast("Error saving to cloud.", true); }
+      try {
+        await setDoc(doc(db, "clients", c.id), c);
+      } catch (e) {
+        showToast('Error saving data.', true);
+      }
     }
 
-    // Add Client
+    // UTILS
+    const escHtml = (s) => String(s || '').replace(/[&<>\"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    const formatCurrency = (v) => '₹' + Number(v || 0).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+
+    function getFileNamesWithTags(inputEl) {
+      return Array.from(inputEl.files || []).map(file => ({
+        name: file.name,
+        size: file.size || 0,
+        type: file.type || '',
+        tag: 'Other'
+      }));
+    }
+
+    // PAGE SWITCH
+    window.showPage = function(name) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('page' + name.charAt(0).toUpperCase() + name.slice(1));
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('.nav-item[data-page]').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.querySelector(`.nav-item[data-page="${name}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      document.getElementById('pageHeadTitle').textContent = pageConfig[name].t;
+      document.getElementById('pageHeadSub').textContent = pageConfig[name].s;
+
+      if (name === 'today') renderTodayView();
+      if (name === 'add') {} // nothing else
+      if (name === 'clients') renderClients();
+      if (name === 'invoices') renderInvoiceTracker();
+      if (name === 'revenue') renderRevenueDashboard();
+    };
+
+    function renderCurrentPage() {
+      if (document.getElementById('pageToday').classList.contains('active')) renderTodayView();
+      if (document.getElementById('pageClients').classList.contains('active')) renderClients();
+      if (document.getElementById('pageInvoices').classList.contains('active')) renderInvoiceTracker();
+      if (document.getElementById('pageRevenue').classList.contains('active')) renderRevenueDashboard();
+    }
+
+    // TODAY VIEW + WORKLOAD SUMMARY
+    function autoRollForwardAll() {
+      const today = todayISO();
+      window.clients.forEach(c => {
+        Object.keys(c.tasks).forEach(k => {
+          const t = c.tasks[k];
+          if (!t) return;
+          const diff = daysDiff(t.dueDate);
+          if (diff < 0 && t.status !== 'missed' && !t.lastCompleted) {
+            t.status = 'missed';
+            // create next cycle due
+            const nextDate = nextDueFns[k] ? nextDueFns[k](today) : t.dueDate;
+            c.tasks[k] = {
+              ...t,
+              previousDueDate: t.dueDate,
+              dueDate: nextDate
+            };
+          }
+        });
+      });
+    }
+
+    function getActiveClients() {
+      return window.clients.filter(c => c.status === 'active');
+    }
+
+    function renderWorkloadSummary() {
+      const summaryEl = document.getElementById('workloadSummary');
+      let totalTasks = 0;
+      let completedToday = 0;
+      let pending = 0;
+
+      getActiveClients().forEach(c => {
+        Object.values(c.tasks).forEach(t => {
+          totalTasks++;
+          if (t.lastCompleted && t.lastCompleted === todayISO()) completedToday++;
+          else {
+            const st = getTaskState(t);
+            if (st.cls !== 'status-done') pending++;
+          }
+        });
+      });
+
+      summaryEl.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-label">Total Tasks</div>
+          <div class="stat-value">${totalTasks}</div>
+          <div class="stat-help">Across active clients</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Completed Today</div>
+          <div class="stat-value" style="color:var(--color-success);">${completedToday}</div>
+          <div class="stat-help">Marked done today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending</div>
+          <div class="stat-value" style="color:var(--color-warning);">${pending}</div>
+          <div class="stat-help">Not yet completed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Clients</div>
+          <div class="stat-value">${getActiveClients().length}</div>
+          <div class="stat-help">Currently in Today View</div>
+        </div>
+      `;
+    }
+
+    function renderTodayView() {
+      renderWorkloadSummary();
+      const activeClients = getActiveClients();
+      const container = document.getElementById('todayView');
+
+      if (!activeClients.length) {
+        container.innerHTML = `<div class="empty"><h3>No Active Clients</h3><p>Add or mark clients active to see tasks here.</p></div>`;
+        return;
+      }
+
+      const todayTasks = [];
+      const overdueTasks = [];
+      const next3Tasks = [];
+
+      activeClients.forEach(c => {
+        Object.entries(c.tasks).forEach(([key, t]) => {
+          const diff = daysDiff(t.dueDate);
+          const st = getTaskState(t);
+          if (st.cls === 'status-done' || st.cls === 'status-missed') return;
+
+          const base = { client: c, key, task: t, diff, st };
+          if (diff === 0) todayTasks.push(base);
+          else if (diff < 0) overdueTasks.push(base);
+          else if (diff > 0 && diff <= 3) next3Tasks.push(base);
+        });
+      });
+
+      const section = (title, list, color) => {
+        if (!list.length) return `<div class="card"><div class="today-column-title">${title}</div><div class="muted-note">Nothing here.</div></div>`;
+        const grouped = {};
+        list.forEach(item => {
+          const id = item.client.id;
+          if (!grouped[id]) grouped[id] = { client: item.client, tasks: [] };
+          grouped[id].tasks.push(item);
+        });
+
+        return `
+          <div class="card">
+            <div class="today-column-title" style="color:${color};">${title}</div>
+            ${Object.values(grouped).map(g => `
+              <div style="margin-bottom:0.6rem;">
+                <div class="today-group-header">
+                  <span>${escHtml(g.client.name)}</span>
+                  <button class="mini-btn" onclick="jumpToClient('${g.client.id}')">Open</button>
+                </div>
+                <ul class="today-task-list">
+                  ${g.tasks.map(i => `
+                    <li class="today-task-item">
+                      <span>${escHtml(i.task.label)}</span>
+                      <span class="tag-pill ${i.diff < 0 ? 'tag-overdue' : 'tag-soon'}">
+                        ${i.diff < 0 ? 'Overdue' : (i.diff === 0 ? 'Today' : `In ${i.diff} d`)}
+                      </span>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      };
+
+      container.innerHTML = `
+        ${section('Overdue Tasks', overdueTasks, 'var(--color-error)')}
+        ${section('Due Today / Next 3 Days', [...todayTasks, ...next3Tasks], 'var(--color-warning)')}
+      `;
+    }
+
+    // ADD CLIENT
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const newClient = {
+
+      const newClient = ensureClientShape({
         id: Date.now().toString(),
         name: document.getElementById('name').value.trim(),
         address: document.getElementById('address').value.trim(),
@@ -525,162 +1745,359 @@
         gst: document.getElementById('gst').value.trim().toUpperCase(),
         pan: document.getElementById('pan').value.trim().toUpperCase(),
         tan: document.getElementById('tan').value.trim().toUpperCase(),
-        completedToday: 0,
+        contractValue: Number(document.getElementById('contractValue').value || 0),
+        esic: document.getElementById('esic').value.trim(),
+        pf: document.getElementById('pf').value.trim(),
+        pt: document.getElementById('pt').value.trim(),
+        status: document.getElementById('status').value,
+        portalPasswords: {
+          gst: document.getElementById('gstPortalPassword').value.trim(),
+          tan: document.getElementById('tanPortalPassword').value.trim(),
+          pan: document.getElementById('panPortalPassword').value.trim()
+        },
+        documents: getFileNamesWithTags(document.getElementById('clientDocuments')),
+        invoiceStatus: document.getElementById('invoiceStatus').value,
+        invoiceAmount: Number(document.getElementById('invoiceAmount').value || 0),
+        invoiceMonth: currentMonthKey(),
+        notes: [],
         tasks: makeDefaultTasks()
-      };
-      
+      });
+
       window.clients.unshift(newClient);
       document.getElementById('clientForm').reset();
-      showToast("Syncing new client to cloud...");
+      showToast('Saving new client...');
       await syncClientToCloud(newClient);
-      renderDashboard();
-      showToast("Client added successfully.");
+      renderCurrentPage();
+      showToast('Client added.');
     });
 
-    // Update Client (Expose globally)
+    // UPDATE TASK COMPLETION + AUTO ROLL FORWARD SINGLE
     window.confirmTask = async function(cId, key) {
-      const dateInput = document.getElementById(`date-${cId}-${key}`).value;
-      if(!dateInput) { showToast("Select a valid date.", true); return; }
-      
+      const dateInput = document.getElementById(`date-${cId}-${key}`)?.value;
+      if (!dateInput) { showToast('Select a valid date.', true); return; }
+
       const c = window.clients.find(x => x.id === cId);
+      if (!c) return;
       const t = c.tasks[key];
       t.lastCompleted = dateInput;
+      t.status = 'done';
       t.dueDate = nextDueFns[key](t.dueDate);
+
       c.completedToday = (c.completedToday || 0) + 1;
-      
-      renderClients(); // instant local update
-      await syncClientToCloud(c); // push to firebase
-      showToast(`Task Complete! Deadline advanced to ${formatDate(t.dueDate)}`);
+
+      renderCurrentPage();
+      await syncClientToCloud(c);
+      showToast(`Task marked complete. Next: ${formatDate(t.dueDate)}`);
+    };
+
+    window.showDatePicker = function(cId, key) {
+      const area = document.getElementById(`action-area-${cId}-${key}`);
+      if (!area) return;
+      area.innerHTML = `
+        <div class="date-input-group">
+          <input type="date" id="date-${cId}-${key}" value="${todayISO()}">
+          <button class="mini-btn" onclick="confirmTask('${cId}', '${key}')"><i class="fa-solid fa-check"></i></button>
+          <button class="mini-btn" onclick="renderClients()">Cancel</button>
+        </div>`;
+    };
+
+    // CLIENT LIST RENDER
+    function renderClients() {
+      const listEl = document.getElementById('clientList');
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      const fStatus = document.getElementById('filterStatus').value;
+      const fTasks = document.getElementById('filterTasks').value;
+
+      let filtered = window.clients.filter(c => {
+        const hay = [
+          c.name, c.address, c.email, c.phone,
+          c.gst, c.pan, c.tan, c.esic, c.pf, c.pt
+        ].join(' ').toLowerCase();
+        let ok = !q || hay.includes(q);
+
+        if (!ok) return false;
+
+        if (fStatus === 'active') ok = c.status === 'active';
+        if (fStatus === 'inactive') ok = c.status === 'inactive';
+
+        if (fTasks === 'overdue') {
+          ok = Object.values(c.tasks).some(t => getTaskState(t).cls === 'status-overdue');
+        } else if (fTasks === 'dueSoon') {
+          ok = Object.values(c.tasks).some(t => getTaskState(t).cls === 'status-upcoming');
+        }
+
+        return ok;
+      });
+
+      if (!filtered.length) {
+        listEl.innerHTML = `<div class="empty"><h3>No Clients</h3><p>Try different filters or add a new client.</p></div>`;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(c => {
+        const overdueCount = Object.values(c.tasks).filter(t => getTaskState(t).cls === 'status-overdue').length;
+        const soonCount = Object.values(c.tasks).filter(t => getTaskState(t).cls === 'status-upcoming').length;
+
+        // Group docs by tag
+        const groupedDocs = {};
+        (c.documents || []).forEach(d => {
+          const tag = d.tag || 'Other';
+          if (!groupedDocs[tag]) groupedDocs[tag] = [];
+          groupedDocs[tag].push(d);
+        });
+
+        return `
+          <article class="client-row" id="client-row-${c.id}">
+            <div class="client-row-header" onclick="toggleClientDetails('${c.id}')">
+              <div class="client-row-title">
+                <div>
+                  <div class="client-name">${escHtml(c.name)}</div>
+                  <div class="client-meta">
+                    ${c.gst ? `GST: ${escHtml(c.gst)}` : ''}
+                    ${c.pan ? `· PAN: ${escHtml(c.pan)}` : ''}
+                    ${c.tan ? `· TAN: ${escHtml(c.tan)}` : ''}
+                    ${overdueCount ? `· Overdue: ${overdueCount}` : ''}
+                    ${soonCount ? `· Due Soon: ${soonCount}` : ''}
+                  </div>
+                </div>
+              </div>
+              <div class="client-row-actions" onclick="event.stopPropagation()">
+                <span class="status-pill ${c.status === 'inactive' ? 'inactive' : ''}">${escHtml(c.status)}</span>
+                <button class="mini-btn" onclick="openEditModal('${c.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
+                <button class="mini-btn" onclick="toggleClientStatus('${c.id}')">
+                  <i class="fa-solid fa-toggle-on"></i> ${c.status === 'active' ? 'Set Inactive' : 'Set Active'}
+                </button>
+                <button class="mini-btn mini-btn-danger" onclick="deleteClient('${c.id}')">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="client-row-body" id="details-${c.id}">
+              <div class="details-grid">
+                <div class="detail">
+                  <div class="detail-label">Address</div>
+                  <div class="detail-value">${escHtml(c.address || '—')}</div>
+                </div>
+                <div class="detail">
+                  <div class="detail-label">Contact</div>
+                  <div class="detail-value">${escHtml(c.email || '—')}<br>${escHtml(c.phone || '')}</div>
+                </div>
+                <div class="detail">
+                  <div class="detail-label">Contract Value</div>
+                  <div class="detail-value">${formatCurrency(c.contractValue || 0)}</div>
+                </div>
+                <div class="detail">
+                  <div class="detail-label">ESIC / PF / PT</div>
+                  <div class="detail-value mono">
+                    ${escHtml(c.esic || '—')}<br>
+                    ${escHtml(c.pf || '—')}<br>
+                    ${escHtml(c.pt || '—')}
+                  </div>
+                </div>
+
+                <!-- PASSWORD VAULT -->
+                <div class="detail">
+                  <div class="detail-label">GST Password</div>
+                  <div class="password-box">
+                    <span class="password-mask" id="pass-${c.id}-gst" data-visible="false">
+                      ${c.portalPasswords?.gst ? '••••••••' : '—'}
+                    </span>
+                    <button class="mini-btn" onclick="togglePasswordView('${c.id}','gst')">Show</button>
+                    <button class="mini-btn" onclick="copyPassword('${c.id}','gst')"><i class="fa-solid fa-copy"></i> Copy</button>
+                  </div>
+                </div>
+
+                <div class="detail">
+                  <div class="detail-label">TAN Password</div>
+                  <div class="password-box">
+                    <span class="password-mask" id="pass-${c.id}-tan" data-visible="false">
+                      ${c.portalPasswords?.tan ? '••••••••' : '—'}
+                    </span>
+                    <button class="mini-btn" onclick="togglePasswordView('${c.id}','tan')">Show</button>
+                    <button class="mini-btn" onclick="copyPassword('${c.id}','tan')"><i class="fa-solid fa-copy"></i> Copy</button>
+                  </div>
+                </div>
+
+                <div class="detail">
+                  <div class="detail-label">PAN Password</div>
+                  <div class="password-box">
+                    <span class="password-mask" id="pass-${c.id}-pan" data-visible="false">
+                      ${c.portalPasswords?.pan ? '••••••••' : '—'}
+                    </span>
+                    <button class="mini-btn" onclick="togglePasswordView('${c.id}','pan')">Show</button>
+                    <button class="mini-btn" onclick="copyPassword('${c.id}','pan')"><i class="fa-solid fa-copy"></i> Copy</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DOCUMENT TAGGING VIEW -->
+              <div class="detail">
+                <div class="detail-label">Documents by Tag</div>
+                ${
+                  Object.keys(groupedDocs).length
+                    ? Object.entries(groupedDocs).map(([tag, docs]) => `
+                        <div style="margin-bottom:0.3rem;">
+                          <span class="doc-tag">${escHtml(tag)}</span>
+                          <div class="docs-list" style="margin-top:0.25rem;">
+                            ${docs.map(d => `<span class="doc-chip"><i class="fa-solid fa-paperclip"></i> ${escHtml(d.name || '')}</span>`).join('')}
+                          </div>
+                        </div>
+                      `).join('')
+                    : '<div class="muted-note">No documents attached.</div>'
+                }
+              </div>
+
+              <!-- TASKS -->
+              <div>
+                <div class="detail-label" style="margin-bottom:0.4rem;">Tasks</div>
+                <div class="tasks-grid">
+                  ${Object.entries(c.tasks).map(([key, t]) => {
+                    const st = getTaskState(t);
+                    const isOverdueSoon = st.cls === 'status-overdue' || st.cls === 'status-upcoming';
+                    const action = st.isDone
+                      ? `<span class="done-text"><i class="fa-solid fa-circle-check"></i> Done (${formatDate(t.lastCompleted)})</span>`
+                      : `<button class="mini-btn" style="border-color:var(--color-primary);" onclick="showDatePicker('${c.id}','${key}')">Mark Complete</button>`;
+
+                    return `
+                      <div class="task-card">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.4rem;">
+                          <span class="task-title">${escHtml(t.label)}</span>
+                          <span class="status-pill-task ${st.cls}">${st.text}</span>
+                        </div>
+                        <div class="task-info">Due: ${formatDate(t.dueDate)}</div>
+                        <div class="task-bottom" id="action-area-${c.id}-${key}">
+                          ${action}
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+
+              <!-- NOTES TIMELINE -->
+              <div class="notes-wrap">
+                <strong style="font-size:0.8rem;">Notes</strong>
+                <div style="display:flex; gap:0.4rem; margin-top:0.35rem;">
+                  <input class="input" id="note-input-${c.id}" placeholder="Add quick note and hit +">
+                  <button class="mini-btn" onclick="addNote('${c.id}')"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <ul class="notes-list" id="notes-list-${c.id}">
+                  ${renderNotesHtml(c.notes)}
+                </ul>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
     }
 
+    function renderNotesHtml(notes) {
+      if (!notes || !notes.length) return '<li class="muted-note" style="margin-top:0.4rem;">No notes yet.</li>';
+      const sorted = [...notes].sort((a,b) => (b.timestamp || '').localeCompare(a.timestamp || ''));
+      return sorted.map(n => `
+        <li class="note-item">
+          <div>${escHtml(n.text || '')}</div>
+          <div class="note-ts">${new Date(n.timestamp).toLocaleString('en-IN')}</div>
+        </li>
+      `).join('');
+    }
+
+    window.addNote = async function(id) {
+      const c = window.clients.find(x => x.id === id);
+      if (!c) return;
+      const input = document.getElementById(`note-input-${id}`);
+      if (!input.value.trim()) return;
+
+      c.notes = Array.isArray(c.notes) ? c.notes : [];
+      c.notes.push({ text: input.value.trim(), timestamp: new Date().toISOString() });
+      input.value = '';
+
+      const list = document.getElementById(`notes-list-${id}`);
+      list.innerHTML = renderNotesHtml(c.notes);
+
+      await syncClientToCloud(c);
+      showToast('Note added.');
+    };
+
+    window.toggleClientDetails = function(id) {
+      const body = document.getElementById(`details-${id}`);
+      if (!body) return;
+
+      if (lastExpandedClientId && lastExpandedClientId !== id) {
+        const prev = document.getElementById(`details-${lastExpandedClientId}`);
+        if (prev) prev.classList.remove('open');
+      }
+
+      body.classList.toggle('open');
+      lastExpandedClientId = body.classList.contains('open') ? id : null;
+    };
+
+    window.toggleClientStatus = async function(id) {
+      const c = window.clients.find(x => x.id === id);
+      if (!c) return;
+      c.status = c.status === 'active' ? 'inactive' : 'active';
+      await syncClientToCloud(c);
+      renderCurrentPage();
+      showToast(`Client marked as ${c.status}.`);
+    };
+
     window.deleteClient = async function(id) {
-      if(!confirm("Permanently delete this client from cloud?")) return;
+      if (!confirm('Delete this client permanently?')) return;
       try {
         await deleteDoc(doc(db, "clients", id));
         window.clients = window.clients.filter(c => c.id !== id);
-        renderClients();
-        showToast("Client deleted from cloud.", true);
-      } catch(e) { showToast("Error deleting data.", true); }
-    }
-
-    // ── UI RENDERING & ACTIONS ──
-    const formatDate = (v) => v ? parseDate(v).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
-    const escHtml = (s) => String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-
-    window.showPage = function(name) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById('page' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      event.currentTarget.classList.add('active');
-      
-      const config = { dashboard: {t:'Dashboard Overview',s:'Monitor active clients'}, add: {t:'Register Client',s:'Add new record to database'}, clients: {t:'Client Roster',s:'Manage all tracking data'} };
-      document.getElementById('pageHeadTitle').textContent = config[name].t;
-      document.getElementById('pageHeadSub').textContent = config[name].s;
-      
-      if (name === 'dashboard') renderDashboard();
-      if (name === 'clients') renderClients();
-    }
-
-    function renderDashboard() {
-      let dueSoon=0, overdue=0, completedToday=0;
-      window.clients.forEach(c => {
-        completedToday += c.completedToday||0;
-        Object.values(c.tasks).forEach(t => {
-          const st = getTaskState(t);
-          if (st.cls === 'status-overdue') overdue++;
-          if (st.cls === 'status-upcoming') dueSoon++;
-        });
-      });
-      document.getElementById('statClients').textContent = window.clients.length;
-      document.getElementById('statDueWeek').textContent = dueSoon;
-      document.getElementById('statOverdue').textContent = overdue;
-      document.getElementById('statCompletedToday').textContent = completedToday;
-
-      const el = document.getElementById('dashboardSummary');
-      if (!window.clients.length) {
-        el.innerHTML = `<div class="empty"><h3>No Active Clients</h3><p>Syncing or none exist.</p></div>`; return;
+        renderCurrentPage();
+        showToast('Client deleted.');
+      } catch (e) {
+        showToast('Error deleting client.', true);
       }
-      el.innerHTML = `<div class="client-list">${window.clients.map(c => `
-        <article class="client-card" style="padding: 1.2rem; cursor:default;">
-          <div class="client-top" style="align-items: center;">
-            <div>
-              <div class="client-name" style="font-size: 1.1rem;">${escHtml(c.name)}</div>
-              <div style="font-size:0.8rem; color:var(--color-text-muted);">GST: ${escHtml(c.gst) || 'N/A'}</div>
-            </div>
-            <button class="btn btn-secondary" style="padding: 0.4rem 1rem;" onclick="showPage('clients')">Manage</button>
-          </div>
-        </article>`).join('')}</div>`;
-    }
+    };
 
-    function renderClients() {
-      const list = document.getElementById('clientList');
-      const q = document.getElementById('searchInput').value.trim().toLowerCase();
-      const f = document.getElementById('filterSelect').value;
-      
-      const filtered = window.clients.filter(c => {
-        const ok = !q || [c.name,c.address,c.email,c.phone,c.gst,c.pan,c.tan].join(' ').toLowerCase().includes(q);
-        let fOk = true;
-        if (f === 'overdue') fOk = Object.values(c.tasks).some(t => getTaskState(t).cls === 'status-overdue');
-        if (f === 'dueSoon') fOk = Object.values(c.tasks).some(t => getTaskState(t).cls === 'status-upcoming');
-        return ok && fOk;
-      });
+    // PASSWORD VAULT VIEW/COPY — BUG FIXED
+    window.togglePasswordView = function(id, type) {
+      const c = window.clients.find(x => x.id === id);
+      if (!c) return;
+      const el = document.getElementById(`pass-${id}-${type}`);
+      if (!el) return;
+      const pwd = (c.portalPasswords && c.portalPasswords[type]) || '';
+      if (!pwd) {
+        el.textContent = '—';
+        el.dataset.visible = 'false';
+        return;
+      }
+      const visible = el.dataset.visible === 'true';
+      if (visible) {
+        // mask
+        el.textContent = '••••••••';
+        el.dataset.visible = 'false';
+      } else {
+        // show real value
+        el.textContent = pwd;
+        el.dataset.visible = 'true';
+      }
+    };
 
-      if (!filtered.length) { list.innerHTML = `<div class="empty"><h3>No Records Found</h3></div>`; return; }
-      
-      list.innerHTML = filtered.map(c => `
-        <article class="client-card">
-          <div class="client-top">
-            <div>
-              <div class="client-name">${escHtml(c.name)}</div>
-              <div class="client-meta">
-                ${c.gst ? `<span class="badge">GST: ${escHtml(c.gst)}</span>` : ''}
-                ${c.pan ? `<span class="badge">PAN: ${escHtml(c.pan)}</span>` : ''}
-                ${c.tan ? `<span class="badge">TAN: ${escHtml(c.tan)}</span>` : ''}
-              </div>
-            </div>
-            <div class="client-actions">
-              <button class="mini-btn mini-btn-edit" onclick="openEditModal('${c.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
-              <button class="mini-btn mini-btn-danger" onclick="deleteClient('${c.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
-            </div>
-          </div>
-          <div class="details-grid">
-            <div class="detail"><div class="detail-label">Address</div><div class="detail-value">${escHtml(c.address||'—')}</div></div>
-            <div class="detail"><div class="detail-label">Email</div><div class="detail-value">${escHtml(c.email||'—')}</div></div>
-            <div class="detail"><div class="detail-label">Phone</div><div class="detail-value">${escHtml(c.phone||'—')}</div></div>
-          </div>
-          <div class="tasks-grid">
-            ${Object.entries(c.tasks).map(([key,task]) => {
-              const st = getTaskState(task);
-              let actionUI = st.isDone 
-                ? `<span class="done-text"><i class="fa-solid fa-circle-check"></i> Done (${formatDate(task.lastCompleted)})</span>`
-                : `<button class="mini-btn" style="width:100%; border-color: var(--color-primary);" onclick="showDatePicker('${c.id}','${key}')"><i class="fa-solid fa-check"></i> Mark Complete</button>`;
+    window.copyPassword = async function(id, type) {
+      const c = window.clients.find(x => x.id === id);
+      if (!c || !navigator.clipboard) { showToast('Clipboard not available', true); return; }
 
-              return `
-              <div class="task-card">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                  <div class="task-title">${escHtml(task.label)}</div>
-                  <span class="status-pill ${st.cls}">${st.text}</span>
-                </div>
-                <div class="task-info" style="margin-top:0.5rem; color:var(--color-primary);">Due: ${formatDate(task.dueDate)}</div>
-                <div class="task-bottom" id="action-area-${c.id}-${key}">${actionUI}</div>
-              </div>`;
-            }).join('')}
-          </div>
-        </article>`).join('');
-    }
+      const pwd = (c.portalPasswords && c.portalPasswords[type]) || '';
+      if (!pwd) { showToast('No password stored.', true); return; }
 
-    // Modal, Export & UI Actions
-    window.showDatePicker = function(cId, key) {
-      document.getElementById(`action-area-${cId}-${key}`).innerHTML = `
-        <div class="date-input-group">
-          <input type="date" id="date-${cId}-${key}" value="${todayISO()}">
-          <button class="mini-btn mini-btn-edit" style="padding:0.4rem 0.6rem;" onclick="confirmTask('${cId}', '${key}')" title="Save"><i class="fa-solid fa-save"></i></button>
-          <button class="mini-btn" style="padding:0.4rem 0.6rem;" onclick="renderClients()" title="Cancel">✕</button>
-        </div>`;
-    }
+      try {
+        await navigator.clipboard.writeText(pwd);
+        showToast('Password copied to clipboard.');
+      } catch (e) {
+        showToast('Unable to copy password.', true);
+      }
+    };
 
+    // EDIT MODAL
     window.openEditModal = function(id) {
       const c = window.clients.find(x => x.id === id);
+      if (!c) return;
+
       document.getElementById('editClientId').value = c.id;
       document.getElementById('editName').value = c.name || '';
       document.getElementById('editAddress').value = c.address || '';
@@ -689,15 +2106,30 @@
       document.getElementById('editGst').value = c.gst || '';
       document.getElementById('editPan').value = c.pan || '';
       document.getElementById('editTan').value = c.tan || '';
-      document.getElementById('editModal').classList.add('open');
-    }
+      document.getElementById('editContractValue').value = c.contractValue || '';
+      document.getElementById('editEsic').value = c.esic || '';
+      document.getElementById('editPf').value = c.pf || '';
+      document.getElementById('editPt').value = c.pt || '';
+      document.getElementById('editStatus').value = c.status || 'active';
+      document.getElementById('editGstPortalPassword').value = c.portalPasswords?.gst || '';
+      document.getElementById('editTanPortalPassword').value = c.portalPasswords?.tan || '';
+      document.getElementById('editPanPortalPassword').value = c.portalPasswords?.pan || '';
+      document.getElementById('editDocuments').value = '';
+      document.getElementById('editNotesNew').value = '';
 
-    window.closeModal = function() { document.getElementById('editModal').classList.remove('open'); }
+      document.getElementById('editModal').classList.add('open');
+    };
+
+    window.closeModal = function() {
+      document.getElementById('editModal').classList.remove('open');
+    };
 
     document.getElementById('editForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const id = document.getElementById('editClientId').value;
-      let c = window.clients.find(x => x.id === id);
+      const c = window.clients.find(x => x.id === id);
+      if (!c) return;
+
       c.name = document.getElementById('editName').value.trim();
       c.address = document.getElementById('editAddress').value.trim();
       c.email = document.getElementById('editEmail').value.trim();
@@ -705,37 +2137,280 @@
       c.gst = document.getElementById('editGst').value.trim().toUpperCase();
       c.pan = document.getElementById('editPan').value.trim().toUpperCase();
       c.tan = document.getElementById('editTan').value.trim().toUpperCase();
-      
-      closeModal(); renderClients();
+      c.contractValue = Number(document.getElementById('editContractValue').value || 0);
+      c.esic = document.getElementById('editEsic').value.trim();
+      c.pf = document.getElementById('editPf').value.trim();
+      c.pt = document.getElementById('editPt').value.trim();
+      c.status = document.getElementById('editStatus').value;
+      c.portalPasswords = {
+        gst: document.getElementById('editGstPortalPassword').value.trim(),
+        tan: document.getElementById('editTanPortalPassword').value.trim(),
+        pan: document.getElementById('editPanPortalPassword').value.trim()
+      };
+
+      const newDocs = getFileNamesWithTags(document.getElementById('editDocuments'));
+      if (newDocs.length) {
+        c.documents = [...(c.documents || []), ...newDocs];
+      }
+
+      const noteText = document.getElementById('editNotesNew').value.trim();
+      if (noteText) {
+        c.notes = Array.isArray(c.notes) ? c.notes : [];
+        c.notes.push({ text: noteText, timestamp: new Date().toISOString() });
+      }
+
+      closeModal();
       await syncClientToCloud(c);
-      showToast('Client updated securely in cloud.');
+      renderCurrentPage();
+      showToast('Client updated.');
     });
 
-    window.clearFilter = function() { document.getElementById('searchInput').value=''; document.getElementById('filterSelect').value='all'; renderClients(); }
-    document.getElementById('searchInput').addEventListener('input', renderClients);
-    document.getElementById('filterSelect').addEventListener('change', renderClients);
-
-    window.exportExcel = function() {
-      if (!window.clients.length) { showToast('No records to export', true); return; }
-      const rows = window.clients.map(c => ({
-        'Business Name': c.name, 'Email Address': c.email, 'Phone': c.phone, 'GST': c.gst, 'PAN': c.pan, 'TAN': c.tan, 'Address': c.address,
-        'GSTR-1 Due': c.tasks.gstr1.dueDate, 'GSTR-1 Last Done': c.tasks.gstr1.lastCompleted,
-        'GSTR-3B Due': c.tasks.gstr3b.dueDate, 'GSTR-3B Last Done': c.tasks.gstr3b.lastCompleted,
-        'TDS Challan Due': c.tasks.tdsChallan.dueDate, 'TDS Challan Last Done': c.tasks.tdsChallan.lastCompleted,
-        'TDS Filing Due': c.tasks.tdsFiling.dueDate, 'TDS Filing Last Done': c.tasks.tdsFiling.lastCompleted
-      }));
-      const wb = XLSX.utils.book_new(); const ws = XLSX.utils.json_to_sheet(rows);
-      ws['!cols'] = [30,25,15,20,15,15,40,15,15,15,15,15,15,15,15].map(w => ({ wch: w }));
-      XLSX.utils.book_append_sheet(wb, ws, 'CMS_Data');
-      XLSX.writeFile(wb, 'Growitharshiee_Client_DB.xlsx');
-      showToast('Cloud Data Exported to Excel.');
+    // INVOICE TRACKER + REVENUE
+    function currentMonthKey() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
     }
 
+    function monthLabel(key) {
+      if (!key) return '—';
+      const [y,m] = key.split('-');
+      return new Date(Number(y), Number(m) - 1, 1).toLocaleDateString('en-IN', {month:'short',year:'numeric'});
+    }
+
+    function renderInvoiceTracker() {
+      const wrap = document.getElementById('invoiceTrackerWrap');
+      if (!window.clients.length) {
+        wrap.innerHTML = `<div class="empty"><h3>No Clients</h3><p>Add clients first to manage invoices.</p></div>`;
+        return;
+      }
+
+      wrap.innerHTML = `
+        <div class="invoice-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Status</th>
+                <th>Invoice Status</th>
+                <th>Month</th>
+                <th>Amount (₹)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${window.clients.map(c => `
+                <tr>
+                  <td>${escHtml(c.name)}</td>
+                  <td>${escHtml(c.status)}</td>
+                  <td>${escHtml(c.invoiceStatus || 'not_raised')}</td>
+                  <td>
+                    <input class="input" style="min-width:120px;" type="month" id="inv-month-${c.id}" value="${escHtml(c.invoiceMonth || currentMonthKey())}">
+                  </td>
+                  <td>
+                    <input class="input" style="min-width:110px;" type="number" min="0" step="0.01" id="inv-amount-${c.id}" value="${Number(c.invoiceAmount || 0)}">
+                  </td>
+                  <td>
+                    <button class="mini-btn" onclick="setInvoiceStatus('${c.id}','not_raised')">Not Raised</button>
+                    <button class="mini-btn" onclick="setInvoiceStatus('${c.id}','raised')">Raise</button>
+                    <button class="mini-btn" onclick="setInvoiceStatus('${c.id}','paid')">Paid</button>
+                    <button class="mini-btn" onclick="setInvoiceStatus('${c.id}','follow_up')">Follow-up</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    window.setInvoiceStatus = async function(id, status) {
+      const c = window.clients.find(x => x.id === id);
+      if (!c) return;
+      c.invoiceStatus = status;
+      c.invoiceAmount = Number(document.getElementById(`inv-amount-${id}`).value || 0);
+      c.invoiceMonth = document.getElementById(`inv-month-${id}`).value || currentMonthKey();
+      await syncClientToCloud(c);
+      renderRevenueDashboard();
+      showToast(`Invoice status set to ${status}.`);
+    };
+
+    function getRevenueData() {
+      const map = {};
+      window.clients.forEach(c => {
+        const month = c.invoiceMonth || currentMonthKey();
+        const amt = Number(c.invoiceAmount || 0);
+        if (!amt) return;
+        if (!map[month]) map[month] = {paid:0, unpaid:0};
+        if (c.invoiceStatus === 'paid') map[month].paid += amt;
+        else map[month].unpaid += amt;
+      });
+      return map;
+    }
+
+    function renderRevenueDashboard() {
+      const data = getRevenueData();
+      const statsEl = document.getElementById('revenueStats');
+
+      let totalPaid = 0;
+      let totalUnpaid = 0;
+      Object.values(data).forEach(v => {
+        totalPaid += v.paid;
+        totalUnpaid += v.unpaid;
+      });
+
+      statsEl.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-label">Total Paid</div>
+          <div class="stat-value" style="color:var(--color-success);">${formatCurrency(totalPaid)}</div>
+          <div class="stat-help">All months</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Unpaid</div>
+          <div class="stat-value" style="color:var(--color-warning);">${formatCurrency(totalUnpaid)}</div>
+          <div class="stat-help">Raised / follow-up</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Invoice Value</div>
+          <div class="stat-value">${formatCurrency(totalPaid + totalUnpaid)}</div>
+          <div class="stat-help">Paid + unpaid</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Months with Data</div>
+          <div class="stat-value">${Object.keys(data).length}</div>
+          <div class="stat-help">In recorded history</div>
+        </div>
+      `;
+
+      const ctx = document.getElementById('revenueChart');
+      if (!ctx) return;
+
+      const months = Object.keys(data).sort();
+      const labels = months.map(monthLabel);
+      const paid = months.map(m => data[m].paid);
+      const unpaid = months.map(m => data[m].unpaid);
+
+      if (revenueChartInstance) revenueChartInstance.destroy();
+
+      revenueChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels.length ? labels : ['No Data'],
+          datasets: [
+            {
+              label: 'Paid',
+              data: labels.length ? paid : [0],
+              backgroundColor: 'rgba(34,197,94,0.85)',
+              borderRadius: 6
+            },
+            {
+              label: 'Unpaid',
+              data: labels.length ? unpaid : [0],
+              backgroundColor: 'rgba(239,68,68,0.8)',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: (value) => '₹' + Number(value).toLocaleString('en-IN')
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // GLOBAL SEARCH -> JUMP TO CLIENT
+    document.getElementById('globalSearchInput').addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') handleGlobalSearch();
+    });
+
+    document.getElementById('globalSearchInput').addEventListener('blur', () => {
+      // no-op, keep search simple
+    });
+
+    function handleGlobalSearch() {
+      const term = document.getElementById('globalSearchInput').value.trim().toLowerCase();
+      if (!term) return;
+      const c = window.clients.find(c => {
+        const hay = [c.name,c.gst,c.pan,c.tan].join(' ').toLowerCase();
+        return hay.includes(term);
+      });
+      if (c) {
+        showPage('clients');
+        setTimeout(() => jumpToClient(c.id), 50);
+      } else {
+        showToast('No matching client found.', true);
+      }
+    }
+
+    window.jumpToClient = function(id) {
+      showPage('clients');
+      setTimeout(() => {
+        const row = document.getElementById(`client-row-${id}`);
+        if (row) {
+          row.scrollIntoView({ behavior:'smooth', block:'center' });
+          toggleClientDetails(id);
+        }
+      }, 100);
+    };
+
+    // FILTER EVENTS
+    document.getElementById('searchInput').addEventListener('input', renderClients);
+    document.getElementById('filterStatus').addEventListener('change', renderClients);
+    document.getElementById('filterTasks').addEventListener('change', renderClients);
+
+    // EXPORT EXCEL
+    window.exportExcel = function() {
+      if (!window.clients.length) {
+        showToast('No records to export.', true);
+        return;
+      }
+
+      const rows = window.clients.map(c => ({
+        'Business Name': c.name,
+        'Status': c.status,
+        'Email': c.email,
+        'Phone': c.phone,
+        'GST': c.gst,
+        'PAN': c.pan,
+        'TAN': c.tan,
+        'ESIC': c.esic,
+        'PF': c.pf,
+        'PT': c.pt,
+        'Contract Value': c.contractValue,
+        'Address': c.address,
+        'Invoice Status': c.invoiceStatus,
+        'Invoice Amount': c.invoiceAmount,
+        'Invoice Month': c.invoiceMonth,
+        'Notes Count': (c.notes || []).length
+      }));
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(rows);
+      XLSX.utils.book_append_sheet(wb, ws, 'Clients');
+      XLSX.writeFile(wb, 'CA_Control_Panel_Clients.xlsx');
+      showToast('Exported to Excel.');
+    };
+
+    // TOAST
     function showToast(msg, isError = false) {
       const t = document.getElementById('toast');
-      t.textContent = msg; t.className = `toast show ${isError ? 'error' : ''}`;
-      setTimeout(() => t.classList.remove('show'), 3000);
+      t.textContent = msg;
+      t.className = 'toast' + (isError ? ' error' : '') + ' show';
+      setTimeout(() => t.classList.remove('show'), 2600);
     }
+
+    // INITIAL
+    showPage('today');
   </script>
 </body>
 </html>
