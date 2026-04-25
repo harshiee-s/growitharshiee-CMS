@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CA Control Panel | Growitharshiee</title>
 
-  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -551,6 +550,11 @@
       color: var(--color-text-muted);
     }
 
+    /* STAFF CHECKBOXES */
+    .staff-checkbox-wrap { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 0.4rem; }
+    .staff-checkbox-item { display: flex; align-items: center; gap: 5px; font-size: 0.85rem; background: #ffffff; border: 1px solid var(--color-border); padding: 0.4rem 0.8rem; border-radius: var(--radius-pill); cursor: pointer; transition: 0.2s ease; }
+    .staff-checkbox-item:hover { border-color: var(--color-primary); }
+
     /* CLIENT LIST / COLLAPSIBLE */
     .clients-wrap { display: grid; gap: 1rem; }
     .toolbar {
@@ -622,9 +626,9 @@
       color: #075985;
     }
     .status-pill.inactive {
-      background: #f1f5f9;
-      border-color: #cbd5e1;
-      color: #64748b;
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #991b1b;
     }
 
     .client-row-actions {
@@ -962,7 +966,6 @@
   </style>
 </head>
 <body>
-  <!-- SIMPLE BACKGROUND LINES -->
   <div class="dgv-background">
     <svg viewBox="0 0 1440 800" preserveAspectRatio="none">
       <path class="dgv-line dgv-line-1" d="M-100,750 C150,650 300,500 650,450 C1000,400 1200,200 1500,100" />
@@ -970,7 +973,6 @@
     </svg>
   </div>
 
-  <!-- LOGIN -->
   <div id="loginScreen">
     <div class="login-card">
       <div class="login-logo-wrap">
@@ -985,13 +987,11 @@
           <i class="fa-solid fa-lock"></i> Secure Login
         </button>
       </form>
-      <div id="loginError">Invalid credentials or unauthorized access.</div>
+      <div id="loginError" style="margin-top: 1rem;">Invalid credentials or unauthorized access.</div>
     </div>
   </div>
 
-  <!-- APP -->
   <div id="appContent" class="dashboard">
-    <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="brand">
         <div class="brand-logo">
@@ -1009,6 +1009,9 @@
         <button class="nav-item" data-page="clients"><i class="fa-solid fa-users"></i><span>Clients</span></button>
         <button class="nav-item" data-page="invoices"><i class="fa-solid fa-file-invoice-dollar"></i><span>Invoice Tracker</span></button>
         <button class="nav-item" data-page="revenue"><i class="fa-solid fa-chart-column"></i><span>Revenue Dashboard</span></button>
+        
+        <button class="nav-item" data-page="staff" id="navStaffBtn" style="display:none;"><i class="fa-solid fa-user-shield"></i><span>Manage Staff</span></button>
+        
         <button class="nav-item" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i><span>Export Excel</span></button>
         <button class="nav-item logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button>
       </nav>
@@ -1024,14 +1027,12 @@
       </div>
     </aside>
 
-    <!-- HEADER -->
     <header class="header">
       <div class="header-title">
         <h1 id="pageHeadTitle">Today View</h1>
         <p id="pageHeadSub">What needs your attention right now.</p>
       </div>
       <div class="header-actions">
-        <!-- GLOBAL SEARCH -->
         <div class="global-search-wrap">
           <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8;"></i>
           <input id="globalSearchInput" placeholder="Search name / GST / PAN / TAN" />
@@ -1045,9 +1046,7 @@
       </div>
     </header>
 
-    <!-- MAIN -->
     <main class="main">
-      <!-- TODAY VIEW (DEFAULT) -->
       <section class="page active" id="pageToday">
         <div class="stats" id="workloadSummary"></div>
 
@@ -1060,7 +1059,6 @@
         </div>
       </section>
 
-      <!-- ADD CLIENT -->
       <section class="page" id="pageAdd">
         <div class="card panel">
           <div class="panel-head">
@@ -1072,6 +1070,11 @@
             <div class="field">
               <label for="name">Business / Client Name *</label>
               <input class="input" id="name" required placeholder="e.g. Growitharshiee Financial" />
+            </div>
+
+            <div class="field" id="addStaffAssignmentWrap" style="display:none; padding: 10px; background: #fefce8; border: 1px solid #fef08a; border-radius: 8px;">
+              <label>Assign to Staff Members</label>
+              <div class="staff-checkbox-wrap" id="addClientStaffList"></div>
             </div>
 
             <div class="field">
@@ -1137,7 +1140,6 @@
               </div>
             </div>
 
-            <!-- PASSWORD VAULT INPUTS -->
             <div class="form-row">
               <div class="field">
                 <label for="gstPortalPassword">GST Portal Password</label>
@@ -1188,7 +1190,6 @@
         </div>
       </section>
 
-      <!-- CLIENTS PAGE -->
       <section class="page" id="pageClients">
         <div class="clients-wrap">
           <div class="card panel" style="padding:0.9rem 1rem;">
@@ -1213,7 +1214,6 @@
         </div>
       </section>
 
-      <!-- INVOICE TRACKER -->
       <section class="page" id="pageInvoices">
         <div class="card panel">
           <div class="panel-head">
@@ -1224,7 +1224,6 @@
         </div>
       </section>
 
-      <!-- REVENUE DASHBOARD -->
       <section class="page" id="pageRevenue">
         <div class="stats" id="revenueStats"></div>
         <div class="card panel">
@@ -1237,10 +1236,57 @@
           </div>
         </div>
       </section>
+      
+      <section class="page" id="pageStaff">
+        <div class="card panel">
+          <div class="panel-head">
+            <h2>Manage Staff</h2>
+            <p>Create secure logins for your team and manage their access.</p>
+          </div>
+          
+          <form id="createStaffForm" class="form-grid" style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed var(--color-border);">
+            <div class="form-row">
+              <div class="field">
+                <label>Staff Full Name</label>
+                <input class="input" id="newStaffName" required placeholder="e.g. Rahul Kumar">
+              </div>
+              <div class="field">
+                <label>Staff Login Email</label>
+                <input class="input" type="email" id="newStaffEmail" required placeholder="staff@growitharshiee.in">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Temporary Password</label>
+                <input class="input" type="password" id="newStaffPass" required placeholder="Min 6 characters">
+              </div>
+              <div class="field" style="justify-content: flex-end;">
+                <button class="btn btn-primary" type="submit" id="createStaffBtn" style="width: 100%;">Create Account</button>
+              </div>
+            </div>
+          </form>
+
+          <div class="panel-head">
+            <h2>Team Members</h2>
+          </div>
+          <div class="invoice-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="staffListTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 
-  <!-- EDIT MODAL -->
   <div class="modal-backdrop" id="editModal">
     <div class="modal">
       <div class="modal-head">
@@ -1254,6 +1300,11 @@
         <div class="field">
           <label for="editName">Client Name *</label>
           <input class="input" id="editName" required />
+        </div>
+
+        <div class="field" id="editStaffAssignmentWrap" style="display:none; padding: 10px; background: #fefce8; border: 1px solid #fef08a; border-radius: 8px;">
+          <label>Assigned Staff Members</label>
+          <div class="staff-checkbox-wrap" id="editClientStaffList"></div>
         </div>
 
         <div class="field">
@@ -1354,17 +1405,15 @@
     </div>
   </div>
 
-  <!-- TOAST -->
   <div class="toast" id="toast">Notification</div>
 
-  <!-- APP SCRIPT -->
   <script type="module">
     // FIREBASE IMPORTS
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, collection, getDocs, setDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getFirestore, collection, getDocs, getDoc, setDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // FIREBASE CONFIG (yours)
+    // FIREBASE CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyDbPLh1NZLFxNeDRnS89NVOX554aTPJkgE",
       authDomain: "growitharshiee-cms.firebaseapp.com",
@@ -1374,13 +1423,20 @@
       appId: "1:542993095031:web:ef23056cc8dd718819a972"
     };
 
-    // INIT
+    // Primary App
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // Secondary App (Used exclusively for creating staff without logging admin out)
+    const secondaryApp = initializeApp(firebaseConfig, "SecondaryApp");
+    const secondaryAuth = getAuth(secondaryApp);
+
     // GLOBAL STATE
     window.clients = [];
+    window.allStaff = [];
+    window.userRole = 'staff'; 
+    window.currentUserUid = null;
     let revenueChartInstance = null;
     let lastExpandedClientId = null;
 
@@ -1389,13 +1445,14 @@
     const appContent = document.getElementById('appContent');
     const loginError = document.getElementById('loginError');
 
-    // PAGE CONFIG (for header)
+    // PAGE CONFIG
     const pageConfig = {
       today:   {t: 'Today View', s: 'What needs your attention right now.'},
       add:     {t: 'Add Client', s: 'Capture key data once, reuse everywhere.'},
       clients: {t: 'Clients', s: 'Minimal list, expand only when needed.'},
       invoices:{t: 'Invoice Tracker', s: 'Status and amounts client-wise.'},
-      revenue: {t: 'Revenue Dashboard', s: 'Paid vs unpaid revenue month wise.'}
+      revenue: {t: 'Revenue Dashboard', s: 'Paid vs unpaid revenue month wise.'},
+      staff:   {t: 'Manage Staff', s: 'Create secure logins and manage team access.'}
     };
 
     // NAV EVENTS
@@ -1404,8 +1461,36 @@
     });
 
     // AUTH
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
+        window.currentUserUid = user.uid;
+        
+        try {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists()) {
+            const fetchedRole = userDoc.data().role;
+            
+            // Check if account was soft-deleted
+            if (fetchedRole === 'inactive') {
+               await signOut(auth);
+               loginError.textContent = "Your account has been deactivated. Contact Admin.";
+               loginError.style.display = 'block';
+               return; // Stop execution
+            }
+            window.userRole = fetchedRole;
+          }
+        } catch (err) {
+          console.error("Role fetch failed. Defaulting to staff.", err);
+        }
+
+        // Adjust UI based on Role
+        if (window.userRole === 'admin') {
+          document.getElementById('navStaffBtn').style.display = 'flex';
+          document.getElementById('addStaffAssignmentWrap').style.display = 'block';
+          document.getElementById('editStaffAssignmentWrap').style.display = 'block';
+          fetchStaffList();
+        }
+
         loginScreen.style.opacity = '0';
         setTimeout(() => {
           loginScreen.style.display = 'none';
@@ -1440,9 +1525,107 @@
 
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       await signOut(auth);
-      window.clients = [];
-      showToast('Logged out.');
+      window.location.reload();
     });
+
+    // --- STAFF CREATION & MANAGEMENT LOGIC ---
+    document.getElementById('createStaffForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('createStaffBtn');
+      btn.textContent = "Creating...";
+      
+      const email = document.getElementById('newStaffEmail').value.trim();
+      const pass = document.getElementById('newStaffPass').value;
+      const name = document.getElementById('newStaffName').value.trim();
+
+      try {
+        const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, pass);
+        const newUid = userCred.user.uid;
+        await signOut(secondaryAuth); 
+        await setDoc(doc(db, "users", newUid), { role: 'staff', name: name, email: email });
+        
+        showToast('Staff created successfully!');
+        document.getElementById('createStaffForm').reset();
+        fetchStaffList(); 
+      } catch (err) {
+        showToast("Error: " + err.message, true);
+      } finally {
+        btn.textContent = "Create Account";
+      }
+    });
+
+    async function fetchStaffList() {
+      if (window.userRole !== 'admin') return;
+      const snap = await getDocs(collection(db, "users"));
+      window.allStaff = [];
+      snap.forEach(d => {
+        const role = d.data().role;
+        if(role === 'staff' || role === 'inactive') {
+           window.allStaff.push({ id: d.id, ...d.data() });
+        }
+      });
+      renderStaffTable();
+      renderStaffCheckboxes('addClientStaffList', []);
+    }
+
+    function renderStaffTable() {
+      const tbody = document.getElementById('staffListTbody');
+      tbody.innerHTML = window.allStaff.map(s => `
+        <tr>
+          <td>${escHtml(s.name)}</td>
+          <td>${escHtml(s.email)}</td>
+          <td>
+             <span class="status-pill ${s.role === 'inactive' ? 'inactive' : ''}">
+               ${s.role === 'inactive' ? 'Inactive' : 'Active'}
+             </span>
+          </td>
+          <td>
+            ${s.role === 'staff' 
+              ? `<button class="mini-btn mini-btn-danger" onclick="deactivateStaff('${s.id}')">Deactivate</button>` 
+              : `<button class="mini-btn" onclick="reactivateStaff('${s.id}')">Reactivate</button>`
+            }
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Soft delete: User can't log in, shows as inactive, history preserved
+    window.deactivateStaff = async function(id) {
+      if(!confirm("Mark this staff member as inactive? They will no longer be able to log in.")) return;
+      try {
+        await setDoc(doc(db, "users", id), { role: 'inactive' }, { merge: true });
+        showToast("Staff deactivated.");
+        fetchStaffList();
+      } catch(err) {
+        showToast("Error updating staff.", true);
+      }
+    };
+
+    window.reactivateStaff = async function(id) {
+      try {
+        await setDoc(doc(db, "users", id), { role: 'staff' }, { merge: true });
+        showToast("Staff reactivated.");
+        fetchStaffList();
+      } catch(err) {
+        showToast("Error updating staff.", true);
+      }
+    };
+
+    function renderStaffCheckboxes(containerId, assignedIds = []) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = window.allStaff.filter(s => s.role === 'staff').map(s => `
+        <label class="staff-checkbox-item">
+          <input type="checkbox" value="${s.id}" class="staff-checkbox" ${assignedIds.includes(s.id) ? 'checked' : ''}>
+          ${s.name}
+        </label>
+      `).join('');
+    }
+
+    function getSelectedStaff(containerId) {
+      const container = document.getElementById(containerId);
+      const boxes = container.querySelectorAll('.staff-checkbox:checked');
+      return Array.from(boxes).map(b => b.value);
+    }
 
     // DATE HELPERS
     const todayISO = () => new Date().toISOString().split('T')[0];
@@ -1497,17 +1680,14 @@
       };
     }
 
-    // TASK STATE (includes missed)
+    // TASK STATE
     function getTaskState(task) {
       const dToDue = daysDiff(task.dueDate);
       if (task.status === 'missed') return { text:'Missed', cls:'status-missed', isDone:false };
-
       if (task.lastCompleted && dToDue > 15) return { text:'Done', cls:'status-done', isDone:true };
-
       if (dToDue < 0) return { text:'Overdue', cls:'status-overdue', isDone:false };
       if (dToDue <= 3) return { text:'Due in 3 days', cls:'status-overdue', isDone:false };
       if (dToDue <= 15) return { text:'Due soon', cls:'status-upcoming', isDone:false };
-
       return { text:'Pending', cls:'status-pending', isDone:false };
     }
 
@@ -1526,6 +1706,7 @@
       c.invoiceStatus = c.invoiceStatus || 'not_raised';
       c.invoiceAmount = Number(c.invoiceAmount || 0);
       c.invoiceMonth = c.invoiceMonth || currentMonthKey();
+      c.assignedTo = Array.isArray(c.assignedTo) ? c.assignedTo : [];
 
       const defaults = makeDefaultTasks();
       Object.keys(defaults).forEach(k => {
@@ -1541,7 +1722,11 @@
         const snap = await getDocs(collection(db, "clients"));
         window.clients = [];
         snap.forEach(docSnap => {
-          window.clients.push(ensureClientShape(docSnap.data()));
+          const c = ensureClientShape(docSnap.data());
+          // FILTER: Admin sees all, Staff only sees clients assigned to them
+          if (window.userRole === 'admin' || c.assignedTo.includes(window.currentUserUid)) {
+            window.clients.push(c);
+          }
         });
         autoRollForwardAll();
         renderCurrentPage();
@@ -1573,9 +1758,15 @@
 
     // PAGE SWITCH
     window.showPage = function(name) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p => {
+         p.classList.remove('active');
+         p.style.display = 'none'; // Fallback added here to ensure hide
+      });
       const target = document.getElementById('page' + name.charAt(0).toUpperCase() + name.slice(1));
-      if (target) target.classList.add('active');
+      if (target) {
+         target.classList.add('active');
+         target.style.display = 'block'; // Fallback added here to ensure show
+      }
 
       document.querySelectorAll('.nav-item[data-page]').forEach(b => b.classList.remove('active'));
       const activeBtn = document.querySelector(`.nav-item[data-page="${name}"]`);
@@ -1584,11 +1775,7 @@
       document.getElementById('pageHeadTitle').textContent = pageConfig[name].t;
       document.getElementById('pageHeadSub').textContent = pageConfig[name].s;
 
-      if (name === 'today') renderTodayView();
-      if (name === 'add') {} // nothing else
-      if (name === 'clients') renderClients();
-      if (name === 'invoices') renderInvoiceTracker();
-      if (name === 'revenue') renderRevenueDashboard();
+      renderCurrentPage();
     };
 
     function renderCurrentPage() {
@@ -1596,6 +1783,7 @@
       if (document.getElementById('pageClients').classList.contains('active')) renderClients();
       if (document.getElementById('pageInvoices').classList.contains('active')) renderInvoiceTracker();
       if (document.getElementById('pageRevenue').classList.contains('active')) renderRevenueDashboard();
+      if (document.getElementById('pageStaff') && document.getElementById('pageStaff').classList.contains('active')) fetchStaffList();
     }
 
     // TODAY VIEW + WORKLOAD SUMMARY
@@ -1608,13 +1796,8 @@
           const diff = daysDiff(t.dueDate);
           if (diff < 0 && t.status !== 'missed' && !t.lastCompleted) {
             t.status = 'missed';
-            // create next cycle due
             const nextDate = nextDueFns[k] ? nextDueFns[k](today) : t.dueDate;
-            c.tasks[k] = {
-              ...t,
-              previousDueDate: t.dueDate,
-              dueDate: nextDate
-            };
+            c.tasks[k] = { ...t, previousDueDate: t.dueDate, dueDate: nextDate };
           }
         });
       });
@@ -1736,6 +1919,14 @@
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      let assignedArray = [];
+      if (window.userRole === 'admin') {
+         assignedArray = getSelectedStaff('addClientStaffList');
+      } else {
+         // Auto-assign the client to the staff member who creates it so it doesn't vanish
+         assignedArray = [window.currentUserUid];
+      }
+
       const newClient = ensureClientShape({
         id: Date.now().toString(),
         name: document.getElementById('name').value.trim(),
@@ -1760,18 +1951,22 @@
         invoiceAmount: Number(document.getElementById('invoiceAmount').value || 0),
         invoiceMonth: currentMonthKey(),
         notes: [],
-        tasks: makeDefaultTasks()
+        tasks: makeDefaultTasks(),
+        assignedTo: assignedArray
       });
 
       window.clients.unshift(newClient);
       document.getElementById('clientForm').reset();
+      
+      if(window.userRole === 'admin') renderStaffCheckboxes('addClientStaffList', []);
+
       showToast('Saving new client...');
       await syncClientToCloud(newClient);
       renderCurrentPage();
       showToast('Client added.');
     });
 
-    // UPDATE TASK COMPLETION + AUTO ROLL FORWARD SINGLE
+    // UPDATE TASK COMPLETION
     window.confirmTask = async function(cId, key) {
       const dateInput = document.getElementById(`date-${cId}-${key}`)?.value;
       if (!dateInput) { showToast('Select a valid date.', true); return; }
@@ -1838,7 +2033,6 @@
         const overdueCount = Object.values(c.tasks).filter(t => getTaskState(t).cls === 'status-overdue').length;
         const soonCount = Object.values(c.tasks).filter(t => getTaskState(t).cls === 'status-upcoming').length;
 
-        // Group docs by tag
         const groupedDocs = {};
         (c.documents || []).forEach(d => {
           const tag = d.tag || 'Other';
@@ -1867,9 +2061,11 @@
                 <button class="mini-btn" onclick="toggleClientStatus('${c.id}')">
                   <i class="fa-solid fa-toggle-on"></i> ${c.status === 'active' ? 'Set Inactive' : 'Set Active'}
                 </button>
+                ${window.userRole === 'admin' ? `
                 <button class="mini-btn mini-btn-danger" onclick="deleteClient('${c.id}')">
                   <i class="fa-solid fa-trash"></i>
                 </button>
+                ` : ''}
               </div>
             </div>
 
@@ -1896,7 +2092,6 @@
                   </div>
                 </div>
 
-                <!-- PASSWORD VAULT -->
                 <div class="detail">
                   <div class="detail-label">GST Password</div>
                   <div class="password-box">
@@ -1931,7 +2126,6 @@
                 </div>
               </div>
 
-              <!-- DOCUMENT TAGGING VIEW -->
               <div class="detail">
                 <div class="detail-label">Documents by Tag</div>
                 ${
@@ -1948,7 +2142,6 @@
                 }
               </div>
 
-              <!-- TASKS -->
               <div>
                 <div class="detail-label" style="margin-bottom:0.4rem;">Tasks</div>
                 <div class="tasks-grid">
@@ -1975,7 +2168,6 @@
                 </div>
               </div>
 
-              <!-- NOTES TIMELINE -->
               <div class="notes-wrap">
                 <strong style="font-size:0.8rem;">Notes</strong>
                 <div style="display:flex; gap:0.4rem; margin-top:0.35rem;">
@@ -2054,7 +2246,7 @@
       }
     };
 
-    // PASSWORD VAULT VIEW/COPY — BUG FIXED
+    // PASSWORD VAULT VIEW/COPY
     window.togglePasswordView = function(id, type) {
       const c = window.clients.find(x => x.id === id);
       if (!c) return;
@@ -2068,11 +2260,9 @@
       }
       const visible = el.dataset.visible === 'true';
       if (visible) {
-        // mask
         el.textContent = '••••••••';
         el.dataset.visible = 'false';
       } else {
-        // show real value
         el.textContent = pwd;
         el.dataset.visible = 'true';
       }
@@ -2117,6 +2307,10 @@
       document.getElementById('editDocuments').value = '';
       document.getElementById('editNotesNew').value = '';
 
+      if(window.userRole === 'admin') {
+         renderStaffCheckboxes('editClientStaffList', c.assignedTo || []);
+      }
+
       document.getElementById('editModal').classList.add('open');
     };
 
@@ -2147,6 +2341,10 @@
         tan: document.getElementById('editTanPortalPassword').value.trim(),
         pan: document.getElementById('editPanPortalPassword').value.trim()
       };
+
+      if (window.userRole === 'admin') {
+         c.assignedTo = getSelectedStaff('editClientStaffList');
+      }
 
       const newDocs = getFileNamesWithTags(document.getElementById('editDocuments'));
       if (newDocs.length) {
@@ -2331,10 +2529,6 @@
     // GLOBAL SEARCH -> JUMP TO CLIENT
     document.getElementById('globalSearchInput').addEventListener('keyup', (e) => {
       if (e.key === 'Enter') handleGlobalSearch();
-    });
-
-    document.getElementById('globalSearchInput').addEventListener('blur', () => {
-      // no-op, keep search simple
     });
 
     function handleGlobalSearch() {
