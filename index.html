@@ -997,9 +997,9 @@
         <div class="brand-logo">
           <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
         </div>
-        <div class="brand-copy">
+        <div class="brand-copy" style="overflow: hidden; width: 100%;">
           <span class="brand-text">growitharshiee</span>
-          <span class="brand-sub"></span>
+          <span class="brand-sub" id="userGreeting" style="color: var(--color-accent); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;"></span>
         </div>
       </div>
 
@@ -1248,17 +1248,17 @@
             <div class="form-row">
               <div class="field">
                 <label>Staff Full Name</label>
-                <input class="input" id="newStaffName" required placeholder="">
+                <input class="input" id="newStaffName" required placeholder="e.g. Rahul Kumar">
               </div>
               <div class="field">
                 <label>Staff Login Email</label>
-                <input class="input" type="email" id="newStaffEmail" required placeholder="">
+                <input class="input" type="email" id="newStaffEmail" required placeholder="staff@growitharshiee.in">
               </div>
             </div>
             <div class="form-row">
               <div class="field">
-                <label>Password</label>
-                <input class="input" type="password" id="newStaffPass" required placeholder="">
+                <label>Temporary Password</label>
+                <input class="input" type="password" id="newStaffPass" required placeholder="Min 6 characters">
               </div>
               <div class="field" style="justify-content: flex-end;">
                 <button class="btn btn-primary" type="submit" id="createStaffBtn" style="width: 100%;">Create Account</button>
@@ -1468,7 +1468,8 @@
         try {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
-            const fetchedRole = userDoc.data().role;
+            const data = userDoc.data();
+            const fetchedRole = data.role;
             
             // Check if account was soft-deleted
             if (fetchedRole === 'inactive') {
@@ -1478,6 +1479,14 @@
                return; // Stop execution
             }
             window.userRole = fetchedRole;
+
+            // NEW: Set the greeting!
+            // If they have a name in the database, use it. Otherwise, use the first part of their email.
+            const displayName = data.name || user.email.split('@')[0];
+            document.getElementById('userGreeting').textContent = `Hi, ${displayName}`;
+          } else {
+             // Fallback just in case the admin document is missing the name
+             document.getElementById('userGreeting').textContent = `Hi, Admin`;
           }
         } catch (err) {
           console.error("Role fetch failed. Defaulting to staff.", err);
@@ -1516,7 +1525,7 @@
       try {
         await signInWithEmailAndPassword(auth, email, pass);
       } catch (err) {
-        loginError.textContent = "Access denied: " + err.message;
+        loginError.textContent = "Please enter correct mail-id/password."; 
         loginError.style.display = 'block';
       } finally {
         btn.innerHTML = '<i class="fa-solid fa-lock"></i> Secure Login';
