@@ -10,541 +10,752 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
-      --color-bg-light: #f8fafc;
-      --color-surface: rgba(255, 255, 255, 0.9);
-      --color-surface-solid: #ffffff;
-      --color-primary: #0A2540;
-      --color-primary-soft: rgba(10,37,64,0.06);
-      --color-accent: #D4AF37;
-      --color-accent-soft: rgba(212,175,55,0.16);
-      --color-text-dark: #0f172a;
-      --color-text-muted: #64748b;
-      --color-border: rgba(15, 23, 42, 0.12);
-      --color-success: #15803d;
-      --color-success-bg: #dcfce7;
-      --color-warning: #b45309;
-      --color-warning-bg: #fef3c7;
-      --color-error: #b91c1c;
-      --color-error-bg: #fee2e2;
-      --color-info: #2563eb;
-      --color-info-bg: #dbeafe;
-      --color-gray-soft: #f1f5f9;
-      --shadow-sm: 0 2px 10px rgba(15, 23, 42, 0.04);
-      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
-      --radius-lg: 18px;
-      --radius-md: 12px;
-      --radius-sm: 8px;
-      --radius-pill: 999px;
-      --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
-      --font-heading: "Playfair Display", serif;
-      --font-subheading: "Poppins", sans-serif;
-      --font-body: "Inter", sans-serif;
-      --font-tech: "JetBrains Mono", monospace;
+      --bg:            #F4F3EE;
+      --surface:       #FFFFFF;
+      --surface-2:     #FAFAF8;
+      --primary:       #0A1628;
+      --primary-mid:   #162847;
+      --gold:          #C9A84C;
+      --gold-soft:     rgba(201,168,76,0.15);
+      --gold-border:   rgba(201,168,76,0.3);
+      --text:          #0A1628;
+      --text-2:        #4A5568;
+      --text-3:        #9BA3AE;
+      --border:        rgba(10,22,40,0.1);
+      --border-2:      rgba(10,22,40,0.06);
+      --success:       #0D7A4E;
+      --success-bg:    #E6F7F1;
+      --warn:          #A05C00;
+      --warn-bg:       #FFF3E0;
+      --error:         #C0392B;
+      --error-bg:      #FEF0EE;
+      --info:          #1A5EBB;
+      --info-bg:       #EBF3FF;
+      --shadow-sm:     0 1px 4px rgba(10,22,40,0.06), 0 0 0 1px rgba(10,22,40,0.04);
+      --shadow-md:     0 8px 32px rgba(10,22,40,0.1), 0 0 0 1px rgba(10,22,40,0.04);
+      --shadow-lg:     0 20px 60px rgba(10,22,40,0.14);
+      --r-sm:          6px;
+      --r-md:          12px;
+      --r-lg:          18px;
+      --r-xl:          24px;
+      --r-pill:        999px;
+      --t:             0.2s cubic-bezier(0.4,0,0.2,1);
+      --font-head:     "DM Serif Display", serif;
+      --font-body:     "DM Sans", sans-serif;
+      --font-mono:     "JetBrains Mono", monospace;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; overflow: hidden; }
-
     body {
       font-family: var(--font-body);
-      color: var(--color-text-dark);
-      background-color: var(--color-bg-light);
-      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.55;
       -webkit-font-smoothing: antialiased;
-      background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2000&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center;
     }
+
+    /* Subtle grid texture */
     body::before {
       content: '';
-      position: fixed;
-      inset: 0;
-      background: rgba(248, 250, 252, 0.95);
-      z-index: -2;
-      pointer-events: none;
-    }
-    .dgv-background {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-      opacity: 0.45;
-    }
-    .dgv-background svg { width: 100%; height: 100%; }
-    .dgv-line {
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 4000;
-      stroke-dashoffset: 4000;
-      animation: drawDGV 20s ease-in-out infinite alternate;
-    }
-    .dgv-line-1 { stroke: var(--color-accent); stroke-width: 2px; opacity: 0.3; }
-    .dgv-line-2 { stroke: var(--color-primary); stroke-width: 1px; opacity: 0.15; animation-delay: -5s; }
-    @keyframes drawDGV {
-      0% { stroke-dashoffset: 4000; }
-      100% { stroke-dashoffset: 0; }
+      position: fixed; inset: 0; z-index: -1;
+      background-image:
+        linear-gradient(rgba(10,22,40,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10,22,40,0.025) 1px, transparent 1px);
+      background-size: 32px 32px;
     }
 
     button, input, textarea, select { font: inherit; color: inherit; outline: none; }
     button { cursor: pointer; border: none; background: none; }
     a { text-decoration: none; color: inherit; }
 
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(10,22,40,0.15); border-radius: 99px; }
+
     /* ─── LOGIN ─── */
     #loginScreen {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
       z-index: 9999;
-      background: rgba(248, 250, 252, 0.9);
-      backdrop-filter: blur(18px);
-      transition: opacity 0.45s ease;
+      background: linear-gradient(135deg, #0A1628 0%, #162847 50%, #0A1628 100%);
+      transition: opacity 0.4s ease;
+    }
+    #loginScreen::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.08) 0%, transparent 50%);
     }
     .login-card {
-      background: var(--color-surface-solid);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-md);
-      padding: 2.4rem 2rem;
-      width: 100%;
-      max-width: 380px;
+      position: relative; z-index: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: var(--r-xl);
+      backdrop-filter: blur(20px);
+      padding: 2.5rem 2rem;
+      width: 100%; max-width: 400px;
       text-align: center;
     }
     .login-logo-wrap {
-      width: 76px; height: 76px;
-      margin: 0 auto 1rem;
-      border-radius: 18px;
-      background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(15,23,42,0.05));
+      width: 72px; height: 72px;
+      margin: 0 auto 1.2rem;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(201,168,76,0.25), rgba(201,168,76,0.08));
+      border: 1px solid rgba(201,168,76,0.3);
       display: flex; align-items: center; justify-content: center; overflow: hidden;
     }
-    .login-logo-wrap img { width: 60px; height: 60px; object-fit: contain; }
-    .login-card h2 { font-family: var(--font-heading); color: var(--color-primary); font-size: 1.75rem; margin-bottom: 0.4rem; }
-    .login-card p { font-size: 0.9rem; color: var(--color-text-muted); margin-bottom: 1.6rem; }
+    .login-logo-wrap img { width: 52px; height: 52px; object-fit: contain; }
+    .login-card h2 {
+      font-family: var(--font-head); font-size: 1.9rem;
+      color: #fff; margin-bottom: 0.3rem; letter-spacing: -0.02em;
+    }
+    .login-card p { font-size: 0.88rem; color: rgba(255,255,255,0.5); margin-bottom: 1.8rem; }
     .login-input {
-      width: 100%; padding: 0.85rem 1rem; border-radius: var(--radius-sm);
-      border: 1px solid var(--color-border); margin-bottom: 0.9rem;
-      background: #f9fafb; transition: var(--transition);
+      width: 100%; padding: 0.85rem 1rem;
+      border-radius: var(--r-sm);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.07);
+      color: #fff; margin-bottom: 0.75rem;
+      font-size: 0.9rem; transition: var(--t);
     }
-    .login-input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 2px var(--color-primary-soft); background: #ffffff; }
+    .login-input::placeholder { color: rgba(255,255,255,0.35); }
+    .login-input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); box-shadow: 0 0 0 3px rgba(201,168,76,0.15); }
     .login-btn {
-      width: 100%; padding: 0.85rem; border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, #E6C265, #D4AF37);
-      color: var(--color-primary); font-weight: 600; transition: var(--transition);
+      width: 100%; padding: 0.9rem;
+      border-radius: var(--r-sm);
+      background: linear-gradient(135deg, #E2BC5E, #C9A84C);
+      color: var(--primary); font-weight: 700; font-size: 0.9rem;
+      transition: var(--t); letter-spacing: 0.01em;
     }
-    .login-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px var(--color-accent-soft); }
-    #loginError { margin-top: 0.8rem; font-size: 0.85rem; color: var(--color-error); display: none; }
+    .login-btn:hover { filter: brightness(1.05); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(201,168,76,0.35); }
+    #loginError { margin-top: 0.9rem; font-size: 0.84rem; color: #FCA5A5; display: none; background: rgba(239,68,68,0.1); padding: 0.5rem 0.8rem; border-radius: var(--r-sm); border: 1px solid rgba(239,68,68,0.2); }
 
     /* ─── LAYOUT ─── */
-    #appContent { display: none; opacity: 0; transition: opacity 0.45s ease; height: 100%; }
+    #appContent { display: none; opacity: 0; transition: opacity 0.4s ease; height: 100%; }
     .show-app { display: grid !important; opacity: 1 !important; }
-    .dashboard { grid-template-columns: 270px 1fr; grid-template-rows: 70px 1fr; position: relative; z-index: 10; }
+    .dashboard { grid-template-columns: 256px 1fr; grid-template-rows: 64px 1fr; }
 
+    /* ─── SIDEBAR ─── */
     .sidebar {
       grid-row: 1 / -1;
-      background: var(--color-surface);
-      border-right: 1px solid var(--color-border);
-      padding: 1.2rem 1.4rem;
-      display: flex; flex-direction: column; overflow-y: auto;
+      background: var(--primary);
+      padding: 1.2rem 1rem;
+      display: flex; flex-direction: column;
+      overflow-y: auto; position: relative;
     }
+    .sidebar::after {
+      content: '';
+      position: absolute; top: 0; right: 0;
+      width: 1px; height: 100%;
+      background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.25) 30%, rgba(201,168,76,0.25) 70%, transparent);
+    }
+    .brand { display: flex; gap: 0.7rem; align-items: center; margin-bottom: 1.8rem; padding: 0 0.4rem; }
+    .brand-logo {
+      width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.3), rgba(201,168,76,0.1));
+      border: 1px solid rgba(201,168,76,0.25);
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .brand-logo img { width: 30px; height: 30px; object-fit: contain; }
+    .brand-text { font-family: var(--font-head); font-size: 1.1rem; color: #fff; display: block; }
+    .brand-sub { font-size: 0.7rem; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-top: 1px; }
+
+    .nav-section-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 0 0.8rem; margin: 1rem 0 0.4rem; }
+    .nav-group { display: flex; flex-direction: column; gap: 0.2rem; }
+    .nav-item {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 0.65rem 0.8rem; font-size: 0.84rem; font-weight: 500;
+      border-radius: var(--r-sm); color: rgba(255,255,255,0.5);
+      transition: var(--t); position: relative;
+    }
+    .nav-item i { width: 16px; text-align: center; font-size: 0.85rem; }
+    .nav-item:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.06); }
+    .nav-item.active { background: rgba(201,168,76,0.15); color: #E2BC5E; }
+    .nav-item.active::before {
+      content: ''; position: absolute; left: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 3px; height: 60%; background: var(--gold); border-radius: 0 99px 99px 0;
+    }
+    .nav-item.logout-btn { color: rgba(252,165,165,0.7); margin-top: 0.3rem; }
+    .nav-item.logout-btn:hover { color: #FCA5A5; background: rgba(239,68,68,0.08); }
+
+    .sidebar-dates {
+      margin-top: auto; padding: 0.9rem 1rem;
+      background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.15);
+      border-radius: var(--r-md); font-size: 0.73rem; color: rgba(255,255,255,0.55);
+      line-height: 1.8;
+    }
+    .sidebar-dates strong { display: block; color: #E2BC5E; margin-bottom: 0.35rem; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* ─── HEADER ─── */
     .header {
       grid-column: 2;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 1.6rem;
-      border-bottom: 1px solid var(--color-border);
-      background: rgba(255, 255, 255, 0.86);
-      backdrop-filter: blur(14px);
-      position: sticky; top: 0; z-index: 6;
+      padding: 0 1.5rem;
+      background: rgba(244,243,238,0.92);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 6; gap: 1rem;
     }
-    .main { grid-column: 2; overflow: auto; padding: 1.6rem; display: grid; gap: 1.2rem; align-content: flex-start; }
-    .page { display: none; }
-    .page.active { display: block; }
-
-    .brand { display: flex; gap: 0.7rem; align-items: center; margin-bottom: 1.4rem; }
-    .brand-logo {
-      width: 46px; height: 46px; border-radius: 14px;
-      background: linear-gradient(135deg, rgba(212,175,55,0.26), rgba(10,37,64,0.08));
-      display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;
-    }
-    .brand-logo img { width: 36px; height: 36px; object-fit: contain; }
-    .brand-copy { display: flex; flex-direction: column; }
-    .brand-text { font-family: var(--font-heading); font-size: 1.25rem; color: var(--color-primary); }
-    .brand-sub { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-muted); font-family: var(--font-subheading); }
-
-    .nav-group { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; margin-bottom: 1rem; }
-    .nav-item {
-      display: flex; align-items: center; gap: 0.7rem;
-      padding: 0.7rem 0.8rem; font-size: 0.86rem;
-      border-radius: var(--radius-sm); color: var(--color-text-muted); transition: var(--transition);
-    }
-    .nav-item i { width: 18px; text-align: center; font-size: 0.95rem; }
-    .nav-item:hover, .nav-item.active { background: var(--color-primary); color: #ffffff; box-shadow: 0 4px 12px var(--color-primary-soft); }
-
-    .logout-btn { margin-top: auto; color: var(--color-error); border-radius: var(--radius-sm); border: 1px solid var(--color-error-bg); background: var(--color-error-bg); justify-content: center; }
-    .logout-btn:hover { background: var(--color-error); color: #ffffff; box-shadow: none; }
-
-    .sidebar-note { margin-top: 1rem; padding: 0.9rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-border); font-size: 0.78rem; background: #fefce8; color: #78350f; }
-    .sidebar-note strong { display: block; margin-bottom: 0.4rem; font-family: var(--font-subheading); }
-
-    .header-title h1 { font-family: var(--font-heading); font-size: 1.45rem; color: var(--color-primary); }
-    .header-title p { font-size: 0.84rem; color: var(--color-text-muted); }
-    .header-actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+    .header-title h1 { font-family: var(--font-head); font-size: 1.35rem; color: var(--primary); letter-spacing: -0.02em; }
+    .header-title p { font-size: 0.8rem; color: var(--text-3); margin-top: 1px; }
+    .header-actions { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; justify-content: flex-end; flex-shrink: 0; }
 
     .global-search-wrap {
       display: flex; align-items: center; gap: 0.5rem;
-      background: #f9fafb; border-radius: var(--radius-pill);
-      border: 1px solid var(--color-border); padding: 0.4rem 0.8rem; min-width: 260px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r-pill); padding: 0.42rem 0.9rem; min-width: 240px;
+      transition: var(--t);
     }
-    .global-search-wrap input { border: none; background: transparent; width: 160px; font-size: 0.85rem; }
-    .global-search-wrap input::placeholder { color: #94a3b8; }
+    .global-search-wrap:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+    .global-search-wrap input { border: none; background: transparent; width: 150px; font-size: 0.84rem; color: var(--text); }
+    .global-search-wrap input::placeholder { color: var(--text-3); }
 
+    /* ─── NOTIFICATION BELL ─── */
+    .notif-btn {
+      position: relative;
+      width: 36px; height: 36px;
+      border-radius: var(--r-sm);
+      background: var(--surface); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-2); transition: var(--t); font-size: 0.9rem;
+    }
+    .notif-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .notif-badge {
+      position: absolute; top: -5px; right: -5px;
+      min-width: 18px; height: 18px; padding: 0 4px;
+      background: var(--error); color: #fff;
+      border-radius: var(--r-pill); font-size: 0.62rem; font-weight: 700;
+      display: none; align-items: center; justify-content: center;
+      border: 2px solid var(--bg);
+    }
+    .notif-badge.visible { display: flex; }
+    .notif-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0;
+      width: 320px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--r-lg);
+      box-shadow: var(--shadow-lg); z-index: 99;
+      display: none; overflow: hidden;
+    }
+    .notif-dropdown.open { display: block; }
+    .notif-dropdown-head {
+      padding: 0.9rem 1.1rem 0.7rem;
+      border-bottom: 1px solid var(--border-2);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .notif-dropdown-head strong { font-size: 0.85rem; }
+    .notif-clear-btn { font-size: 0.75rem; color: var(--text-3); transition: var(--t); }
+    .notif-clear-btn:hover { color: var(--error); }
+    .notif-list { max-height: 300px; overflow-y: auto; }
+    .notif-item {
+      padding: 0.75rem 1.1rem; border-bottom: 1px solid var(--border-2);
+      display: flex; gap: 0.7rem; align-items: flex-start;
+      animation: slideInNotif 0.2s ease;
+    }
+    @keyframes slideInNotif {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-icon { width: 30px; height: 30px; border-radius: 50%; background: var(--info-bg); color: var(--info); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; }
+    .notif-text { font-size: 0.82rem; }
+    .notif-text strong { display: block; color: var(--text); margin-bottom: 1px; }
+    .notif-text span { color: var(--text-3); font-size: 0.75rem; }
+    .notif-empty { padding: 1.5rem; text-align: center; color: var(--text-3); font-size: 0.83rem; }
+
+    /* ─── BUTTONS ─── */
     .btn {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.6rem 1.1rem; font-size: 0.82rem; font-weight: 600;
-      border-radius: var(--radius-pill); border: 1px solid transparent;
-      background: #e2e8f0; color: var(--color-primary); transition: var(--transition);
-      font-family: var(--font-subheading);
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.55rem 1rem; font-size: 0.82rem; font-weight: 600;
+      border-radius: var(--r-pill); border: 1px solid transparent;
+      transition: var(--t); white-space: nowrap;
     }
-    .btn-primary { background: linear-gradient(135deg, #E6C265, #D4AF37); color: var(--color-primary); border-color: transparent; box-shadow: 0 3px 10px var(--color-accent-soft); }
-    .btn-primary:hover { filter: brightness(1.03); transform: translateY(-1px); }
-    .btn-secondary { background: #ffffff; color: var(--color-primary); border-color: var(--color-primary); }
-    .btn-secondary:hover { background: var(--color-primary); color: #ffffff; }
+    .btn-primary {
+      background: var(--primary); color: #fff;
+      box-shadow: 0 2px 8px rgba(10,22,40,0.25);
+    }
+    .btn-primary:hover { background: var(--primary-mid); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(10,22,40,0.3); }
+    .btn-gold {
+      background: linear-gradient(135deg, #E2BC5E, #C9A84C);
+      color: var(--primary); border-color: transparent;
+      box-shadow: 0 2px 8px var(--gold-soft);
+    }
+    .btn-gold:hover { filter: brightness(1.04); transform: translateY(-1px); }
+    .btn-secondary { background: var(--surface); color: var(--primary); border-color: var(--border); }
+    .btn-secondary:hover { background: var(--primary); color: #fff; }
 
-    .card { background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); box-shadow: var(--shadow-sm); padding: 1.2rem 1.3rem; }
+    /* ─── MAIN / PAGES ─── */
+    .main { grid-column: 2; overflow: auto; padding: 1.4rem 1.5rem; display: grid; gap: 1.2rem; align-content: flex-start; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ─── CARDS ─── */
+    .card { background: var(--surface); border-radius: var(--r-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 1.2rem 1.3rem; }
     .panel { display: flex; flex-direction: column; gap: 1rem; }
-    .panel-head h2 { font-family: var(--font-heading); font-size: 1.2rem; color: var(--color-primary); }
-    .panel-head p { font-size: 0.82rem; color: var(--color-text-muted); }
+    .panel-head h2 { font-family: var(--font-head); font-size: 1.2rem; color: var(--primary); letter-spacing: -0.02em; }
+    .panel-head p { font-size: 0.8rem; color: var(--text-3); margin-top: 2px; }
 
-    .stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 0.9rem; }
-    .stat-card { padding: 0.9rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-border); background: #ffffff; }
-    .stat-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); font-family: var(--font-subheading); }
-    .stat-value { font-family: var(--font-tech); font-size: 1.4rem; margin-top: 0.2rem; color: var(--color-primary); }
-    .stat-help { margin-top: 0.1rem; font-size: 0.78rem; color: var(--color-text-muted); }
+    /* ─── STATS ─── */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; }
+    .stat-card {
+      padding: 1rem 1.1rem; border-radius: var(--r-md);
+      background: var(--surface); border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .stat-card::after {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 3px; height: 100%; background: var(--gold); border-radius: 0 0 0 0;
+    }
+    .stat-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); }
+    .stat-value { font-family: var(--font-mono); font-size: 1.6rem; margin-top: 0.3rem; color: var(--primary); line-height: 1; }
+    .stat-help { margin-top: 0.3rem; font-size: 0.76rem; color: var(--text-3); }
 
-    .today-section-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 1rem; align-items: flex-start; }
-    .today-column-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--color-text-muted); }
-    .today-group-header { font-size: 0.86rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--color-primary); display: flex; justify-content: space-between; align-items: center; }
-    .today-task-list { list-style: none; margin: 0; padding: 0; }
-    .today-task-item { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.4rem; border-bottom: 1px dashed var(--color-border); font-size: 0.82rem; }
+    /* ─── TODAY VIEW ─── */
+    .today-section-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 1rem; }
+    .today-section { background: var(--surface); border-radius: var(--r-lg); border: 1px solid var(--border); padding: 1rem; }
+    .today-col-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.4rem; }
+    .today-group { margin-bottom: 0.9rem; }
+    .today-group:last-child { margin-bottom: 0; }
+    .today-group-name { font-size: 0.87rem; font-weight: 600; color: var(--primary); margin-bottom: 0.3rem; display: flex; align-items: center; justify-content: space-between; }
+    .today-task-item { display: flex; align-items: center; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px dashed var(--border-2); font-size: 0.81rem; color: var(--text-2); }
     .today-task-item:last-child { border-bottom: none; }
-    .tag-pill { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.7rem; background: var(--color-gray-soft); color: #0f172a; }
-    .tag-overdue { background: var(--color-error-bg); color: var(--color-error); }
-    .tag-soon { background: var(--color-warning-bg); color: var(--color-warning); }
 
-    .form-grid { display: grid; gap: 0.95rem; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.95rem; }
-    .field { display: flex; flex-direction: column; gap: 0.35rem; }
-    .field label { font-family: var(--font-subheading); font-size: 0.82rem; font-weight: 500; color: var(--color-primary); }
-    .input, .textarea, .file-input, .select-input { padding: 0.75rem 0.9rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: #f9fafb; font-size: 0.9rem; transition: var(--transition); }
-    .input:focus, .textarea:focus, .file-input:focus, .select-input:focus { border-color: var(--color-primary); background: #ffffff; box-shadow: 0 0 0 2px var(--color-primary-soft); }
-    .textarea { min-height: 80px; resize: vertical; }
-    .muted-note { font-size: 0.75rem; color: var(--color-text-muted); }
+    /* ─── TAGS / PILLS ─── */
+    .tag-pill { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.12rem 0.55rem; border-radius: var(--r-pill); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    .tag-overdue { background: var(--error-bg); color: var(--error); }
+    .tag-soon    { background: var(--warn-bg); color: var(--warn); }
+    .tag-today   { background: var(--info-bg); color: var(--info); }
+    .tag-done    { background: var(--success-bg); color: var(--success); }
+    .tag-pending { background: #F1F0EB; color: var(--text-2); }
+    .tag-missed  { background: #F1F5F9; color: #64748B; }
 
-    .staff-checkbox-wrap { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 0.4rem; }
-    .staff-checkbox-item { display: flex; align-items: center; gap: 5px; font-size: 0.85rem; background: #ffffff; border: 1px solid var(--color-border); padding: 0.4rem 0.8rem; border-radius: var(--radius-pill); cursor: pointer; transition: 0.2s ease; }
-    .staff-checkbox-item:hover { border-color: var(--color-primary); }
+    /* ─── FORM ─── */
+    .form-grid { display: grid; gap: 0.9rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.9rem; }
+    .field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .field label { font-size: 0.79rem; font-weight: 600; color: var(--text-2); letter-spacing: 0.01em; }
+    .field label .req { color: var(--error); margin-left: 2px; }
+    .input, .textarea, .file-input, .select-input {
+      padding: 0.7rem 0.9rem;
+      border-radius: var(--r-sm); border: 1px solid var(--border);
+      background: var(--surface-2); font-size: 0.88rem;
+      transition: var(--t); color: var(--text);
+    }
+    .input:focus, .textarea:focus, .file-input:focus, .select-input:focus {
+      border-color: var(--primary); background: var(--surface);
+      box-shadow: 0 0 0 3px rgba(10,22,40,0.07);
+    }
+    .textarea { min-height: 72px; resize: vertical; }
+    .muted-note { font-size: 0.74rem; color: var(--text-3); }
 
+    /* Address section styling */
+    .address-block {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: var(--r-md); padding: 1rem; display: grid; gap: 0.75rem;
+    }
+    .address-block-title {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-3);
+      display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.15rem;
+    }
+
+    /* Portal box */
+    .portal-creation-box {
+      padding: 1rem; background: var(--success-bg);
+      border: 1px solid rgba(13,122,78,0.2); border-radius: var(--r-md);
+    }
+    .portal-box-title { font-size: 0.82rem; font-weight: 700; color: var(--success); display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.7rem; }
+    .portal-exists-box {
+      padding: 0.75rem 1rem; background: var(--success-bg);
+      border: 1px solid rgba(13,122,78,0.2); border-radius: var(--r-md);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .portal-exists-box .pe-info { font-size: 0.82rem; color: var(--success); display: flex; align-items: center; gap: 0.5rem; }
+    .portal-exists-box .pe-email { font-family: var(--font-mono); font-size: 0.78rem; }
+
+    /* Staff checkbox */
+    .staff-checkbox-wrap { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.3rem; }
+    .staff-checkbox-item {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.82rem; background: var(--surface);
+      border: 1px solid var(--border); padding: 0.35rem 0.75rem;
+      border-radius: var(--r-pill); cursor: pointer; transition: var(--t);
+    }
+    .staff-checkbox-item:hover { border-color: var(--primary); }
+
+    /* ─── CLIENT LIST ─── */
     .clients-wrap { display: grid; gap: 1rem; }
-    .toolbar { display: grid; grid-template-columns: 1.2fr auto auto auto; gap: 0.8rem; align-items: center; }
-    .search { padding: 0.7rem 1rem; border-radius: var(--radius-pill); border: 1px solid var(--color-border); background: #f9fafb; font-size: 0.88rem; }
-    .select-filter { padding: 0.7rem 1rem; border-radius: var(--radius-pill); border: 1px solid var(--color-border); background: #ffffff; font-size: 0.85rem; }
-
-    .client-list { display: grid; gap: 0.7rem; }
-    .client-row { border-radius: var(--radius-md); border: 1px solid var(--color-border); background: #ffffff; padding: 0.65rem 0.8rem; }
-    .client-row-header { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; cursor: pointer; }
-    .client-row-title { display: flex; align-items: center; gap: 0.5rem; }
-    .client-name { font-family: var(--font-heading); font-size: 1rem; color: var(--color-primary); }
-    .client-meta { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.1rem; font-size: 0.74rem; color: var(--color-text-muted); }
-
-    .status-pill { display: inline-flex; align-items: center; padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; border: 1px solid #bae6fd; background: #eff6ff; color: #075985; }
-    .status-pill.inactive { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
-
-    .client-row-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
-    .mini-btn { padding: 0.35rem 0.8rem; border-radius: 999px; font-size: 0.78rem; border: 1px solid var(--color-border); background: #f8fafc; }
-    .mini-btn-danger { color: var(--color-error); border-color: var(--color-error-bg); background: var(--color-error-bg); }
-    .mini-btn-success { color: var(--color-success); border-color: var(--color-success-bg); background: var(--color-success-bg); }
-
-    .client-row-body { margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid #e2e8f0; display: none; }
-    .client-row-body.open { display: grid; gap: 0.8rem; }
-
-    .details-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0.7rem; }
-    .detail { padding: 0.7rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: #f9fafb; font-size: 0.8rem; }
-    .detail-label { font-size: 0.74rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-muted); margin-bottom: 0.2rem; }
-    .detail-value { font-size: 0.85rem; }
-    .mono { font-family: var(--font-tech); font-size: 0.8rem; }
-
-    .password-box { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
-    .password-mask { padding: 0.35rem 0.6rem; border-radius: 8px; background: #e5e7eb; font-family: var(--font-tech); font-size: 0.8rem; letter-spacing: 0.16em; min-width: 80px; text-align: center; }
-
-    .docs-list { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-    .doc-chip { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.32rem 0.6rem; border-radius: 999px; font-size: 0.76rem; border: 1px solid #e2e8f0; background: #f8fafc; }
-    .doc-tag { font-size: 0.72rem; text-transform: uppercase; padding: 0.1rem 0.4rem; border-radius: 999px; background: #eef2ff; color: #4338ca; }
-
-    .tasks-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 0.7rem; }
-    .task-card { border-radius: var(--radius-md); border: 1px solid var(--color-border); background: #ffffff; padding: 0.7rem; font-size: 0.82rem; display: flex; flex-direction: column; gap: 0.4rem; }
-    .task-title { font-weight: 600; color: var(--color-primary); font-size: 0.85rem; }
-    .task-info { font-family: var(--font-tech); font-size: 0.78rem; color: var(--color-text-muted); }
-    .task-bottom { margin-top: auto; padding-top: 0.4rem; border-top: 1px dashed #e2e8f0; display: flex; flex-direction: column; gap: 0.35rem; }
-    .status-pill-task { display: inline-flex; align-items: center; padding: 0.15rem 0.55rem; border-radius: 999px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; }
-    .status-overdue { background: var(--color-error-bg); color: var(--color-error); }
-    .status-upcoming { background: var(--color-warning-bg); color: var(--color-warning); }
-    .status-pending { background: #e5e7eb; color: #4b5563; }
-    .status-done { background: var(--color-success-bg); color: var(--color-success); }
-    .status-missed { background: #f3f4f6; color: #6b7280; }
-    .done-text { font-size: 0.78rem; color: var(--color-success); display: flex; align-items: center; gap: 0.3rem; }
-    .date-input-group { display: flex; gap: 0.3rem; align-items: center; }
-    .date-input-group input[type="date"] { flex: 1; padding: 0.35rem; border-radius: 6px; border: 1px solid var(--color-border); font-size: 0.78rem; }
-
-    .notes-wrap { border-radius: var(--radius-md); border: 1px solid var(--color-border); background: #ffffff; padding: 0.7rem; font-size: 0.8rem; }
-    .notes-list { list-style: none; margin: 0.5rem 0 0; padding: 0; max-height: 150px; overflow-y: auto; }
-    .note-item { padding: 0.35rem 0; border-bottom: 1px dashed #e2e8f0; }
-    .note-item:last-child { border-bottom: none; }
-    .note-ts { font-size: 0.7rem; color: var(--color-text-muted); }
-
-    /* Client notes section in admin view */
-    .client-notes-wrap {
-      border-radius: var(--radius-md);
-      border: 1px solid #bfdbfe;
-      background: #eff6ff;
-      padding: 0.7rem;
-      font-size: 0.8rem;
+    .toolbar { display: grid; grid-template-columns: 1.4fr auto auto auto; gap: 0.7rem; align-items: center; }
+    .search, .select-filter {
+      padding: 0.65rem 1rem; border-radius: var(--r-pill);
+      border: 1px solid var(--border); background: var(--surface);
+      font-size: 0.85rem; transition: var(--t);
     }
-    .client-notes-wrap strong { color: #1d4ed8; }
-    .client-notes-badge {
+    .search:focus, .select-filter:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(10,22,40,0.07); }
+
+    /* ─── CLIENT ROW ─── */
+    .client-row {
+      border-radius: var(--r-lg); border: 1px solid var(--border);
+      background: var(--surface); overflow: hidden;
+      transition: box-shadow var(--t), border-color var(--t);
+    }
+    .client-row:hover { border-color: rgba(10,22,40,0.18); box-shadow: var(--shadow-md); }
+    .client-row-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 0.8rem; padding: 0.9rem 1rem; cursor: pointer;
+    }
+    .client-row-title { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+    .client-avatar {
+      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--primary), var(--primary-mid));
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-head); font-size: 1rem;
+    }
+    .client-name { font-family: var(--font-head); font-size: 1.05rem; color: var(--primary); letter-spacing: -0.01em; }
+    .client-meta { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.15rem; }
+    .client-meta-chip {
+      font-size: 0.71rem; color: var(--text-3); background: var(--surface-2);
+      padding: 0.1rem 0.5rem; border-radius: var(--r-pill); border: 1px solid var(--border-2);
+      font-family: var(--font-mono);
+    }
+    .client-row-actions { display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; flex-shrink: 0; }
+
+    .mini-btn {
+      padding: 0.3rem 0.7rem; border-radius: var(--r-pill);
+      font-size: 0.75rem; font-weight: 600;
+      border: 1px solid var(--border); background: var(--surface-2);
+      color: var(--text-2); transition: var(--t);
+    }
+    .mini-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .mini-btn-danger { color: var(--error); border-color: var(--error-bg); background: var(--error-bg); }
+    .mini-btn-danger:hover { background: var(--error); color: #fff; }
+    .mini-btn-success { color: var(--success); border-color: var(--success-bg); background: var(--success-bg); }
+    .mini-btn-gold { color: var(--warn); border-color: var(--warn-bg); background: var(--warn-bg); }
+
+    /* ─── CLIENT STATUS PILL ─── */
+    .status-pill {
       display: inline-flex; align-items: center; gap: 0.3rem;
-      font-size: 0.7rem; background: #dbeafe; color: #1d4ed8;
-      padding: 0.1rem 0.5rem; border-radius: 999px; margin-left: 0.4rem;
-      font-weight: 600; text-transform: uppercase;
+      padding: 0.15rem 0.65rem; border-radius: var(--r-pill);
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+      background: var(--success-bg); color: var(--success); border: 1px solid rgba(13,122,78,0.2);
+    }
+    .status-pill.inactive { background: var(--error-bg); color: var(--error); border-color: rgba(192,57,43,0.2); }
+
+    /* ─── CLIENT DETAILS (expanded) ─── */
+    .client-row-body { display: none; border-top: 1px solid var(--border-2); }
+    .client-row-body.open { display: block; }
+
+    /* TAB SYSTEM for client details */
+    .client-tabs-bar {
+      display: flex; gap: 0; border-bottom: 1px solid var(--border-2);
+      background: var(--surface-2); padding: 0 1rem;
+    }
+    .client-tab-btn {
+      padding: 0.7rem 1rem; font-size: 0.81rem; font-weight: 600;
+      color: var(--text-3); border-bottom: 2px solid transparent;
+      transition: var(--t); display: flex; align-items: center; gap: 0.4rem;
+      margin-bottom: -1px;
+    }
+    .client-tab-btn:hover { color: var(--text); }
+    .client-tab-btn.active { color: var(--primary); border-bottom-color: var(--gold); }
+    .client-tab-panel { display: none; padding: 1.1rem 1rem; }
+    .client-tab-panel.active { display: block; }
+
+    /* Details grid (info tab) */
+    .details-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
+    .detail-item { padding: 0.75rem; border-radius: var(--r-sm); border: 1px solid var(--border-2); background: var(--surface-2); }
+    .detail-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); margin-bottom: 0.3rem; }
+    .detail-value { font-size: 0.84rem; color: var(--text); }
+    .detail-value.mono { font-family: var(--font-mono); font-size: 0.78rem; }
+
+    /* Password vault row */
+    .password-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.2rem; }
+    .pwd-mask { font-family: var(--font-mono); font-size: 0.78rem; background: #EEF0F3; border-radius: var(--r-sm); padding: 0.25rem 0.65rem; min-width: 90px; text-align: center; letter-spacing: 0.1em; }
+
+    /* Tasks tab */
+    .tasks-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.65rem; }
+    .task-card {
+      border-radius: var(--r-md); border: 1px solid var(--border);
+      background: var(--surface); padding: 0.75rem;
+      display: flex; flex-direction: column; gap: 0.4rem;
+      transition: box-shadow var(--t);
+    }
+    .task-card:hover { box-shadow: var(--shadow-sm); }
+    .task-card-name { font-size: 0.84rem; font-weight: 700; color: var(--primary); }
+    .task-card-date { font-family: var(--font-mono); font-size: 0.73rem; color: var(--text-3); }
+    .task-card-bottom { margin-top: auto; padding-top: 0.5rem; border-top: 1px dashed var(--border-2); }
+    .task-done-text { font-size: 0.75rem; color: var(--success); display: flex; align-items: center; gap: 0.3rem; }
+    .date-input-group { display: flex; gap: 0.3rem; align-items: center; }
+    .date-input-group input[type="date"] { flex: 1; padding: 0.3rem 0.5rem; border-radius: var(--r-sm); border: 1px solid var(--border); font-size: 0.76rem; }
+
+    /* Notes tab */
+    .notes-section { display: grid; gap: 0.9rem; }
+    .notes-input-row { display: flex; gap: 0.5rem; }
+    .notes-input-row .input { flex: 1; }
+    .notes-list { list-style: none; max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4rem; }
+    .note-item {
+      padding: 0.6rem 0.75rem; border-radius: var(--r-sm);
+      background: var(--surface-2); border: 1px solid var(--border-2);
+    }
+    .note-text { font-size: 0.83rem; }
+    .note-ts { font-size: 0.7rem; color: var(--text-3); margin-top: 0.2rem; }
+
+    .notes-divider { height: 1px; background: var(--border-2); margin: 0.4rem 0; }
+    .client-notes-badge {
+      font-size: 0.65rem; background: var(--info-bg); color: var(--info);
+      padding: 0.1rem 0.45rem; border-radius: var(--r-pill);
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
     }
 
-    .invoice-table-wrap { overflow: auto; }
-    table { width: 100%; border-collapse: collapse; border-radius: var(--radius-md); overflow: hidden; background: #ffffff; }
-    th, td { padding: 0.72rem 0.8rem; border-bottom: 1px solid #e2e8f0; font-size: 0.82rem; text-align: left; }
-    th { text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.74rem; background: #f1f5f9; color: #334155; }
+    /* Documents tab */
+    .docs-group { margin-bottom: 0.7rem; }
+    .docs-group-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.4rem; }
+    .docs-chip-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .doc-chip {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.3rem 0.65rem; border-radius: var(--r-pill);
+      font-size: 0.75rem; border: 1px solid var(--border); background: var(--surface-2);
+    }
+    .doc-tag { font-size: 0.65rem; text-transform: uppercase; padding: 0.1rem 0.4rem; border-radius: var(--r-pill); background: var(--info-bg); color: var(--info); font-weight: 700; }
 
+    /* ─── INVOICE TRACKER ─── */
+    .invoice-table-wrap { overflow: auto; border-radius: var(--r-md); border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); }
+    th, td { padding: 0.75rem 0.9rem; border-bottom: 1px solid var(--border-2); font-size: 0.82rem; text-align: left; }
+    th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em; background: var(--surface-2); color: var(--text-2); font-weight: 700; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #FAFAF6; }
+
+    .invoice-status-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.2rem 0.65rem; border-radius: var(--r-pill);
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .inv-not_raised { background: #F1F0EB; color: #64748B; }
+    .inv-raised     { background: var(--info-bg); color: var(--info); }
+    .inv-paid       { background: var(--success-bg); color: var(--success); }
+    .inv-follow_up  { background: var(--warn-bg); color: var(--warn); }
+
+    /* ─── CHART ─── */
     .chart-wrap { min-height: 260px; position: relative; }
 
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,0.4); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 1.5rem; z-index: 50; opacity: 0; transition: opacity 0.25s ease; }
+    /* ─── MODAL ─── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(10,22,40,0.5); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      padding: 1.5rem; z-index: 50; opacity: 0; transition: opacity 0.25s ease;
+    }
     .modal-backdrop.open { display: flex; opacity: 1; }
-    .modal { background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--color-border); max-width: 840px; width: 100%; max-height: 90vh; overflow: auto; padding: 1.4rem 1.5rem; box-shadow: var(--shadow-md); }
-    .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
-    .modal-head h2 { font-family: var(--font-heading); font-size: 1.2rem; color: var(--color-primary); }
-    .modal-close { font-size: 1.3rem; color: var(--color-text-muted); }
+    .modal {
+      background: var(--surface); border-radius: var(--r-xl);
+      border: 1px solid var(--border); max-width: 860px; width: 100%;
+      max-height: 90vh; overflow: auto; padding: 1.5rem;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.1rem; padding-bottom: 0.9rem;
+      border-bottom: 1px solid var(--border-2);
+    }
+    .modal-head h2 { font-family: var(--font-head); font-size: 1.3rem; color: var(--primary); letter-spacing: -0.02em; }
+    .modal-close { width: 32px; height: 32px; border-radius: var(--r-sm); background: var(--surface-2); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--text-3); transition: var(--t); }
+    .modal-close:hover { background: var(--error-bg); color: var(--error); }
 
-    .empty { padding: 2.3rem 1.5rem; text-align: center; border-radius: var(--radius-lg); border: 1px dashed var(--color-border); background: #f9fafb; font-size: 0.88rem; }
-    .empty h3 { font-family: var(--font-heading); font-size: 1.1rem; margin-bottom: 0.4rem; color: var(--color-primary); }
+    /* ─── SECTION DIVIDER ─── */
+    .section-divider { height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); margin: 0.3rem 0; }
+    .form-section-title {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-3);
+      display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0;
+    }
+    .form-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border-2); }
 
-    .toast { position: fixed; right: 18px; bottom: 18px; max-width: 260px; background: var(--color-success); color: #ffffff; padding: 0.75rem 1rem; border-radius: var(--radius-sm); box-shadow: var(--shadow-md); font-size: 0.82rem; opacity: 0; transform: translateY(10px); transition: 0.25s ease; z-index: 60; }
-    .toast.error { background: var(--color-error); }
-    .toast.show { opacity: 1; transform: translateY(0); }
+    /* ─── EMPTY STATE ─── */
+    .empty {
+      padding: 3rem 1.5rem; text-align: center;
+      border-radius: var(--r-lg); border: 1.5px dashed var(--border);
+      background: var(--surface-2); font-size: 0.87rem; color: var(--text-3);
+    }
+    .empty-icon { font-size: 2rem; margin-bottom: 0.8rem; opacity: 0.4; }
+    .empty h3 { font-family: var(--font-head); font-size: 1.1rem; color: var(--text-2); margin-bottom: 0.3rem; }
+
+    /* ─── TOAST ─── */
+    .toast {
+      position: fixed; right: 1.2rem; bottom: 1.2rem; max-width: 280px;
+      background: var(--primary); color: #fff;
+      padding: 0.8rem 1.1rem; border-radius: var(--r-md);
+      box-shadow: var(--shadow-lg); font-size: 0.83rem; font-weight: 500;
+      opacity: 0; transform: translateY(12px) scale(0.97);
+      transition: 0.25s cubic-bezier(0.34,1.56,0.64,1); z-index: 200;
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .toast::before { content: '✓'; width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; }
+    .toast.error { background: var(--error); }
+    .toast.error::before { content: '✕'; }
+    .toast.show { opacity: 1; transform: translateY(0) scale(1); }
 
     /* ─── CLIENT PORTAL ─── */
     #clientPortalScreen {
-      display: none;
-      min-height: 100vh;
-      height: 100%;
-      flex-direction: column;
-      overflow: auto;
-      background: var(--color-bg-light);
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      opacity: 0;
-      transition: opacity 0.45s ease;
+      display: none; min-height: 100vh; height: 100%;
+      flex-direction: column; overflow: auto;
+      background: var(--bg); position: fixed; inset: 0; z-index: 100;
+      opacity: 0; transition: opacity 0.4s ease;
     }
-    #clientPortalScreen.cp-visible {
-      display: flex;
-      opacity: 1;
-    }
+    #clientPortalScreen.cp-visible { display: flex; opacity: 1; }
     .cp-header {
-      background: var(--color-primary);
-      color: white;
-      padding: 0.9rem 1.6rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-      box-shadow: 0 2px 12px rgba(10,37,64,0.18);
+      background: var(--primary); color: white;
+      padding: 0.85rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0; box-shadow: 0 2px 16px rgba(10,22,40,0.25);
     }
     .cp-brand { display: flex; align-items: center; gap: 0.8rem; }
     .cp-brand-logo {
-      width: 38px; height: 38px; border-radius: 10px;
-      background: linear-gradient(135deg, rgba(212,175,55,0.35), rgba(255,255,255,0.1));
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, rgba(201,168,76,0.3), rgba(255,255,255,0.05));
+      border: 1px solid rgba(201,168,76,0.25);
       display: flex; align-items: center; justify-content: center; overflow: hidden;
     }
-    .cp-brand-logo img { width: 28px; height: 28px; object-fit: contain; }
-    .cp-brand-name { font-family: var(--font-heading); font-size: 1.1rem; color: white; }
-    .cp-brand-sub { font-size: 0.72rem; color: rgba(255,255,255,0.6); }
+    .cp-brand-logo img { width: 26px; height: 26px; object-fit: contain; }
+    .cp-brand-name { font-family: var(--font-head); font-size: 1.05rem; color: white; }
+    .cp-brand-sub { font-size: 0.7rem; color: rgba(255,255,255,0.45); }
     .cp-badge {
       display: inline-flex; align-items: center; gap: 0.35rem;
-      padding: 0.25rem 0.75rem; border-radius: 999px;
-      background: rgba(212,175,55,0.22); color: #E6C265;
-      font-size: 0.74rem; font-weight: 700; border: 1px solid rgba(212,175,55,0.35);
+      padding: 0.22rem 0.7rem; border-radius: var(--r-pill);
+      background: rgba(201,168,76,0.18); color: #E2BC5E;
+      font-size: 0.72rem; font-weight: 700; border: 1px solid rgba(201,168,76,0.3);
       text-transform: uppercase; letter-spacing: 0.05em;
     }
     .cp-logout-btn {
       display: flex; align-items: center; gap: 0.5rem;
-      padding: 0.5rem 1rem; border-radius: var(--radius-pill);
-      background: rgba(255,255,255,0.1); color: white;
-      border: 1px solid rgba(255,255,255,0.25);
-      font-size: 0.82rem; font-weight: 600; transition: var(--transition);
+      padding: 0.48rem 1rem; border-radius: var(--r-pill);
+      background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.15); font-size: 0.81rem; font-weight: 600;
+      transition: var(--t);
     }
-    .cp-logout-btn:hover { background: rgba(255,255,255,0.2); }
-
-    .cp-scroll { flex: 1; overflow-y: auto; padding: 1.6rem; }
-    .cp-main {
-      max-width: 1080px;
-      margin: 0 auto;
-      display: grid;
-      gap: 1.2rem;
-    }
+    .cp-logout-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .cp-scroll { flex: 1; overflow-y: auto; padding: 1.5rem; }
+    .cp-main { max-width: 1060px; margin: 0 auto; display: grid; gap: 1.2rem; }
     .cp-hero {
-      background: linear-gradient(135deg, var(--color-primary) 0%, #1e4976 100%);
-      border-radius: var(--radius-lg);
-      padding: 1.6rem 1.8rem;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
+      background: linear-gradient(135deg, var(--primary) 0%, #1C3A6A 100%);
+      border-radius: var(--r-xl); padding: 1.6rem 1.8rem;
+      color: white; display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem; position: relative; overflow: hidden;
     }
-    .cp-hero-name { font-family: var(--font-heading); font-size: 1.8rem; margin-bottom: 0.2rem; }
-    .cp-hero-sub { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
-    .cp-hero-stats { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+    .cp-hero::before {
+      content: ''; position: absolute; top: -30px; right: -30px;
+      width: 160px; height: 160px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.18), transparent 70%);
+    }
+    .cp-hero-name { font-family: var(--font-head); font-size: 1.9rem; margin-bottom: 0.2rem; letter-spacing: -0.02em; }
+    .cp-hero-sub { font-size: 0.83rem; color: rgba(255,255,255,0.6); font-family: var(--font-mono); }
+    .cp-hero-stats { display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .cp-hero-stat { text-align: center; }
-    .cp-hero-stat-val { font-family: var(--font-tech); font-size: 1.5rem; color: #E6C265; }
-    .cp-hero-stat-label { font-size: 0.72rem; color: rgba(255,255,255,0.6); }
-
+    .cp-hero-stat-val { font-family: var(--font-mono); font-size: 1.7rem; color: #E2BC5E; line-height: 1; }
+    .cp-hero-stat-label { font-size: 0.7rem; color: rgba(255,255,255,0.55); margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.06em; }
     .cp-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-    .cp-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
-    .cp-card { background: white; border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: 1.2rem 1.3rem; box-shadow: var(--shadow-sm); }
+    .cp-card { background: var(--surface); border-radius: var(--r-lg); border: 1px solid var(--border); padding: 1.2rem 1.3rem; box-shadow: var(--shadow-sm); }
     .cp-card-title {
-      font-family: var(--font-heading); font-size: 1rem; color: var(--color-primary);
-      margin-bottom: 0.8rem; padding-bottom: 0.6rem;
-      border-bottom: 1px solid var(--color-border);
-      display: flex; align-items: center; gap: 0.5rem;
+      font-family: var(--font-head); font-size: 1rem; color: var(--primary);
+      margin-bottom: 0.9rem; padding-bottom: 0.65rem;
+      border-bottom: 1px solid var(--border-2);
+      display: flex; align-items: center; gap: 0.55rem; letter-spacing: -0.01em;
     }
-    .cp-card-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
-    .cp-icon-blue { background: #dbeafe; color: #1d4ed8; }
-    .cp-icon-green { background: var(--color-success-bg); color: var(--color-success); }
-    .cp-icon-amber { background: var(--color-warning-bg); color: var(--color-warning); }
-    .cp-icon-purple { background: #ede9fe; color: #7c3aed; }
-    .cp-icon-gold { background: var(--color-accent-soft); color: #92700f; }
-
-    .cp-info-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.45rem 0; border-bottom: 1px dashed #f1f5f9; font-size: 0.84rem; }
+    .cp-card-icon { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; }
+    .cp-icon-blue   { background: var(--info-bg); color: var(--info); }
+    .cp-icon-green  { background: var(--success-bg); color: var(--success); }
+    .cp-icon-amber  { background: var(--warn-bg); color: var(--warn); }
+    .cp-icon-purple { background: #EDE9FE; color: #7C3AED; }
+    .cp-icon-gold   { background: var(--gold-soft); color: #92700F; }
+    .cp-info-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.45rem 0; border-bottom: 1px dashed var(--border-2); font-size: 0.83rem; }
     .cp-info-row:last-child { border-bottom: none; }
-    .cp-info-label { color: var(--color-text-muted); font-size: 0.78rem; font-family: var(--font-subheading); text-transform: uppercase; letter-spacing: 0.04em; }
-    .cp-info-value { font-weight: 500; color: var(--color-text-dark); font-family: var(--font-tech); font-size: 0.82rem; }
-
+    .cp-info-label { color: var(--text-3); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cp-info-value { font-weight: 500; color: var(--text); font-family: var(--font-mono); font-size: 0.8rem; text-align: right; max-width: 60%; }
     .cp-task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.6rem; }
-    .cp-task-item { border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: #fafafa; padding: 0.65rem 0.75rem; }
-    .cp-task-name { font-size: 0.82rem; font-weight: 600; color: var(--color-primary); margin-bottom: 0.2rem; }
-    .cp-task-date { font-family: var(--font-tech); font-size: 0.72rem; color: var(--color-text-muted); margin-bottom: 0.35rem; }
-
+    .cp-task-item { border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--surface-2); padding: 0.7rem; }
+    .cp-task-name { font-size: 0.82rem; font-weight: 700; color: var(--primary); margin-bottom: 0.2rem; }
+    .cp-task-date { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-3); margin-bottom: 0.3rem; }
     .cp-note-add-area { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; }
-    .cp-note-input { flex: 1; padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: #f9fafb; font-size: 0.88rem; transition: var(--transition); }
-    .cp-note-input:focus { border-color: var(--color-primary); background: white; box-shadow: 0 0 0 2px var(--color-primary-soft); }
-    .cp-note-btn { padding: 0.65rem 1.1rem; border-radius: var(--radius-sm); background: var(--color-primary); color: white; font-size: 0.82rem; font-weight: 600; transition: var(--transition); }
-    .cp-note-btn:hover { background: #163557; }
-    .cp-notes-list { list-style: none; max-height: 300px; overflow-y: auto; }
-    .cp-note-item { padding: 0.55rem 0; border-bottom: 1px dashed #e2e8f0; }
-    .cp-note-item:last-child { border-bottom: none; }
-    .cp-note-text { font-size: 0.85rem; color: var(--color-text-dark); margin-bottom: 0.15rem; }
-    .cp-note-ts { font-size: 0.7rem; color: var(--color-text-muted); display: flex; align-items: center; gap: 0.25rem; }
-
+    .cp-note-input {
+      flex: 1; padding: 0.65rem 0.9rem; border-radius: var(--r-sm);
+      border: 1px solid var(--border); background: var(--surface-2);
+      font-size: 0.87rem; transition: var(--t);
+    }
+    .cp-note-input:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px rgba(10,22,40,0.07); }
+    .cp-note-btn {
+      padding: 0.65rem 1.1rem; border-radius: var(--r-sm);
+      background: var(--primary); color: white; font-size: 0.82rem;
+      font-weight: 700; transition: var(--t);
+    }
+    .cp-note-btn:hover { background: var(--primary-mid); }
+    .cp-notes-list { list-style: none; max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.45rem; }
+    .cp-note-item { padding: 0.6rem 0.8rem; border-radius: var(--r-sm); background: var(--surface-2); border: 1px solid var(--border-2); }
+    .cp-note-text { font-size: 0.84rem; color: var(--text); margin-bottom: 0.2rem; }
+    .cp-note-ts { font-size: 0.7rem; color: var(--text-3); display: flex; align-items: center; gap: 0.25rem; }
+    .cp-empty-note { font-size: 0.81rem; color: var(--text-3); font-style: italic; padding: 0.6rem 0; }
     .cp-staff-list { display: flex; flex-wrap: wrap; gap: 0.6rem; }
     .cp-staff-chip {
       display: flex; align-items: center; gap: 0.5rem;
-      padding: 0.5rem 0.8rem; border-radius: var(--radius-pill);
-      background: #f1f5f9; border: 1px solid var(--color-border);
-      font-size: 0.83rem;
+      padding: 0.45rem 0.8rem; border-radius: var(--r-pill);
+      background: var(--surface-2); border: 1px solid var(--border);
+      font-size: 0.82rem;
     }
     .cp-staff-avatar {
       width: 24px; height: 24px; border-radius: 50%;
-      background: var(--color-primary); color: white;
+      background: var(--primary); color: white;
       display: flex; align-items: center; justify-content: center;
       font-size: 0.65rem; font-weight: 700;
     }
+    .cp-inactive-wall {
+      background: var(--error-bg); border: 1.5px solid rgba(192,57,43,0.2);
+      border-radius: var(--r-xl); padding: 3rem 2rem; text-align: center;
+    }
+    .cp-inactive-wall .wall-icon { font-size: 2.5rem; color: var(--error); margin-bottom: 1rem; }
+    .cp-inactive-wall h2 { font-family: var(--font-head); font-size: 1.5rem; color: var(--error); margin-bottom: 0.5rem; }
+    .cp-inactive-wall p { color: var(--text-2); font-size: 0.88rem; max-width: 360px; margin: 0 auto; }
 
-    .cp-empty-note { font-size: 0.82rem; color: var(--color-text-muted); font-style: italic; padding: 0.6rem 0; }
-
-    /* Portal creation inline box */
-    .portal-creation-box {
-      padding: 1rem;
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      border-radius: var(--radius-md);
-    }
-    .portal-creation-box .portal-box-title {
-      font-family: var(--font-subheading);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #15803d;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-bottom: 0.6rem;
-    }
-    .portal-exists-box {
-      padding: 0.75rem 1rem;
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .portal-exists-box .pe-info { font-size: 0.83rem; color: #15803d; display: flex; align-items: center; gap: 0.4rem; }
-    .portal-exists-box .pe-email { font-family: var(--font-tech); font-size: 0.8rem; color: var(--color-text-dark); }
+    /* ─── STAFF TABLE ─── */
+    #pageStaff .invoice-table-wrap { margin-top: 0.5rem; }
 
     /* ─── RESPONSIVE ─── */
-    @media (max-width: 1120px) {
-      .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
-      .tasks-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
-      .details-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    @media (max-width: 1140px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .tasks-grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .details-grid-3 { grid-template-columns: repeat(2, 1fr); }
       .today-section-grid { grid-template-columns: 1fr; }
       .cp-grid-2 { grid-template-columns: 1fr; }
-      .cp-grid-3 { grid-template-columns: repeat(2,1fr); }
     }
     @media (max-width: 860px) {
       html, body { overflow: auto; height: auto; }
       .dashboard { display: block; height: auto; }
       .sidebar { display: none; }
-      .main { padding: 1.1rem; }
-      .header { padding: 0.8rem 1.1rem; flex-wrap: wrap; gap: 0.7rem; }
+      .main { padding: 1rem; }
+      .header { padding: 0.75rem 1rem; flex-wrap: wrap; gap: 0.6rem; }
       .header-actions { width: 100%; justify-content: flex-start; }
-      .form-row { grid-template-columns: 1fr; }
-      .tasks-grid { grid-template-columns: 1fr; }
+      .form-row, .form-row-3 { grid-template-columns: 1fr; }
       .toolbar { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 560px) {
       .stats { grid-template-columns: 1fr; }
-      .details-grid { grid-template-columns: 1fr; }
+      .details-grid-3 { grid-template-columns: 1fr; }
       .toolbar { grid-template-columns: 1fr; }
-      .login-card { margin: 1rem; padding: 2rem 1.5rem; }
-      .cp-grid-3 { grid-template-columns: 1fr; }
+      .login-card { margin: 1rem; }
       .cp-task-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
-  <div class="dgv-background">
-    <svg viewBox="0 0 1440 800" preserveAspectRatio="none">
-      <path class="dgv-line dgv-line-1" d="M-100,750 C150,650 300,500 650,450 C1000,400 1200,200 1500,100" />
-      <path class="dgv-line dgv-line-2" d="M-100,800 C250,700 450,550 800,500 C1100,450 1300,300 1500,150" />
-    </svg>
-  </div>
 
   <!-- ─── LOGIN ─── -->
   <div id="loginScreen">
@@ -553,15 +764,15 @@
         <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
       </div>
       <h2>growitharshiee</h2>
-      <p>Login to your account</p>
+      <p>Sign in to your account</p>
       <form id="loginForm">
-        <input type="email" id="loginEmail" class="login-input" placeholder="Email" required>
+        <input type="email" id="loginEmail" class="login-input" placeholder="Email address" required>
         <input type="password" id="loginPassword" class="login-input" placeholder="Password" required>
         <button type="submit" class="login-btn" id="loginBtnText">
-          <i class="fa-solid fa-lock"></i> Secure Login
+          <i class="fa-solid fa-lock"></i>&ensp;Secure Login
         </button>
       </form>
-      <div id="loginError" style="margin-top: 1rem;">Invalid credentials or unauthorized access.</div>
+      <div id="loginError"></div>
     </div>
   </div>
 
@@ -584,7 +795,7 @@
     </header>
     <div class="cp-scroll">
       <div class="cp-main" id="cpMainContent">
-        <div class="empty"><h3><i class="fa-solid fa-spinner fa-spin"></i> Loading your data...</h3></div>
+        <div class="empty"><h3><i class="fa-solid fa-spinner fa-spin"></i>&ensp;Loading your data...</h3></div>
       </div>
     </div>
   </div>
@@ -596,29 +807,34 @@
         <div class="brand-logo">
           <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
         </div>
-        <div class="brand-copy" style="overflow:hidden; width:100%;">
+        <div style="overflow:hidden;">
           <span class="brand-text">growitharshiee</span>
-          <span class="brand-sub" id="userGreeting" style="color:var(--color-accent); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block;"></span>
+          <span class="brand-sub" id="userGreeting" style="color:var(--gold);"></span>
         </div>
       </div>
 
+      <div class="nav-section-label">Workspace</div>
       <nav class="nav-group">
         <button class="nav-item active" data-page="today"><i class="fa-solid fa-bolt"></i><span>Today View</span></button>
-        <button class="nav-item" data-page="add"><i class="fa-solid fa-user-plus"></i><span>Add Client</span></button>
         <button class="nav-item" data-page="clients"><i class="fa-solid fa-users"></i><span>Clients</span></button>
+        <button class="nav-item" data-page="add"><i class="fa-solid fa-user-plus"></i><span>Add Client</span></button>
         <button class="nav-item" data-page="invoices"><i class="fa-solid fa-file-invoice-dollar"></i><span>Invoice Tracker</span></button>
-        <button class="nav-item" data-page="revenue"><i class="fa-solid fa-chart-column"></i><span>Revenue Dashboard</span></button>
-        <button class="nav-item" data-page="staff" id="navStaffBtn" style="display:none;"><i class="fa-solid fa-user-shield"></i><span>Manage Staff</span></button>
+        <button class="nav-item" data-page="revenue"><i class="fa-solid fa-chart-column"></i><span>Revenue</span></button>
+      </nav>
+
+      <div class="nav-section-label">Admin</div>
+      <nav class="nav-group">
+        <button class="nav-item" id="navStaffBtn" style="display:none;" data-page="staff"><i class="fa-solid fa-user-shield"></i><span>Manage Staff</span></button>
         <button class="nav-item" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i><span>Export Excel</span></button>
         <button class="nav-item logout-btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></button>
       </nav>
 
-      <div class="sidebar-note">
-        <strong>Key Due Dates</strong>
+      <div class="sidebar-dates">
+        <strong><i class="fa-regular fa-calendar"></i>&ensp;Key Due Dates</strong>
         GSTR-1: 11th next month<br>
         GSTR-3B: 20th next month<br>
         TDS Challan: 7th next month<br>
-        TDS Return: Last day of next month after quarter<br>
+        TDS Return: Last day of quarter+1 month<br>
         ESIC &amp; PF: 15th next month<br>
         PT: 18th next month
       </div>
@@ -631,13 +847,29 @@
       </div>
       <div class="header-actions">
         <div class="global-search-wrap">
-          <i class="fa-solid fa-magnifying-glass" style="color:#94a3b8;"></i>
+          <i class="fa-solid fa-magnifying-glass" style="color:var(--text-3);font-size:0.82rem;"></i>
           <input id="globalSearchInput" placeholder="Search name / GST / PAN / TAN" />
+        </div>
+        <!-- Notification Bell -->
+        <div style="position:relative;">
+          <button class="notif-btn" id="notifBellBtn" title="Notifications">
+            <i class="fa-solid fa-bell"></i>
+            <span class="notif-badge" id="notifBadge"></span>
+          </button>
+          <div class="notif-dropdown" id="notifDropdown">
+            <div class="notif-dropdown-head">
+              <strong>Notifications</strong>
+              <button class="notif-clear-btn" onclick="clearNotifications()"><i class="fa-solid fa-check-double"></i> Clear all</button>
+            </div>
+            <div class="notif-list" id="notifList">
+              <div class="notif-empty">No new notifications</div>
+            </div>
+          </div>
         </div>
         <button class="btn btn-secondary" onclick="exportExcel()">
           <i class="fa-solid fa-download"></i> Export
         </button>
-        <button class="btn btn-primary" onclick="showPage('add')">
+        <button class="btn btn-gold" onclick="showPage('add')">
           <i class="fa-solid fa-plus"></i> New Client
         </button>
       </div>
@@ -651,7 +883,7 @@
         <div class="card panel">
           <div class="panel-head">
             <h2>Today View</h2>
-            <p>Grouped by client, only active clients. Red = overdue, orange = due in next 3 days.</p>
+            <p>Grouped by client — red is overdue, orange is within 3 days.</p>
           </div>
           <div class="today-section-grid" id="todayView"></div>
         </div>
@@ -662,23 +894,48 @@
         <div class="card panel">
           <div class="panel-head">
             <h2>Add Client</h2>
-            <p>Keep only what you need: contract value, portals, tags, invoice status.</p>
+            <p>Fill in client details. Portal login is optional.</p>
           </div>
 
           <form id="clientForm" class="form-grid" autocomplete="off">
+
             <div class="field">
-              <label for="name">Business / Client Name *</label>
+              <label for="name">Business / Client Name <span class="req">*</span></label>
               <input class="input" id="name" required placeholder="e.g. Growitharshiee Financial" />
             </div>
 
-            <div class="field" id="addStaffAssignmentWrap" style="display:none; padding:10px; background:#fefce8; border:1px solid #fef08a; border-radius:8px;">
+            <div class="field" id="addStaffAssignmentWrap" style="display:none; padding:0.9rem; background:#fefce8; border:1px solid #fef08a; border-radius:var(--r-md);">
               <label>Assign to Staff Members</label>
               <div class="staff-checkbox-wrap" id="addClientStaffList"></div>
             </div>
 
-            <div class="field">
-              <label for="address">Registered Address</label>
-              <textarea class="textarea" id="address" placeholder="Full address with state..."></textarea>
+            <!-- REGISTERED ADDRESS -->
+            <div>
+              <div class="form-section-title"><i class="fa-solid fa-location-dot" style="font-size:0.75rem;"></i> Registered Address</div>
+              <div class="address-block">
+                <div class="field">
+                  <label for="addressLine1">Address Line 1 <span class="req">*</span></label>
+                  <input class="input" id="addressLine1" required placeholder="House/Flat/Office No., Building Name, Street" />
+                </div>
+                <div class="field">
+                  <label for="addressLine2">Address Line 2</label>
+                  <input class="input" id="addressLine2" placeholder="Area, Locality, Landmark (optional)" />
+                </div>
+                <div class="form-row-3">
+                  <div class="field">
+                    <label for="city">City</label>
+                    <input class="input" id="city" placeholder="City" />
+                  </div>
+                  <div class="field">
+                    <label for="state">State</label>
+                    <input class="input" id="state" placeholder="State" />
+                  </div>
+                  <div class="field">
+                    <label for="pincode">Pincode</label>
+                    <input class="input" id="pincode" placeholder="6-digit PIN" maxlength="6" />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="form-row">
@@ -692,43 +949,33 @@
               </div>
             </div>
 
+            <div class="form-section-title"><i class="fa-solid fa-id-card" style="font-size:0.75rem;"></i> Tax Registration</div>
             <div class="form-row">
               <div class="field">
                 <label for="gst">GSTIN</label>
                 <input class="input" id="gst" placeholder="29ABCDE1234F1Z7" maxlength="15" />
               </div>
               <div class="field">
-                <label for="pan">PAN</label>
-                <input class="input" id="pan" placeholder="ABCDE1234F" maxlength="10" />
+                <label for="gstUsername">GST Portal Username</label>
+                <input class="input" id="gstUsername" placeholder="GST Portal login username" />
               </div>
             </div>
 
             <div class="form-row">
+              <div class="field">
+                <label for="pan">PAN</label>
+                <input class="input" id="pan" placeholder="ABCDE1234F" maxlength="10" />
+              </div>
               <div class="field">
                 <label for="tan">TAN</label>
                 <input class="input" id="tan" placeholder="BLRA12345B" maxlength="10" />
               </div>
+            </div>
+
+            <div class="form-row">
               <div class="field">
                 <label for="contractValue">Contract Value (₹)</label>
                 <input class="input" id="contractValue" type="number" min="0" step="0.01" />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="field">
-                <label for="esic">ESIC No.</label>
-                <input class="input" id="esic" />
-              </div>
-              <div class="field">
-                <label for="pf">PF No.</label>
-                <input class="input" id="pf" />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="field">
-                <label for="pt">PT No.</label>
-                <input class="input" id="pt" />
               </div>
               <div class="field">
                 <label for="status">Client Status</label>
@@ -739,7 +986,24 @@
               </div>
             </div>
 
-            <div class="form-row">
+            <div class="form-section-title"><i class="fa-solid fa-building-columns" style="font-size:0.75rem;"></i> Statutory Registrations</div>
+            <div class="form-row-3">
+              <div class="field">
+                <label for="esic">ESIC No.</label>
+                <input class="input" id="esic" />
+              </div>
+              <div class="field">
+                <label for="pf">PF No.</label>
+                <input class="input" id="pf" />
+              </div>
+              <div class="field">
+                <label for="pt">PT No.</label>
+                <input class="input" id="pt" />
+              </div>
+            </div>
+
+            <div class="form-section-title"><i class="fa-solid fa-lock" style="font-size:0.75rem;"></i> Portal Passwords</div>
+            <div class="form-row-3">
               <div class="field">
                 <label for="gstPortalPassword">GST Portal Password</label>
                 <input class="input" id="gstPortalPassword" type="text" />
@@ -748,43 +1012,40 @@
                 <label for="tanPortalPassword">TAN Portal Password</label>
                 <input class="input" id="tanPortalPassword" type="text" />
               </div>
-            </div>
-
-            <div class="form-row">
               <div class="field">
                 <label for="panPortalPassword">PAN Portal Password</label>
                 <input class="input" id="panPortalPassword" type="text" />
               </div>
-              <div class="field">
-                <label for="clientDocuments">Attach Documents</label>
-                <input class="file-input" id="clientDocuments" type="file" multiple />
-                <div class="muted-note">Tagging is done per file below.</div>
-              </div>
             </div>
 
             <div class="field">
-              <label>Default Invoice Setup</label>
-              <div class="form-row">
-                <div class="field">
-                  <label for="invoiceStatus">Initial Invoice Status</label>
-                  <select class="select-input" id="invoiceStatus">
-                    <option value="not_raised">Not Raised</option>
-                    <option value="raised">Raised</option>
-                    <option value="paid">Paid</option>
-                    <option value="follow_up">Follow-up</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="invoiceAmount">Invoice Amount (₹)</label>
-                  <input class="input" id="invoiceAmount" type="number" min="0" step="0.01" />
-                </div>
+              <label for="clientDocuments">Attach Documents</label>
+              <input class="file-input" id="clientDocuments" type="file" multiple />
+              <div class="muted-note">Document tagging available after upload.</div>
+            </div>
+
+            <div class="form-section-title"><i class="fa-solid fa-file-invoice-dollar" style="font-size:0.75rem;"></i> Invoice Setup</div>
+            <div class="form-row">
+              <div class="field">
+                <label for="invoiceStatus">Initial Invoice Status</label>
+                <select class="select-input" id="invoiceStatus">
+                  <option value="not_raised">Not Raised</option>
+                  <option value="raised">Raised</option>
+                  <option value="paid">Paid</option>
+                  <option value="follow_up">Follow-up</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="invoiceAmount">Invoice Amount (₹)</label>
+                <input class="input" id="invoiceAmount" type="number" min="0" step="0.01" />
               </div>
             </div>
 
             <!-- CLIENT PORTAL CREATION -->
             <div class="portal-creation-box">
               <div class="portal-box-title">
-                <i class="fa-solid fa-circle-user"></i> Create Client Portal Login <span style="font-weight:400; color:#166534;">(Optional)</span>
+                <i class="fa-solid fa-circle-user"></i> Create Client Portal Login
+                <span style="font-weight:400; color:#0D7A4E;">(Optional)</span>
               </div>
               <div class="form-row">
                 <div class="field">
@@ -796,12 +1057,16 @@
                   <input class="input" id="clientPortalPass" type="password" placeholder="Min 6 characters" />
                 </div>
               </div>
-              <div class="muted-note" style="margin-top:0.3rem;">If provided, the client can log in to view their own data, compliance status, and add notes.</div>
+              <div class="muted-note" style="margin-top:0.3rem;">Client can log in to view compliance status and add notes.</div>
             </div>
 
-            <div style="display:flex; gap:0.75rem; margin-top:0.6rem; flex-wrap:wrap;">
-              <button class="btn btn-primary" type="submit" id="saveBtn">Save to Cloud</button>
-              <button class="btn btn-secondary" type="button" onclick="document.getElementById('clientForm').reset()">Clear</button>
+            <div style="display:flex; gap:0.75rem; margin-top:0.3rem; flex-wrap:wrap;">
+              <button class="btn btn-gold" type="submit" id="saveBtn">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Save to Cloud
+              </button>
+              <button class="btn btn-secondary" type="button" onclick="document.getElementById('clientForm').reset()">
+                <i class="fa-solid fa-rotate-left"></i> Clear
+              </button>
             </div>
           </form>
         </div>
@@ -823,7 +1088,7 @@
                 <option value="overdue">Overdue</option>
                 <option value="dueSoon">Due in 15 days</option>
               </select>
-              <button class="btn btn-primary" onclick="showPage('add')">
+              <button class="btn btn-gold" onclick="showPage('add')">
                 <i class="fa-solid fa-plus"></i> Add New
               </button>
             </div>
@@ -837,8 +1102,10 @@
         <div class="card panel">
           <div class="panel-head">
             <h2>Invoice Tracker</h2>
-            <p>Status per client: Not Raised, Raised, Paid, Follow-up.</p>
+            <p>Track invoice status and amounts per client.</p>
           </div>
+          <!-- Summary chips -->
+          <div id="invoiceSummaryChips" style="display:flex; flex-wrap:wrap; gap:0.5rem;"></div>
           <div id="invoiceTrackerWrap"></div>
         </div>
       </section>
@@ -848,8 +1115,8 @@
         <div class="stats" id="revenueStats"></div>
         <div class="card panel">
           <div class="panel-head">
-            <h2>Monthly Revenue (Paid vs Unpaid)</h2>
-            <p>Based on invoiceAmount &amp; invoiceStatus, month wise.</p>
+            <h2>Monthly Revenue — Paid vs Unpaid</h2>
+            <p>Based on invoiceAmount &amp; invoiceStatus, month-wise.</p>
           </div>
           <div class="chart-wrap">
             <canvas id="revenueChart"></canvas>
@@ -865,40 +1132,35 @@
             <p>Create secure logins for your team and manage their access.</p>
           </div>
 
-          <form id="createStaffForm" class="form-grid" style="margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px dashed var(--color-border);">
+          <form id="createStaffForm" class="form-grid" style="padding-bottom:1.2rem; border-bottom:1px dashed var(--border-2);">
             <div class="form-row">
               <div class="field">
                 <label>Staff Full Name</label>
-                <input class="input" id="newStaffName" required placeholder="e.g. Rahul Kumar">
+                <input class="input" id="newStaffName" required placeholder="e.g. Rahul Kumar" />
               </div>
               <div class="field">
-                <label>Staff Login Email</label>
-                <input class="input" type="email" id="newStaffEmail" required placeholder="staff@growitharshiee.in">
+                <label>Login Email</label>
+                <input class="input" type="email" id="newStaffEmail" required placeholder="staff@growitharshiee.in" />
               </div>
             </div>
             <div class="form-row">
               <div class="field">
                 <label>Temporary Password</label>
-                <input class="input" type="password" id="newStaffPass" required placeholder="Min 6 characters">
+                <input class="input" type="password" id="newStaffPass" required placeholder="Min 6 characters" />
               </div>
               <div class="field" style="justify-content:flex-end;">
-                <button class="btn btn-primary" type="submit" id="createStaffBtn" style="width:100%;">Create Account</button>
+                <button class="btn btn-gold" type="submit" id="createStaffBtn" style="width:100%; justify-content:center;">
+                  <i class="fa-solid fa-user-plus"></i> Create Account
+                </button>
               </div>
             </div>
           </form>
 
-          <div class="panel-head">
-            <h2>Team Members</h2>
-          </div>
+          <div class="panel-head" style="margin-top:0.5rem;"><h2>Team Members</h2></div>
           <div class="invoice-table-wrap">
             <table>
               <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
+                <tr><th>Name</th><th>Email</th><th>Status</th><th>Actions</th></tr>
               </thead>
               <tbody id="staffListTbody"></tbody>
             </table>
@@ -909,30 +1171,53 @@
     </main>
   </div>
 
-  <!-- EDIT MODAL -->
+  <!-- ─── EDIT MODAL ─── -->
   <div class="modal-backdrop" id="editModal">
     <div class="modal">
       <div class="modal-head">
         <h2>Edit Client</h2>
         <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
-
       <form id="editForm" class="form-grid" autocomplete="off">
         <input type="hidden" id="editClientId" />
 
         <div class="field">
-          <label for="editName">Client Name *</label>
+          <label for="editName">Client Name <span class="req">*</span></label>
           <input class="input" id="editName" required />
         </div>
 
-        <div class="field" id="editStaffAssignmentWrap" style="display:none; padding:10px; background:#fefce8; border:1px solid #fef08a; border-radius:8px;">
+        <div class="field" id="editStaffAssignmentWrap" style="display:none; padding:0.9rem; background:#fefce8; border:1px solid #fef08a; border-radius:var(--r-md);">
           <label>Assigned Staff Members</label>
           <div class="staff-checkbox-wrap" id="editClientStaffList"></div>
         </div>
 
-        <div class="field">
-          <label for="editAddress">Address</label>
-          <textarea class="textarea" id="editAddress" style="min-height:60px;"></textarea>
+        <!-- Address in edit modal -->
+        <div>
+          <div class="form-section-title"><i class="fa-solid fa-location-dot" style="font-size:0.75rem;"></i> Registered Address</div>
+          <div class="address-block">
+            <div class="field">
+              <label for="editAddressLine1">Address Line 1 <span class="req">*</span></label>
+              <input class="input" id="editAddressLine1" required placeholder="House/Flat/Office No., Building, Street" />
+            </div>
+            <div class="field">
+              <label for="editAddressLine2">Address Line 2</label>
+              <input class="input" id="editAddressLine2" placeholder="Area, Locality, Landmark" />
+            </div>
+            <div class="form-row-3">
+              <div class="field">
+                <label for="editCity">City</label>
+                <input class="input" id="editCity" />
+              </div>
+              <div class="field">
+                <label for="editState">State</label>
+                <input class="input" id="editState" />
+              </div>
+              <div class="field">
+                <label for="editPincode">Pincode</label>
+                <input class="input" id="editPincode" maxlength="6" />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="form-row">
@@ -946,43 +1231,33 @@
           </div>
         </div>
 
+        <div class="form-section-title"><i class="fa-solid fa-id-card" style="font-size:0.75rem;"></i> Tax Registration</div>
         <div class="form-row">
           <div class="field">
             <label for="editGst">GSTIN</label>
             <input class="input" id="editGst" maxlength="15" />
           </div>
           <div class="field">
-            <label for="editPan">PAN</label>
-            <input class="input" id="editPan" maxlength="10" />
+            <label for="editGstUsername">GST Portal Username</label>
+            <input class="input" id="editGstUsername" placeholder="GST Portal login username" />
           </div>
         </div>
 
         <div class="form-row">
+          <div class="field">
+            <label for="editPan">PAN</label>
+            <input class="input" id="editPan" maxlength="10" />
+          </div>
           <div class="field">
             <label for="editTan">TAN</label>
             <input class="input" id="editTan" maxlength="10" />
           </div>
+        </div>
+
+        <div class="form-row">
           <div class="field">
             <label for="editContractValue">Contract Value</label>
             <input class="input" id="editContractValue" type="number" min="0" step="0.01" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="field">
-            <label for="editEsic">ESIC</label>
-            <input class="input" id="editEsic" />
-          </div>
-          <div class="field">
-            <label for="editPf">PF</label>
-            <input class="input" id="editPf" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="field">
-            <label for="editPt">PT</label>
-            <input class="input" id="editPt" />
           </div>
           <div class="field">
             <label for="editStatus">Status</label>
@@ -993,7 +1268,24 @@
           </div>
         </div>
 
-        <div class="form-row">
+        <div class="form-section-title"><i class="fa-solid fa-building-columns" style="font-size:0.75rem;"></i> Statutory Registrations</div>
+        <div class="form-row-3">
+          <div class="field">
+            <label for="editEsic">ESIC</label>
+            <input class="input" id="editEsic" />
+          </div>
+          <div class="field">
+            <label for="editPf">PF</label>
+            <input class="input" id="editPf" />
+          </div>
+          <div class="field">
+            <label for="editPt">PT</label>
+            <input class="input" id="editPt" />
+          </div>
+        </div>
+
+        <div class="form-section-title"><i class="fa-solid fa-lock" style="font-size:0.75rem;"></i> Portal Passwords</div>
+        <div class="form-row-3">
           <div class="field">
             <label for="editGstPortalPassword">GST Password</label>
             <input class="input" id="editGstPortalPassword" />
@@ -1002,30 +1294,29 @@
             <label for="editTanPortalPassword">TAN Password</label>
             <input class="input" id="editTanPortalPassword" />
           </div>
-        </div>
-
-        <div class="form-row">
           <div class="field">
             <label for="editPanPortalPassword">PAN Password</label>
             <input class="input" id="editPanPortalPassword" />
           </div>
-          <div class="field">
-            <label for="editDocuments">Attach More Documents</label>
-            <input class="file-input" id="editDocuments" type="file" multiple />
-          </div>
         </div>
 
-        <!-- Portal status in edit modal -->
+        <div class="field">
+          <label for="editDocuments">Attach More Documents</label>
+          <input class="file-input" id="editDocuments" type="file" multiple />
+        </div>
+
         <div id="editPortalSection"></div>
 
         <div class="field">
-          <label for="editNotesNew">Add Note</label>
+          <label for="editNotesNew">Add Internal Note</label>
           <textarea class="textarea" id="editNotesNew" placeholder="Quick note about client / tasks..."></textarea>
         </div>
 
-        <div style="display:flex; gap:0.7rem; justify-content:flex-end; margin-top:0.5rem; flex-wrap:wrap;">
+        <div style="display:flex; gap:0.7rem; justify-content:flex-end; margin-top:0.3rem; flex-wrap:wrap;">
           <button class="btn btn-secondary" type="button" onclick="closeModal()">Cancel</button>
-          <button class="btn btn-primary" type="submit">Save Changes</button>
+          <button class="btn btn-gold" type="submit">
+            <i class="fa-solid fa-floppy-disk"></i> Save Changes
+          </button>
         </div>
       </form>
     </div>
@@ -1040,7 +1331,7 @@
       onAuthStateChanged, signOut
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import {
-      getFirestore, collection, getDocs, getDoc, setDoc, deleteDoc, doc, query, where
+      getFirestore, collection, getDocs, getDoc, setDoc, deleteDoc, doc, onSnapshot
     } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -1052,20 +1343,22 @@
       appId: "1:542993095031:web:ef23056cc8dd718819a972"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    const secondaryApp = initializeApp(firebaseConfig, "SecondaryApp");
+    const app           = initializeApp(firebaseConfig);
+    const auth          = getAuth(app);
+    const db            = getFirestore(app);
+    const secondaryApp  = initializeApp(firebaseConfig, "SecondaryApp");
     const secondaryAuth = getAuth(secondaryApp);
 
-    // ─── GLOBAL STATE ───
-    window.clients = [];
-    window.allStaff = [];
-    window.userRole = 'staff';
+    // ─── STATE ───
+    window.clients        = [];
+    window.allStaff       = [];
+    window.userRole       = 'staff';
     window.currentUserUid = null;
-    let revenueChartInstance = null;
-    let lastExpandedClientId = null;
+    let revenueChartInstance   = null;
+    let lastExpandedClientId   = null;
+    let notifications          = [];   // { id, clientName, noteText, ts }
+    let knownClientNoteCount   = {};   // clientId → count at last check
+    let firestoreUnsubscribe   = null;
 
     const loginScreen = document.getElementById('loginScreen');
     const appContent  = document.getElementById('appContent');
@@ -1073,23 +1366,83 @@
     const loginError  = document.getElementById('loginError');
 
     const pageConfig = {
-      today:   { t: 'Today View',          s: 'What needs your attention right now.' },
-      add:     { t: 'Add Client',           s: 'Capture key data once, reuse everywhere.' },
-      clients: { t: 'Clients',              s: 'Minimal list, expand only when needed.' },
-      invoices:{ t: 'Invoice Tracker',      s: 'Status and amounts client-wise.' },
-      revenue: { t: 'Revenue Dashboard',    s: 'Paid vs unpaid revenue month wise.' },
-      staff:   { t: 'Manage Staff',         s: 'Create secure logins and manage team access.' }
+      today:   { t: 'Today View',       s: 'What needs your attention right now.' },
+      add:     { t: 'Add Client',        s: 'Capture key data once, reuse everywhere.' },
+      clients: { t: 'Clients',           s: 'Minimal list — expand only when needed.' },
+      invoices:{ t: 'Invoice Tracker',   s: 'Status and amounts per client.' },
+      revenue: { t: 'Revenue Dashboard', s: 'Paid vs unpaid revenue month-wise.' },
+      staff:   { t: 'Manage Staff',      s: 'Create secure logins and manage team.' }
     };
 
     document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
       btn.addEventListener('click', () => showPage(btn.dataset.page));
     });
 
+    // ─── NOTIFICATION SYSTEM ───
+    document.getElementById('notifBellBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('notifDropdown').classList.toggle('open');
+    });
+    document.addEventListener('click', () => {
+      document.getElementById('notifDropdown').classList.remove('open');
+    });
+
+    window.clearNotifications = function() {
+      notifications = [];
+      renderNotifDropdown();
+    };
+
+    function addNotification(clientName, noteText) {
+      notifications.unshift({
+        id: Date.now(),
+        clientName,
+        noteText,
+        ts: new Date()
+      });
+      // Keep only last 30
+      if (notifications.length > 30) notifications = notifications.slice(0, 30);
+      renderNotifDropdown();
+
+      // Browser notification (if permission granted)
+      if (Notification.permission === 'granted') {
+        new Notification(`New note from ${clientName}`, {
+          body: noteText,
+          icon: 'logo.png'
+        });
+      }
+    }
+
+    function renderNotifDropdown() {
+      const badge  = document.getElementById('notifBadge');
+      const list   = document.getElementById('notifList');
+      if (notifications.length) {
+        badge.textContent = notifications.length > 9 ? '9+' : notifications.length;
+        badge.classList.add('visible');
+        list.innerHTML = notifications.map(n => `
+          <div class="notif-item">
+            <div class="notif-icon"><i class="fa-solid fa-note-sticky"></i></div>
+            <div class="notif-text">
+              <strong>${escHtml(n.clientName)} added a note</strong>
+              <span>${escHtml(n.noteText.length > 60 ? n.noteText.slice(0, 60) + '...' : n.noteText)}</span><br>
+              <span>${n.ts.toLocaleTimeString('en-IN')}</span>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        badge.classList.remove('visible');
+        list.innerHTML = '<div class="notif-empty">No new notifications</div>';
+      }
+    }
+
+    // Request browser notification permission on load
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
     // ─── AUTH ───
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         window.currentUserUid = user.uid;
-
         try {
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
@@ -1112,18 +1465,18 @@
               setTimeout(() => {
                 loginScreen.style.display = 'none';
                 cpScreen.classList.add('cp-visible');
-              }, 450);
+              }, 400);
               await loadClientPortal(clientId, user);
               return;
             }
 
             const displayName = data.name || user.email.split('@')[0];
-            document.getElementById('userGreeting').textContent = `Hi, ${displayName}`;
+            document.getElementById('userGreeting').textContent = displayName;
           } else {
-            document.getElementById('userGreeting').textContent = 'Hi, Admin';
+            document.getElementById('userGreeting').textContent = 'Admin';
           }
         } catch (err) {
-          console.error("Role fetch failed. Defaulting to staff.", err);
+          console.error("Role fetch failed.", err);
         }
 
         if (window.userRole === 'admin') {
@@ -1137,10 +1490,12 @@
         setTimeout(() => {
           loginScreen.style.display = 'none';
           appContent.classList.add('show-app');
-        }, 450);
+        }, 400);
+
         showToast('Secure connection established.');
-        fetchClientsFromCloud();
+        startRealtimeSync();
       } else {
+        if (firestoreUnsubscribe) { firestoreUnsubscribe(); firestoreUnsubscribe = null; }
         appContent.classList.remove('show-app');
         cpScreen.classList.remove('cp-visible');
         loginScreen.style.display = 'flex';
@@ -1154,28 +1509,21 @@
       const pass  = document.getElementById('loginPassword').value;
       const btn   = document.getElementById('loginBtnText');
       loginError.style.display = 'none';
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>&ensp;Verifying...';
       try {
         await signInWithEmailAndPassword(auth, email, pass);
       } catch (err) {
-        loginError.textContent = "Please enter correct mail-id/password.";
+        loginError.textContent = "Incorrect email or password. Please try again.";
         loginError.style.display = 'block';
       } finally {
-        btn.innerHTML = '<i class="fa-solid fa-lock"></i> Secure Login';
+        btn.innerHTML = '<i class="fa-solid fa-lock"></i>&ensp;Secure Login';
       }
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      await signOut(auth);
-      window.location.reload();
-    });
+    document.getElementById('logoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.reload(); });
+    document.getElementById('cpLogoutBtn').addEventListener('click', async () => { await signOut(auth); window.location.reload(); });
 
-    document.getElementById('cpLogoutBtn').addEventListener('click', async () => {
-      await signOut(auth);
-      window.location.reload();
-    });
-
-    // ─── CLIENT PORTAL LOGIC ───
+    // ─── CLIENT PORTAL ─────────────────────────────────────────────────────
     async function loadClientPortal(clientId, user) {
       try {
         const snap = await getDoc(doc(db, "clients", clientId));
@@ -1186,7 +1534,17 @@
         }
         const clientData = ensureClientShape(snap.data());
 
-        // Fetch assigned staff names
+        // ── INACTIVE BLOCK ──
+        if (clientData.status === 'inactive') {
+          document.getElementById('cpMainContent').innerHTML = `
+            <div class="cp-inactive-wall">
+              <div class="wall-icon"><i class="fa-solid fa-ban"></i></div>
+              <h2>Account Inactive</h2>
+              <p>Your client account has been marked inactive. Please contact your CA to reactivate access.</p>
+            </div>`;
+          return;
+        }
+
         const staffNames = [];
         if (clientData.assignedTo && clientData.assignedTo.length) {
           for (const uid of clientData.assignedTo) {
@@ -1196,12 +1554,10 @@
             } catch (_) {}
           }
         }
-
         renderClientPortal(clientData, snap.id, staffNames);
       } catch (e) {
-        console.error(e);
         document.getElementById('cpMainContent').innerHTML =
-          `<div class="empty"><h3>Error loading data</h3><p>${e.message}</p></div>`;
+          `<div class="empty"><h3>Error loading data</h3><p>${escHtml(e.message)}</p></div>`;
       }
     }
 
@@ -1209,17 +1565,16 @@
       const overdueCount = Object.values(c.tasks).filter(t => getTaskState(t).cls === 'status-overdue').length;
       const doneCount    = Object.values(c.tasks).filter(t => getTaskState(t).isDone).length;
       const totalTasks   = Object.keys(c.tasks).length;
+      const fullAddress  = formatAddress(c);
 
-      const main = document.getElementById('cpMainContent');
-      main.innerHTML = `
-        <!-- Hero -->
+      document.getElementById('cpMainContent').innerHTML = `
         <div class="cp-hero">
           <div>
             <div class="cp-hero-name">${escHtml(c.name)}</div>
             <div class="cp-hero-sub">
               ${c.gst ? `GST: ${escHtml(c.gst)}` : ''}
-              ${c.pan ? ` &nbsp;·&nbsp; PAN: ${escHtml(c.pan)}` : ''}
-              ${c.tan ? ` &nbsp;·&nbsp; TAN: ${escHtml(c.tan)}` : ''}
+              ${c.pan ? `&nbsp;·&nbsp;PAN: ${escHtml(c.pan)}` : ''}
+              ${c.tan ? `&nbsp;·&nbsp;TAN: ${escHtml(c.tan)}` : ''}
             </div>
           </div>
           <div class="cp-hero-stats">
@@ -1228,7 +1583,7 @@
               <div class="cp-hero-stat-label">Total Tasks</div>
             </div>
             <div class="cp-hero-stat">
-              <div class="cp-hero-stat-val" style="color:${overdueCount>0?'#f87171':'#86efac'};">${overdueCount}</div>
+              <div class="cp-hero-stat-val" style="color:${overdueCount > 0 ? '#f87171' : '#86efac'};">${overdueCount}</div>
               <div class="cp-hero-stat-label">Overdue</div>
             </div>
             <div class="cp-hero-stat">
@@ -1238,85 +1593,72 @@
           </div>
         </div>
 
-        <!-- Business Info + Assigned Team -->
         <div class="cp-grid-2">
-          <!-- Business Details -->
           <div class="cp-card">
             <div class="cp-card-title">
               <span class="cp-card-icon cp-icon-blue"><i class="fa-solid fa-building"></i></span>
               Business Information
             </div>
-            ${c.address ? `<div class="cp-info-row"><span class="cp-info-label">Address</span><span class="cp-info-value" style="font-family:inherit; text-align:right; max-width:60%;">${escHtml(c.address)}</span></div>` : ''}
-            ${c.email   ? `<div class="cp-info-row"><span class="cp-info-label">Email</span><span class="cp-info-value">${escHtml(c.email)}</span></div>` : ''}
-            ${c.phone   ? `<div class="cp-info-row"><span class="cp-info-label">Phone</span><span class="cp-info-value">${escHtml(c.phone)}</span></div>` : ''}
-            ${c.esic    ? `<div class="cp-info-row"><span class="cp-info-label">ESIC No.</span><span class="cp-info-value">${escHtml(c.esic)}</span></div>` : ''}
-            ${c.pf      ? `<div class="cp-info-row"><span class="cp-info-label">PF No.</span><span class="cp-info-value">${escHtml(c.pf)}</span></div>` : ''}
-            ${c.pt      ? `<div class="cp-info-row"><span class="cp-info-label">PT No.</span><span class="cp-info-value">${escHtml(c.pt)}</span></div>` : ''}
+            ${fullAddress ? `<div class="cp-info-row"><span class="cp-info-label">Address</span><span class="cp-info-value" style="font-family:inherit; text-align:right;">${escHtml(fullAddress)}</span></div>` : ''}
+            ${c.email  ? `<div class="cp-info-row"><span class="cp-info-label">Email</span><span class="cp-info-value">${escHtml(c.email)}</span></div>` : ''}
+            ${c.phone  ? `<div class="cp-info-row"><span class="cp-info-label">Phone</span><span class="cp-info-value">${escHtml(c.phone)}</span></div>` : ''}
+            ${c.esic   ? `<div class="cp-info-row"><span class="cp-info-label">ESIC No.</span><span class="cp-info-value">${escHtml(c.esic)}</span></div>` : ''}
+            ${c.pf     ? `<div class="cp-info-row"><span class="cp-info-label">PF No.</span><span class="cp-info-value">${escHtml(c.pf)}</span></div>` : ''}
+            ${c.pt     ? `<div class="cp-info-row"><span class="cp-info-label">PT No.</span><span class="cp-info-value">${escHtml(c.pt)}</span></div>` : ''}
             <div class="cp-info-row">
               <span class="cp-info-label">Account Status</span>
-              <span class="status-pill ${c.status === 'inactive' ? 'inactive' : ''}">${escHtml(c.status)}</span>
+              <span class="status-pill">${escHtml(c.status)}</span>
             </div>
           </div>
 
-          <!-- Assigned Team -->
           <div class="cp-card">
             <div class="cp-card-title">
               <span class="cp-card-icon cp-icon-purple"><i class="fa-solid fa-users"></i></span>
-              Your Assigned Team
+              Assigned Team
             </div>
             ${staffNames.length
-              ? `<div class="cp-staff-list">
-                  ${staffNames.map(s => `
-                    <div class="cp-staff-chip">
-                      <div class="cp-staff-avatar">${escHtml(s.name).charAt(0).toUpperCase()}</div>
-                      <span>${escHtml(s.name)}</span>
-                    </div>
-                  `).join('')}
-                </div>`
-              : `<p class="cp-empty-note">No staff assigned yet. Contact your CA.</p>`
+              ? `<div class="cp-staff-list">${staffNames.map(s => `
+                  <div class="cp-staff-chip">
+                    <div class="cp-staff-avatar">${escHtml(s.name).charAt(0).toUpperCase()}</div>
+                    <span>${escHtml(s.name)}</span>
+                  </div>`).join('')}</div>`
+              : `<p class="cp-empty-note">No staff assigned yet.</p>`
             }
-
-            <div class="cp-card-title" style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--color-border); font-size:0.9rem;">
+            <div class="cp-card-title" style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border-2); font-size:0.88rem;">
               <span class="cp-card-icon cp-icon-gold"><i class="fa-solid fa-file-lines"></i></span>
               Documents
             </div>
             ${c.documents && c.documents.length
-              ? `<div class="docs-list">
-                  ${c.documents.map(d => `<span class="doc-chip"><i class="fa-solid fa-paperclip"></i> ${escHtml(d.name || '')} <span class="doc-tag">${escHtml(d.tag || 'Other')}</span></span>`).join('')}
-                </div>`
+              ? `<div class="docs-chip-list">${c.documents.map(d => `<span class="doc-chip"><i class="fa-solid fa-paperclip"></i>${escHtml(d.name || '')} <span class="doc-tag">${escHtml(d.tag || 'Other')}</span></span>`).join('')}</div>`
               : `<p class="cp-empty-note">No documents on file.</p>`
             }
           </div>
         </div>
 
-        <!-- Compliance Tasks -->
         <div class="cp-card">
           <div class="cp-card-title">
             <span class="cp-card-icon cp-icon-amber"><i class="fa-solid fa-calendar-check"></i></span>
             Compliance Status
-            <span style="font-size:0.75rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:400; margin-left:0.5rem;">(View Only)</span>
+            <span style="font-size:0.73rem; color:var(--text-3); font-family:var(--font-body); font-weight:400; margin-left:0.4rem;">(View only)</span>
           </div>
           <div class="cp-task-grid">
             ${Object.entries(c.tasks).map(([key, t]) => {
               const st = getTaskState(t);
-              return `
-                <div class="cp-task-item">
-                  <div class="cp-task-name">${escHtml(t.label)}</div>
-                  <div class="cp-task-date">Due: ${formatDate(t.dueDate)}</div>
-                  <span class="status-pill-task ${st.cls}">${st.text}</span>
-                  ${t.lastCompleted ? `<div style="font-size:0.7rem; color:var(--color-success); margin-top:0.2rem;"><i class="fa-solid fa-check"></i> Done ${formatDate(t.lastCompleted)}</div>` : ''}
-                </div>
-              `;
+              return `<div class="cp-task-item">
+                <div class="cp-task-name">${escHtml(t.label)}</div>
+                <div class="cp-task-date">Due: ${formatDate(t.dueDate)}</div>
+                <span class="tag-pill ${st.cls}">${st.text}</span>
+                ${t.lastCompleted ? `<div style="font-size:0.69rem; color:var(--success); margin-top:0.25rem;"><i class="fa-solid fa-check"></i> Done ${formatDate(t.lastCompleted)}</div>` : ''}
+              </div>`;
             }).join('')}
           </div>
         </div>
 
-        <!-- Client Notes -->
         <div class="cp-card">
           <div class="cp-card-title">
             <span class="cp-card-icon cp-icon-green"><i class="fa-solid fa-note-sticky"></i></span>
             My Notes
-            <span style="font-size:0.75rem; color:var(--color-text-muted); font-family:var(--font-body); font-weight:400; margin-left:0.5rem;">Only you can see these</span>
+            <span style="font-size:0.73rem; color:var(--text-3); font-family:var(--font-body); font-weight:400; margin-left:0.4rem;"></span>
           </div>
           <div class="cp-note-add-area">
             <input class="cp-note-input" id="cpNoteInput" placeholder="Type a note and press Add...">
@@ -1330,43 +1672,33 @@
         </div>
       `;
 
-      // Enter key support for note input
       document.getElementById('cpNoteInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') addClientPortalNote(docId);
       });
-
-      // Store for note updates
       window._cpClientDocId = docId;
       window._cpClientData  = c;
     }
 
     function renderClientNotesHtml(notes) {
-      if (!notes || !notes.length) {
-        return `<li class="cp-empty-note">No notes yet. Add your first note above.</li>`;
-      }
+      if (!notes || !notes.length) return `<li class="cp-empty-note">No notes yet. Add your first note above.</li>`;
       const sorted = [...notes].sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''));
       return sorted.map(n => `
         <li class="cp-note-item">
           <div class="cp-note-text">${escHtml(n.text || '')}</div>
-          <div class="cp-note-ts"><i class="fa-regular fa-clock"></i> ${new Date(n.timestamp).toLocaleString('en-IN')}</div>
-        </li>
-      `).join('');
+          <div class="cp-note-ts"><i class="fa-regular fa-clock"></i>${new Date(n.timestamp).toLocaleString('en-IN')}</div>
+        </li>`).join('');
     }
 
     window.addClientPortalNote = async function(docId) {
       const input = document.getElementById('cpNoteInput');
       if (!input || !input.value.trim()) return;
-
       const c = window._cpClientData;
       if (!c) return;
-
       c.clientNotes = Array.isArray(c.clientNotes) ? c.clientNotes : [];
       c.clientNotes.push({ text: input.value.trim(), timestamp: new Date().toISOString() });
       input.value = '';
-
       const listEl = document.getElementById('cpNotesList');
       if (listEl) listEl.innerHTML = renderClientNotesHtml(c.clientNotes);
-
       try {
         await setDoc(doc(db, "clients", docId), { clientNotes: c.clientNotes }, { merge: true });
         showToast('Note saved.');
@@ -1375,26 +1707,77 @@
       }
     };
 
-    // ─── STAFF CREATION ───
+    // ─── REAL-TIME SYNC (onSnapshot) ─────────────────────────────────────
+    function startRealtimeSync() {
+      if (firestoreUnsubscribe) firestoreUnsubscribe();
+      const colRef = collection(db, "clients");
+      let initialLoad = true;
+
+      firestoreUnsubscribe = onSnapshot(colRef, (snapshot) => {
+        const updated = [];
+        snapshot.forEach(docSnap => {
+          const c = ensureClientShape({ id: docSnap.id, ...docSnap.data() });
+          if (window.userRole === 'admin' || c.assignedTo.includes(window.currentUserUid)) {
+            updated.push(c);
+
+            // ── CHECK FOR NEW CLIENT NOTES ──
+            if (!initialLoad) {
+              const prevCount = knownClientNoteCount[c.id] || 0;
+              const newCount  = (c.clientNotes || []).length;
+              if (newCount > prevCount) {
+                const latest = [...(c.clientNotes || [])].sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''))[0];
+                if (latest) {
+                  addNotification(c.name, latest.text);
+                  showToast(`📝 New note from ${c.name}`, false);
+                }
+              }
+            }
+            knownClientNoteCount[c.id] = (c.clientNotes || []).length;
+          }
+        });
+
+        window.clients = updated;
+        autoRollForwardAll();
+
+        if (!initialLoad) {
+          renderCurrentPage();
+        } else {
+          initialLoad = false;
+          renderCurrentPage();
+        }
+      }, (err) => {
+        console.error("Firestore snapshot error:", err);
+        showToast('Live sync error. Data may be stale.', true);
+      });
+    }
+
+    async function syncClientToCloud(c) {
+      try {
+        await setDoc(doc(db, "clients", c.id), c);
+      } catch (e) {
+        showToast('Error saving data.', true);
+      }
+    }
+
+    // ─── STAFF ───────────────────────────────────────────────────────────
     document.getElementById('createStaffForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn   = document.getElementById('createStaffBtn');
-      btn.textContent = "Creating...";
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating...';
       const email = document.getElementById('newStaffEmail').value.trim();
       const pass  = document.getElementById('newStaffPass').value;
       const name  = document.getElementById('newStaffName').value.trim();
       try {
         const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, pass);
-        const newUid = userCred.user.uid;
         await signOut(secondaryAuth);
-        await setDoc(doc(db, "users", newUid), { role: 'staff', name, email });
+        await setDoc(doc(db, "users", userCred.user.uid), { role: 'staff', name, email });
         showToast('Staff created successfully!');
         document.getElementById('createStaffForm').reset();
         fetchStaffList();
       } catch (err) {
         showToast("Error: " + err.message, true);
       } finally {
-        btn.textContent = "Create Account";
+        btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
       }
     });
 
@@ -1413,8 +1796,7 @@
     }
 
     function renderStaffTable() {
-      const tbody = document.getElementById('staffListTbody');
-      tbody.innerHTML = window.allStaff.map(s => `
+      document.getElementById('staffListTbody').innerHTML = window.allStaff.map(s => `
         <tr>
           <td>${escHtml(s.name)}</td>
           <td>${escHtml(s.email)}</td>
@@ -1428,46 +1810,63 @@
       `).join('');
     }
 
-    window.deactivateStaff = async function(id) {
+    window.deactivateStaff = async (id) => {
       if (!confirm("Mark this staff member as inactive?")) return;
       await setDoc(doc(db, "users", id), { role: 'inactive' }, { merge: true });
-      showToast("Staff deactivated.");
-      fetchStaffList();
+      showToast("Staff deactivated."); fetchStaffList();
     };
-    window.reactivateStaff = async function(id) {
+    window.reactivateStaff = async (id) => {
       await setDoc(doc(db, "users", id), { role: 'staff' }, { merge: true });
-      showToast("Staff reactivated.");
-      fetchStaffList();
+      showToast("Staff reactivated."); fetchStaffList();
     };
 
     function renderStaffCheckboxes(containerId, assignedIds = []) {
       const container = document.getElementById(containerId);
+      if (!container) return;
       container.innerHTML = window.allStaff.filter(s => s.role === 'staff').map(s => `
         <label class="staff-checkbox-item">
           <input type="checkbox" value="${s.id}" class="staff-checkbox" ${assignedIds.includes(s.id) ? 'checked' : ''}>
-          ${s.name}
-        </label>
-      `).join('');
+          ${escHtml(s.name)}
+        </label>`).join('');
     }
-
     function getSelectedStaff(containerId) {
       return Array.from(
         document.getElementById(containerId).querySelectorAll('.staff-checkbox:checked')
       ).map(b => b.value);
     }
 
-    // ─── DATE HELPERS ───
+    // ─── HELPERS ─────────────────────────────────────────────────────────
+    const escHtml = (s) => String(s || '').replace(/[&<>"']/g,
+      m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    const formatCurrency = (v) => '₹' + Number(v || 0).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
     const todayISO  = () => new Date().toISOString().split('T')[0];
     const parseDate = (v) => new Date(v + 'T00:00:00');
-    const formatDate = (v) => v ? parseDate(v).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+    const formatDate = (v) => v ? parseDate(v).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
     const daysDiff  = (v) => {
-      const today = new Date(); today.setHours(0,0,0,0);
-      return Math.ceil((parseDate(v) - today) / (1000*60*60*24));
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      return Math.ceil((parseDate(v) - today) / 86400000);
+    };
+    const currentMonthKey = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; };
+    const monthLabel = (key) => {
+      if (!key) return '—';
+      const [y, m] = key.split('-');
+      return new Date(Number(y), Number(m) - 1, 1).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
     };
 
+    // Build full address string from structured fields or legacy
+    function formatAddress(c) {
+      if (c.addressLine1) {
+        return [c.addressLine1, c.addressLine2, c.city, c.state, c.pincode].filter(Boolean).join(', ');
+      }
+      return c.address || '';
+    }
+
+    function getFileNamesWithTags(inputEl) {
+      return Array.from(inputEl.files || []).map(f => ({ name: f.name, size: f.size || 0, type: f.type || '', tag: 'Other' }));
+    }
+
     function dateOnDay(year, month, day) {
-      const last = new Date(year, month + 1, 0).getDate();
-      return new Date(year, month, Math.min(day, last)).toISOString().split('T')[0];
+      return new Date(year, month, Math.min(day, new Date(year, month + 1, 0).getDate())).toISOString().split('T')[0];
     }
     function endOfMonth(year, month) {
       return new Date(year, month + 1, 0).toISOString().split('T')[0];
@@ -1494,45 +1893,50 @@
     function makeDefaultTasks() {
       const now = todayISO();
       return {
-        gstr1:      { label:'GSTR-1',      dueDate: nextDueFns.gstr1(now),      lastCompleted:'', status:'pending' },
-        gstr3b:     { label:'GSTR-3B',     dueDate: nextDueFns.gstr3b(now),     lastCompleted:'', status:'pending' },
-        tdsChallan: { label:'TDS Challan', dueDate: nextDueFns.tdsChallan(now), lastCompleted:'', status:'pending' },
-        tdsFiling:  { label:'TDS Filing',  dueDate: nextDueFns.tdsFiling(now),  lastCompleted:'', status:'pending' },
-        esic:       { label:'ESIC',        dueDate: nextDueFns.esic(now),       lastCompleted:'', status:'pending' },
-        pf:         { label:'PF',          dueDate: nextDueFns.pf(now),         lastCompleted:'', status:'pending' },
-        pt:         { label:'PT',          dueDate: nextDueFns.pt(now),         lastCompleted:'', status:'pending' },
+        gstr1:      { label: 'GSTR-1',      dueDate: nextDueFns.gstr1(now),      lastCompleted: '', status: 'pending' },
+        gstr3b:     { label: 'GSTR-3B',     dueDate: nextDueFns.gstr3b(now),     lastCompleted: '', status: 'pending' },
+        tdsChallan: { label: 'TDS Challan', dueDate: nextDueFns.tdsChallan(now), lastCompleted: '', status: 'pending' },
+        tdsFiling:  { label: 'TDS Filing',  dueDate: nextDueFns.tdsFiling(now),  lastCompleted: '', status: 'pending' },
+        esic:       { label: 'ESIC',        dueDate: nextDueFns.esic(now),       lastCompleted: '', status: 'pending' },
+        pf:         { label: 'PF',          dueDate: nextDueFns.pf(now),         lastCompleted: '', status: 'pending' },
+        pt:         { label: 'PT',          dueDate: nextDueFns.pt(now),         lastCompleted: '', status: 'pending' }
       };
     }
 
     function getTaskState(task) {
-      const dToDue = daysDiff(task.dueDate);
-      if (task.status === 'missed') return { text:'Missed', cls:'status-missed', isDone:false };
-      if (task.lastCompleted && dToDue > 15) return { text:'Done', cls:'status-done', isDone:true };
-      if (dToDue < 0) return { text:'Overdue', cls:'status-overdue', isDone:false };
-      if (dToDue <= 3) return { text:'Due in 3 days', cls:'status-overdue', isDone:false };
-      if (dToDue <= 15) return { text:'Due soon', cls:'status-upcoming', isDone:false };
-      return { text:'Pending', cls:'status-pending', isDone:false };
+      const d = daysDiff(task.dueDate);
+      if (task.status === 'missed')           return { text: 'Missed', cls: 'tag-missed', isDone: false };
+      if (task.lastCompleted && d > 15)       return { text: 'Done',   cls: 'tag-done',   isDone: true  };
+      if (d < 0)                              return { text: 'Overdue', cls: 'tag-overdue', isDone: false };
+      if (d <= 3)                             return { text: 'Due in 3d', cls: 'tag-overdue', isDone: false };
+      if (d <= 15)                            return { text: 'Due soon', cls: 'tag-soon', isDone: false };
+      return { text: 'Pending', cls: 'tag-pending', isDone: false };
     }
 
     function ensureClientShape(c) {
-      c.status = c.status || 'active';
+      c.status        = c.status || 'active';
       c.contractValue = Number(c.contractValue || 0);
-      c.esic = c.esic || '';
-      c.pf   = c.pf   || '';
-      c.pt   = c.pt   || '';
+      c.esic = c.esic || ''; c.pf = c.pf || ''; c.pt = c.pt || '';
+      // Structured address support
+      c.addressLine1 = c.addressLine1 || '';
+      c.addressLine2 = c.addressLine2 || '';
+      c.city         = c.city    || '';
+      c.state        = c.state   || '';
+      c.pincode      = c.pincode || '';
+      // Legacy address migration
+      if (!c.addressLine1 && c.address) { c.addressLine1 = c.address; }
+      c.gstUsername   = c.gstUsername || '';
       c.documents     = Array.isArray(c.documents)     ? c.documents     : [];
-      c.portalPasswords = c.portalPasswords || { gst:'', tan:'', pan:'' };
-      c.completedToday = c.completedToday || 0;
-      c.notes       = Array.isArray(c.notes)       ? c.notes       : [];
-      c.clientNotes = Array.isArray(c.clientNotes) ? c.clientNotes : [];
-      c.tasks       = c.tasks || makeDefaultTasks();
+      c.portalPasswords = c.portalPasswords || { gst: '', tan: '', pan: '' };
+      c.notes         = Array.isArray(c.notes)         ? c.notes         : [];
+      c.clientNotes   = Array.isArray(c.clientNotes)   ? c.clientNotes   : [];
+      c.tasks         = c.tasks || makeDefaultTasks();
       c.invoiceStatus = c.invoiceStatus || 'not_raised';
       c.invoiceAmount = Number(c.invoiceAmount || 0);
       c.invoiceMonth  = c.invoiceMonth || currentMonthKey();
-      c.assignedTo    = Array.isArray(c.assignedTo) ? c.assignedTo : [];
+      c.assignedTo    = Array.isArray(c.assignedTo)    ? c.assignedTo    : [];
       c.clientUid     = c.clientUid     || '';
       c.clientPortalEmail = c.clientPortalEmail || '';
-
       const defaults = makeDefaultTasks();
       Object.keys(defaults).forEach(k => {
         if (!c.tasks[k]) c.tasks[k] = defaults[k];
@@ -1541,69 +1945,6 @@
       return c;
     }
 
-    // ─── FETCH ───
-    async function fetchClientsFromCloud() {
-      try {
-        const snap = await getDocs(collection(db, "clients"));
-        window.clients = [];
-        snap.forEach(docSnap => {
-          const c = ensureClientShape(docSnap.data());
-          if (window.userRole === 'admin' || c.assignedTo.includes(window.currentUserUid)) {
-            window.clients.push(c);
-          }
-        });
-        autoRollForwardAll();
-        renderCurrentPage();
-      } catch (e) {
-        showToast('Error syncing from cloud.', true);
-      }
-    }
-
-    async function syncClientToCloud(c) {
-      try {
-        await setDoc(doc(db, "clients", c.id), c);
-      } catch (e) {
-        showToast('Error saving data.', true);
-      }
-    }
-
-    // ─── UTILS ───
-    const escHtml = (s) => String(s || '').replace(/[&<>"']/g,
-      m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])
-    );
-    const formatCurrency = (v) => '₹' + Number(v || 0).toLocaleString('en-IN', { minimumFractionDigits:0, maximumFractionDigits:2 });
-
-    function getFileNamesWithTags(inputEl) {
-      return Array.from(inputEl.files || []).map(file => ({
-        name: file.name, size: file.size || 0, type: file.type || '', tag: 'Other'
-      }));
-    }
-
-    // ─── PAGE SWITCH ───
-    window.showPage = function(name) {
-      document.querySelectorAll('.page').forEach(p => {
-        p.classList.remove('active');
-        p.style.display = 'none';
-      });
-      const target = document.getElementById('page' + name.charAt(0).toUpperCase() + name.slice(1));
-      if (target) { target.classList.add('active'); target.style.display = 'block'; }
-      document.querySelectorAll('.nav-item[data-page]').forEach(b => b.classList.remove('active'));
-      const activeBtn = document.querySelector(`.nav-item[data-page="${name}"]`);
-      if (activeBtn) activeBtn.classList.add('active');
-      document.getElementById('pageHeadTitle').textContent = pageConfig[name].t;
-      document.getElementById('pageHeadSub').textContent   = pageConfig[name].s;
-      renderCurrentPage();
-    };
-
-    function renderCurrentPage() {
-      if (document.getElementById('pageToday').classList.contains('active'))    renderTodayView();
-      if (document.getElementById('pageClients').classList.contains('active'))  renderClients();
-      if (document.getElementById('pageInvoices').classList.contains('active')) renderInvoiceTracker();
-      if (document.getElementById('pageRevenue').classList.contains('active'))  renderRevenueDashboard();
-      if (document.getElementById('pageStaff') && document.getElementById('pageStaff').classList.contains('active')) fetchStaffList();
-    }
-
-    // ─── TODAY VIEW ───
     function autoRollForwardAll() {
       const today = todayISO();
       window.clients.forEach(c => {
@@ -1612,128 +1953,132 @@
           if (!t) return;
           if (daysDiff(t.dueDate) < 0 && t.status !== 'missed' && !t.lastCompleted) {
             t.status = 'missed';
-            const nextDate = nextDueFns[k] ? nextDueFns[k](today) : t.dueDate;
-            c.tasks[k] = { ...t, previousDueDate: t.dueDate, dueDate: nextDate };
+            c.tasks[k] = { ...t, previousDueDate: t.dueDate, dueDate: nextDueFns[k] ? nextDueFns[k](today) : t.dueDate };
           }
         });
       });
     }
 
+    // ─── PAGE SWITCH ──────────────────────────────────────────────────────
+    window.showPage = function(name) {
+      document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+      const target = document.getElementById('page' + name.charAt(0).toUpperCase() + name.slice(1));
+      if (target) { target.classList.add('active'); target.style.display = 'block'; }
+      document.querySelectorAll('.nav-item[data-page]').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.querySelector(`.nav-item[data-page="${name}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (pageConfig[name]) {
+        document.getElementById('pageHeadTitle').textContent = pageConfig[name].t;
+        document.getElementById('pageHeadSub').textContent   = pageConfig[name].s;
+      }
+      renderCurrentPage();
+    };
+
+    function renderCurrentPage() {
+      if (document.getElementById('pageToday')?.classList.contains('active'))    renderTodayView();
+      if (document.getElementById('pageClients')?.classList.contains('active'))  renderClients();
+      if (document.getElementById('pageInvoices')?.classList.contains('active')) renderInvoiceTracker();
+      if (document.getElementById('pageRevenue')?.classList.contains('active'))  renderRevenueDashboard();
+      if (document.getElementById('pageStaff')?.classList.contains('active'))    fetchStaffList();
+    }
+
+    // ─── TODAY VIEW ───────────────────────────────────────────────────────
     function getActiveClients() { return window.clients.filter(c => c.status === 'active'); }
 
-    function renderWorkloadSummary() {
-      const el = document.getElementById('workloadSummary');
+    function renderTodayView() {
+      // Stats
       let totalTasks = 0, completedToday = 0, pending = 0;
       getActiveClients().forEach(c => {
         Object.values(c.tasks).forEach(t => {
           totalTasks++;
           if (t.lastCompleted === todayISO()) completedToday++;
-          else { const st = getTaskState(t); if (st.cls !== 'status-done') pending++; }
+          else { const st = getTaskState(t); if (st.cls !== 'tag-done') pending++; }
         });
       });
-      el.innerHTML = `
-        <div class="stat-card">
-          <div class="stat-label">Total Tasks</div>
-          <div class="stat-value">${totalTasks}</div>
-          <div class="stat-help">Across active clients</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Completed Today</div>
-          <div class="stat-value" style="color:var(--color-success);">${completedToday}</div>
-          <div class="stat-help">Marked done today</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Pending</div>
-          <div class="stat-value" style="color:var(--color-warning);">${pending}</div>
-          <div class="stat-help">Not yet completed</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Active Clients</div>
-          <div class="stat-value">${getActiveClients().length}</div>
-          <div class="stat-help">Currently in Today View</div>
-        </div>
-      `;
-    }
+      document.getElementById('workloadSummary').innerHTML = `
+        <div class="stat-card"><div class="stat-label">Total Tasks</div><div class="stat-value">${totalTasks}</div><div class="stat-help">Across active clients</div></div>
+        <div class="stat-card"><div class="stat-label">Completed Today</div><div class="stat-value" style="color:var(--success);">${completedToday}</div><div class="stat-help">Marked done today</div></div>
+        <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value" style="color:var(--warn);">${pending}</div><div class="stat-help">Not yet completed</div></div>
+        <div class="stat-card"><div class="stat-label">Active Clients</div><div class="stat-value">${getActiveClients().length}</div><div class="stat-help">Currently in view</div></div>`;
 
-    function renderTodayView() {
-      renderWorkloadSummary();
-      const activeClients = getActiveClients();
       const container = document.getElementById('todayView');
-      if (!activeClients.length) {
-        container.innerHTML = `<div class="empty"><h3>No Active Clients</h3><p>Add or mark clients active to see tasks here.</p></div>`;
+      if (!getActiveClients().length) {
+        container.innerHTML = `<div class="empty" style="grid-column:1/-1;"><div class="empty-icon">🏢</div><h3>No Active Clients</h3><p>Add or activate clients to see tasks here.</p></div>`;
         return;
       }
+
       const todayTasks = [], overdueTasks = [], next3Tasks = [];
-      activeClients.forEach(c => {
+      getActiveClients().forEach(c => {
         Object.entries(c.tasks).forEach(([key, t]) => {
           const diff = daysDiff(t.dueDate);
           const st   = getTaskState(t);
-          if (st.cls === 'status-done' || st.cls === 'status-missed') return;
-          const base = { client:c, key, task:t, diff, st };
+          if (st.cls === 'tag-done' || st.cls === 'tag-missed') return;
+          const base = { client: c, key, task: t, diff, st };
           if (diff === 0) todayTasks.push(base);
           else if (diff < 0) overdueTasks.push(base);
           else if (diff > 0 && diff <= 3) next3Tasks.push(base);
         });
       });
 
-      const section = (title, list, color) => {
-        if (!list.length) return `<div class="card"><div class="today-column-title">${title}</div><div class="muted-note">Nothing here.</div></div>`;
+      const section = (title, color, list) => {
         const grouped = {};
         list.forEach(item => {
-          const id = item.client.id;
-          if (!grouped[id]) grouped[id] = { client:item.client, tasks:[] };
-          grouped[id].tasks.push(item);
+          if (!grouped[item.client.id]) grouped[item.client.id] = { client: item.client, tasks: [] };
+          grouped[item.client.id].tasks.push(item);
         });
         return `
-          <div class="card">
-            <div class="today-column-title" style="color:${color};">${title}</div>
-            ${Object.values(grouped).map(g => `
-              <div style="margin-bottom:0.6rem;">
-                <div class="today-group-header">
-                  <span>${escHtml(g.client.name)}</span>
-                  <button class="mini-btn" onclick="jumpToClient('${g.client.id}')">Open</button>
-                </div>
-                <ul class="today-task-list">
+          <div class="today-section">
+            <div class="today-col-title" style="color:${color};">
+              <i class="fa-solid fa-circle" style="font-size:0.5rem;"></i>${title}
+              <span style="margin-left:auto; font-size:0.75rem; background:rgba(0,0,0,0.06); padding:0.1rem 0.4rem; border-radius:99px; font-weight:700;">${list.length}</span>
+            </div>
+            ${!list.length
+              ? `<div class="muted-note" style="padding:0.5rem 0;"><i class="fa-solid fa-check-circle" style="color:var(--success);"></i> Nothing here.</div>`
+              : Object.values(grouped).map(g => `
+                <div class="today-group">
+                  <div class="today-group-name">
+                    <span>${escHtml(g.client.name)}</span>
+                    <button class="mini-btn" onclick="jumpToClient('${g.client.id}')">Open</button>
+                  </div>
                   ${g.tasks.map(i => `
-                    <li class="today-task-item">
+                    <div class="today-task-item">
                       <span>${escHtml(i.task.label)}</span>
-                      <span class="tag-pill ${i.diff < 0 ? 'tag-overdue' : 'tag-soon'}">
-                        ${i.diff < 0 ? 'Overdue' : (i.diff === 0 ? 'Today' : `In ${i.diff} d`)}
+                      <span class="tag-pill ${i.diff < 0 ? 'tag-overdue' : (i.diff === 0 ? 'tag-today' : 'tag-soon')}">
+                        ${i.diff < 0 ? `${Math.abs(i.diff)}d overdue` : (i.diff === 0 ? 'Today' : `In ${i.diff}d`)}
                       </span>
-                    </li>
-                  `).join('')}
-                </ul>
-              </div>
-            `).join('')}
-          </div>
-        `;
+                    </div>`).join('')}
+                </div>`).join('')
+            }
+          </div>`;
       };
 
       container.innerHTML =
-        section('Overdue Tasks', overdueTasks, 'var(--color-error)') +
-        section('Due Today / Next 3 Days', [...todayTasks, ...next3Tasks], 'var(--color-warning)');
+        section('Overdue Tasks', 'var(--error)', overdueTasks) +
+        section('Due Today / Next 3 Days', 'var(--warn)', [...todayTasks, ...next3Tasks]);
     }
 
-    // ─── ADD CLIENT ───
+    // ─── ADD CLIENT ───────────────────────────────────────────────────────
     document.getElementById('clientForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const saveBtn = document.getElementById('saveBtn');
       saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
       saveBtn.disabled = true;
 
-      let assignedArray = [];
-      if (window.userRole === 'admin') assignedArray = getSelectedStaff('addClientStaffList');
-      else assignedArray = [window.currentUserUid];
-
+      let assignedArray = window.userRole === 'admin' ? getSelectedStaff('addClientStaffList') : [window.currentUserUid];
       const newId = Date.now().toString();
 
       const newClient = ensureClientShape({
-        id: newId,
+        id:            newId,
         name:          document.getElementById('name').value.trim(),
-        address:       document.getElementById('address').value.trim(),
+        addressLine1:  document.getElementById('addressLine1').value.trim(),
+        addressLine2:  document.getElementById('addressLine2').value.trim(),
+        city:          document.getElementById('city').value.trim(),
+        state:         document.getElementById('state').value.trim(),
+        pincode:       document.getElementById('pincode').value.trim(),
         email:         document.getElementById('email').value.trim(),
         phone:         document.getElementById('phone').value.trim(),
         gst:           document.getElementById('gst').value.trim().toUpperCase(),
+        gstUsername:   document.getElementById('gstUsername').value.trim(),
         pan:           document.getElementById('pan').value.trim().toUpperCase(),
         tan:           document.getElementById('tan').value.trim().toUpperCase(),
         contractValue: Number(document.getElementById('contractValue').value || 0),
@@ -1750,29 +2095,20 @@
         invoiceStatus: document.getElementById('invoiceStatus').value,
         invoiceAmount: Number(document.getElementById('invoiceAmount').value || 0),
         invoiceMonth:  currentMonthKey(),
-        notes:         [],
-        clientNotes:   [],
-        tasks:         makeDefaultTasks(),
-        assignedTo:    assignedArray,
-        clientUid:     '',
-        clientPortalEmail: ''
+        notes: [], clientNotes: [],
+        tasks: makeDefaultTasks(),
+        assignedTo: assignedArray,
+        clientUid: '', clientPortalEmail: ''
       });
 
-      // Create client portal login if credentials provided
       const portalEmail = document.getElementById('clientPortalEmail').value.trim();
       const portalPass  = document.getElementById('clientPortalPass').value;
       if (portalEmail && portalPass) {
         try {
           const cred = await createUserWithEmailAndPassword(secondaryAuth, portalEmail, portalPass);
-          const portalUid = cred.user.uid;
           await signOut(secondaryAuth);
-          await setDoc(doc(db, "users", portalUid), {
-            role: 'client',
-            name: newClient.name,
-            email: portalEmail,
-            clientId: newId
-          });
-          newClient.clientUid = portalUid;
+          await setDoc(doc(db, "users", cred.user.uid), { role: 'client', name: newClient.name, email: portalEmail, clientId: newId });
+          newClient.clientUid = cred.user.uid;
           newClient.clientPortalEmail = portalEmail;
           showToast('Client portal login created!');
         } catch (err) {
@@ -1780,29 +2116,24 @@
         }
       }
 
-      window.clients.unshift(newClient);
+      await syncClientToCloud(newClient);
       document.getElementById('clientForm').reset();
       if (window.userRole === 'admin') renderStaffCheckboxes('addClientStaffList', []);
-
-      await syncClientToCloud(newClient);
-      renderCurrentPage();
-      saveBtn.innerHTML = 'Save to Cloud';
+      saveBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Save to Cloud';
       saveBtn.disabled = false;
       showToast('Client added successfully.');
     });
 
-    // ─── TASK COMPLETION ───
+    // ─── TASK COMPLETION ──────────────────────────────────────────────────
     window.confirmTask = async function(cId, key) {
       const dateInput = document.getElementById(`date-${cId}-${key}`)?.value;
       if (!dateInput) { showToast('Select a valid date.', true); return; }
       const c = window.clients.find(x => x.id === cId);
       if (!c) return;
       const t = c.tasks[key];
-      t.lastCompleted = dateInput;
-      t.status = 'done';
+      t.lastCompleted = dateInput; t.status = 'done';
       t.dueDate = nextDueFns[key](t.dueDate);
       c.completedToday = (c.completedToday || 0) + 1;
-      renderCurrentPage();
       await syncClientToCloud(c);
       showToast(`Task marked complete. Next: ${formatDate(t.dueDate)}`);
     };
@@ -1813,12 +2144,12 @@
       area.innerHTML = `
         <div class="date-input-group">
           <input type="date" id="date-${cId}-${key}" value="${todayISO()}">
-          <button class="mini-btn" onclick="confirmTask('${cId}','${key}')"><i class="fa-solid fa-check"></i></button>
-          <button class="mini-btn" onclick="renderClients()">Cancel</button>
+          <button class="mini-btn mini-btn-success" onclick="confirmTask('${cId}','${key}')"><i class="fa-solid fa-check"></i></button>
+          <button class="mini-btn" onclick="renderClients()">✕</button>
         </div>`;
     };
 
-    // ─── CLIENT LIST ───
+    // ─── CLIENT LIST ──────────────────────────────────────────────────────
     function renderClients() {
       const listEl  = document.getElementById('clientList');
       const q       = document.getElementById('searchInput').value.trim().toLowerCase();
@@ -1826,25 +2157,26 @@
       const fTasks  = document.getElementById('filterTasks').value;
 
       let filtered = window.clients.filter(c => {
-        const hay = [c.name, c.address, c.email, c.phone, c.gst, c.pan, c.tan, c.esic, c.pf, c.pt].join(' ').toLowerCase();
+        const hay = [c.name, c.addressLine1, c.city, c.state, c.email, c.phone, c.gst, c.pan, c.tan, c.esic, c.pf, c.pt, c.gstUsername, c.address || ''].join(' ').toLowerCase();
         let ok = !q || hay.includes(q);
         if (!ok) return false;
         if (fStatus === 'active')   ok = c.status === 'active';
         if (fStatus === 'inactive') ok = c.status === 'inactive';
-        if (fTasks === 'overdue')  ok = Object.values(c.tasks).some(t => getTaskState(t).cls === 'status-overdue');
-        else if (fTasks === 'dueSoon') ok = Object.values(c.tasks).some(t => getTaskState(t).cls === 'status-upcoming');
+        if (fTasks === 'overdue')   ok = Object.values(c.tasks).some(t => getTaskState(t).cls === 'tag-overdue');
+        else if (fTasks === 'dueSoon') ok = Object.values(c.tasks).some(t => getTaskState(t).cls === 'tag-soon');
         return ok;
       });
 
       if (!filtered.length) {
-        listEl.innerHTML = `<div class="empty"><h3>No Clients</h3><p>Try different filters or add a new client.</p></div>`;
+        listEl.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><h3>No Clients Found</h3><p>Try different filters or add a new client.</p></div>`;
         return;
       }
 
       listEl.innerHTML = filtered.map(c => {
-        const overdueCount = Object.values(c.tasks).filter(t => getTaskState(t).cls === 'status-overdue').length;
-        const soonCount    = Object.values(c.tasks).filter(t => getTaskState(t).cls === 'status-upcoming').length;
+        const overdueCount    = Object.values(c.tasks).filter(t => getTaskState(t).cls === 'tag-overdue').length;
+        const soonCount       = Object.values(c.tasks).filter(t => getTaskState(t).cls === 'tag-soon').length;
         const clientNoteCount = (c.clientNotes || []).length;
+        const fullAddress     = formatAddress(c);
 
         const groupedDocs = {};
         (c.documents || []).forEach(d => {
@@ -1853,22 +2185,26 @@
           groupedDocs[tag].push(d);
         });
 
+        const initials = c.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
         return `
           <article class="client-row" id="client-row-${c.id}">
+            <!-- HEADER -->
             <div class="client-row-header" onclick="toggleClientDetails('${c.id}')">
               <div class="client-row-title">
-                <div>
+                <div class="client-avatar">${initials}</div>
+                <div style="min-width:0;">
                   <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
                     <span class="client-name">${escHtml(c.name)}</span>
-                    ${c.clientUid ? `<span style="font-size:0.68rem; background:#dcfce7; color:#15803d; padding:0.1rem 0.45rem; border-radius:999px; font-weight:600; border:1px solid #bbf7d0;"><i class="fa-solid fa-circle-user"></i> Portal</span>` : ''}
+                    ${c.clientUid ? `<span style="font-size:0.66rem; background:var(--success-bg); color:var(--success); padding:0.1rem 0.45rem; border-radius:var(--r-pill); font-weight:700; border:1px solid rgba(13,122,78,0.2);">Portal</span>` : ''}
                   </div>
                   <div class="client-meta">
-                    ${c.gst ? `GST: ${escHtml(c.gst)}` : ''}
-                    ${c.pan ? `· PAN: ${escHtml(c.pan)}` : ''}
-                    ${c.tan ? `· TAN: ${escHtml(c.tan)}` : ''}
-                    ${overdueCount ? `· <span style="color:var(--color-error);">Overdue: ${overdueCount}</span>` : ''}
-                    ${soonCount    ? `· Due Soon: ${soonCount}` : ''}
-                    ${clientNoteCount ? `· <span style="color:#1d4ed8;">Client Notes: ${clientNoteCount}</span>` : ''}
+                    ${c.gst ? `<span class="client-meta-chip">GST: ${escHtml(c.gst)}</span>` : ''}
+                    ${c.pan ? `<span class="client-meta-chip">PAN: ${escHtml(c.pan)}</span>` : ''}
+                    ${c.tan ? `<span class="client-meta-chip">TAN: ${escHtml(c.tan)}</span>` : ''}
+                    ${overdueCount ? `<span class="client-meta-chip" style="background:var(--error-bg); color:var(--error); border-color:rgba(192,57,43,0.2);">Overdue: ${overdueCount}</span>` : ''}
+                    ${soonCount    ? `<span class="client-meta-chip" style="background:var(--warn-bg); color:var(--warn);">Due soon: ${soonCount}</span>` : ''}
+                    ${clientNoteCount ? `<span class="client-meta-chip" style="background:var(--info-bg); color:var(--info);">Client notes: ${clientNoteCount}</span>` : ''}
                   </div>
                 </div>
               </div>
@@ -1876,131 +2212,184 @@
                 <span class="status-pill ${c.status === 'inactive' ? 'inactive' : ''}">${escHtml(c.status)}</span>
                 <button class="mini-btn" onclick="openEditModal('${c.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
                 <button class="mini-btn" onclick="toggleClientStatus('${c.id}')">
-                  <i class="fa-solid fa-toggle-on"></i> ${c.status === 'active' ? 'Set Inactive' : 'Set Active'}
+                  ${c.status === 'active' ? '<i class="fa-solid fa-toggle-off"></i> Deactivate' : '<i class="fa-solid fa-toggle-on"></i> Activate'}
                 </button>
-                ${window.userRole === 'admin' ? `
-                <button class="mini-btn mini-btn-danger" onclick="deleteClient('${c.id}')">
-                  <i class="fa-solid fa-trash"></i>
-                </button>` : ''}
+                ${window.userRole === 'admin' ? `<button class="mini-btn mini-btn-danger" onclick="deleteClient('${c.id}')"><i class="fa-solid fa-trash"></i></button>` : ''}
               </div>
             </div>
 
+            <!-- DETAILS (tabbed) -->
             <div class="client-row-body" id="details-${c.id}">
-              <div class="details-grid">
-                <div class="detail">
-                  <div class="detail-label">Address</div>
-                  <div class="detail-value">${escHtml(c.address || '—')}</div>
-                </div>
-                <div class="detail">
-                  <div class="detail-label">Contact</div>
-                  <div class="detail-value">${escHtml(c.email || '—')}<br>${escHtml(c.phone || '')}</div>
-                </div>
-                <div class="detail">
-                  <div class="detail-label">Contract Value</div>
-                  <div class="detail-value">${formatCurrency(c.contractValue || 0)}</div>
-                </div>
-                <div class="detail">
-                  <div class="detail-label">ESIC / PF / PT</div>
-                  <div class="detail-value mono">${escHtml(c.esic || '—')}<br>${escHtml(c.pf || '—')}<br>${escHtml(c.pt || '—')}</div>
-                </div>
-                <div class="detail">
-                  <div class="detail-label">GST Password</div>
-                  <div class="password-box">
-                    <span class="password-mask" id="pass-${c.id}-gst" data-visible="false">${c.portalPasswords?.gst ? '••••••••' : '—'}</span>
-                    <button class="mini-btn" onclick="togglePasswordView('${c.id}','gst')">Show</button>
-                    <button class="mini-btn" onclick="copyPassword('${c.id}','gst')"><i class="fa-solid fa-copy"></i></button>
-                  </div>
-                </div>
-                <div class="detail">
-                  <div class="detail-label">TAN Password</div>
-                  <div class="password-box">
-                    <span class="password-mask" id="pass-${c.id}-tan" data-visible="false">${c.portalPasswords?.tan ? '••••••••' : '—'}</span>
-                    <button class="mini-btn" onclick="togglePasswordView('${c.id}','tan')">Show</button>
-                    <button class="mini-btn" onclick="copyPassword('${c.id}','tan')"><i class="fa-solid fa-copy"></i></button>
-                  </div>
-                </div>
-                <div class="detail">
-                  <div class="detail-label">PAN Password</div>
-                  <div class="password-box">
-                    <span class="password-mask" id="pass-${c.id}-pan" data-visible="false">${c.portalPasswords?.pan ? '••••••••' : '—'}</span>
-                    <button class="mini-btn" onclick="togglePasswordView('${c.id}','pan')">Show</button>
-                    <button class="mini-btn" onclick="copyPassword('${c.id}','pan')"><i class="fa-solid fa-copy"></i></button>
-                  </div>
-                </div>
-                ${c.clientPortalEmail ? `
-                <div class="detail" style="background:#f0fdf4; border-color:#bbf7d0;">
-                  <div class="detail-label" style="color:#15803d;">Client Portal</div>
-                  <div class="detail-value" style="color:#15803d;">
-                    <i class="fa-solid fa-circle-user"></i>
-                    <span class="mono" style="font-size:0.78rem;">${escHtml(c.clientPortalEmail)}</span>
-                  </div>
-                </div>` : ''}
+              <div class="client-tabs-bar">
+                <button class="client-tab-btn active" onclick="switchTab('${c.id}','info',this)">
+                  <i class="fa-solid fa-circle-info"></i> Info
+                </button>
+                <button class="client-tab-btn" onclick="switchTab('${c.id}','tasks',this)">
+                  <i class="fa-solid fa-calendar-check"></i> Tasks
+                  ${overdueCount ? `<span style="font-size:0.65rem; background:var(--error-bg); color:var(--error); padding:0.05rem 0.4rem; border-radius:99px; font-weight:700;">${overdueCount}</span>` : ''}
+                </button>
+                <button class="client-tab-btn" onclick="switchTab('${c.id}','notes',this)">
+                  <i class="fa-solid fa-note-sticky"></i> Notes
+                  ${clientNoteCount ? `<span style="font-size:0.65rem; background:var(--info-bg); color:var(--info); padding:0.05rem 0.4rem; border-radius:99px; font-weight:700;">${clientNoteCount}</span>` : ''}
+                </button>
+                <button class="client-tab-btn" onclick="switchTab('${c.id}','docs',this)">
+                  <i class="fa-solid fa-paperclip"></i> Docs
+                </button>
+                <button class="client-tab-btn" onclick="switchTab('${c.id}','vault',this)">
+                  <i class="fa-solid fa-key"></i> Vault
+                </button>
               </div>
 
-              <div class="detail">
-                <div class="detail-label">Documents by Tag</div>
-                ${Object.keys(groupedDocs).length
-                  ? Object.entries(groupedDocs).map(([tag, docs]) => `
-                      <div style="margin-bottom:0.3rem;">
-                        <span class="doc-tag">${escHtml(tag)}</span>
-                        <div class="docs-list" style="margin-top:0.25rem;">
-                          ${docs.map(d => `<span class="doc-chip"><i class="fa-solid fa-paperclip"></i> ${escHtml(d.name || '')}</span>`).join('')}
-                        </div>
-                      </div>`).join('')
-                  : '<div class="muted-note">No documents attached.</div>'
-                }
+              <!-- TAB: INFO -->
+              <div class="client-tab-panel active" id="tab-info-${c.id}">
+                <div class="details-grid-3">
+                  <div class="detail-item" style="grid-column: span 3;">
+                    <div class="detail-label"><i class="fa-solid fa-location-dot"></i> Registered Address</div>
+                    <div class="detail-value" style="line-height:1.7;">
+                      ${c.addressLine1 ? `<span style="font-weight:600;">${escHtml(c.addressLine1)}</span>` : ''}
+                      ${c.addressLine2 ? `<br>${escHtml(c.addressLine2)}` : ''}
+                      ${(c.city || c.state || c.pincode) ? `<br>${[c.city, c.state, c.pincode].filter(Boolean).map(s => escHtml(s)).join(', ')}` : ''}
+                      ${!c.addressLine1 && c.address ? escHtml(c.address) : ''}
+                      ${!c.addressLine1 && !c.address ? '<span class="muted-note">—</span>' : ''}
+                    </div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Contact</div>
+                    <div class="detail-value">${escHtml(c.email || '—')}<br><span style="color:var(--text-3);">${escHtml(c.phone || '')}</span></div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Contract Value</div>
+                    <div class="detail-value mono" style="font-size:1rem; font-weight:700;">${formatCurrency(c.contractValue || 0)}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">Invoice</div>
+                    <div class="detail-value">
+                      <span class="invoice-status-badge inv-${c.invoiceStatus}">${escHtml(c.invoiceStatus || 'not_raised').replace('_', ' ')}</span>
+                      <div style="margin-top:0.25rem;" class="mono">${formatCurrency(c.invoiceAmount || 0)}</div>
+                    </div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">GSTIN</div>
+                    <div class="detail-value mono">${escHtml(c.gst || '—')}</div>
+                    ${c.gstUsername ? `<div class="detail-label" style="margin-top:0.3rem;">GST Username</div><div class="detail-value mono">${escHtml(c.gstUsername)}</div>` : ''}
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">PAN</div>
+                    <div class="detail-value mono">${escHtml(c.pan || '—')}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">TAN</div>
+                    <div class="detail-value mono">${escHtml(c.tan || '—')}</div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">ESIC / PF / PT</div>
+                    <div class="detail-value mono">${[c.esic, c.pf, c.pt].map(v => escHtml(v || '—')).join('<br>')}</div>
+                  </div>
+                  ${c.clientPortalEmail ? `
+                  <div class="detail-item" style="background:var(--success-bg); border-color:rgba(13,122,78,0.2);">
+                    <div class="detail-label" style="color:var(--success);">Client Portal</div>
+                    <div class="detail-value mono" style="color:var(--success);">${escHtml(c.clientPortalEmail)}</div>
+                  </div>` : ''}
+                </div>
               </div>
 
-              <div>
-                <div class="detail-label" style="margin-bottom:0.4rem;">Tasks</div>
-                <div class="tasks-grid">
+              <!-- TAB: TASKS -->
+              <div class="client-tab-panel" id="tab-tasks-${c.id}">
+                <div class="tasks-grid-4">
                   ${Object.entries(c.tasks).map(([key, t]) => {
                     const st = getTaskState(t);
                     const action = st.isDone
-                      ? `<span class="done-text"><i class="fa-solid fa-circle-check"></i> Done (${formatDate(t.lastCompleted)})</span>`
-                      : `<button class="mini-btn" style="border-color:var(--color-primary);" onclick="showDatePicker('${c.id}','${key}')">Mark Complete</button>`;
-                    return `
-                      <div class="task-card">
-                        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.4rem;">
-                          <span class="task-title">${escHtml(t.label)}</span>
-                          <span class="status-pill-task ${st.cls}">${st.text}</span>
-                        </div>
-                        <div class="task-info">Due: ${formatDate(t.dueDate)}</div>
-                        <div class="task-bottom" id="action-area-${c.id}-${key}">${action}</div>
-                      </div>`;
+                      ? `<div class="task-done-text"><i class="fa-solid fa-circle-check"></i> Done ${formatDate(t.lastCompleted)}</div>`
+                      : `<button class="mini-btn" onclick="showDatePicker('${c.id}','${key}')"><i class="fa-solid fa-check"></i> Mark Done</button>`;
+                    return `<div class="task-card">
+                      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.35rem;">
+                        <span class="task-card-name">${escHtml(t.label)}</span>
+                        <span class="tag-pill ${st.cls}" style="flex-shrink:0;">${st.text}</span>
+                      </div>
+                      <div class="task-card-date">Due: ${formatDate(t.dueDate)}</div>
+                      <div class="task-card-bottom" id="action-area-${c.id}-${key}">${action}</div>
+                    </div>`;
                   }).join('')}
                 </div>
               </div>
 
-              <!-- STAFF NOTES -->
-              <div class="notes-wrap">
-                <strong style="font-size:0.8rem;"><i class="fa-solid fa-lock" style="font-size:0.7rem; color:var(--color-text-muted);"></i> Internal Notes (Staff Only)</strong>
-                <div style="display:flex; gap:0.4rem; margin-top:0.35rem;">
-                  <input class="input" id="note-input-${c.id}" placeholder="Add internal note and hit +">
-                  <button class="mini-btn" onclick="addNote('${c.id}')"><i class="fa-solid fa-plus"></i></button>
+              <!-- TAB: NOTES -->
+              <div class="client-tab-panel" id="tab-notes-${c.id}">
+                <div class="notes-section">
+                  <div>
+                    <div style="font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-3); margin-bottom:0.5rem;">
+                      <i class="fa-solid fa-lock" style="font-size:0.7rem;"></i> Internal Notes (Staff Only)
+                    </div>
+                    <div class="notes-input-row">
+                      <input class="input" id="note-input-${c.id}" placeholder="Add internal note...">
+                      <button class="mini-btn mini-btn-gold" onclick="addNote('${c.id}')"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <ul class="notes-list" style="margin-top:0.5rem;" id="notes-list-${c.id}">
+                      ${renderNotesHtml(c.notes)}
+                    </ul>
+                  </div>
+
+                  ${(c.clientNotes && c.clientNotes.length) ? `
+                  <div>
+                    <div style="font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--info); margin-bottom:0.5rem;">
+                      <i class="fa-solid fa-circle-user"></i> Client Notes
+                      <span class="client-notes-badge">from client portal</span>
+                    </div>
+                    <ul class="notes-list">
+                      ${[...c.clientNotes].sort((a,b)=>(b.timestamp||'').localeCompare(a.timestamp||'')).map(n => `
+                        <li class="note-item" style="background:var(--info-bg); border-color:rgba(26,94,187,0.15);">
+                          <div class="note-text">${escHtml(n.text || '')}</div>
+                          <div class="note-ts">${new Date(n.timestamp).toLocaleString('en-IN')}</div>
+                        </li>`).join('')}
+                    </ul>
+                  </div>` : ''}
                 </div>
-                <ul class="notes-list" id="notes-list-${c.id}">
-                  ${renderNotesHtml(c.notes)}
-                </ul>
               </div>
 
-              <!-- CLIENT NOTES (read-only for admin/staff) -->
-              ${(c.clientNotes && c.clientNotes.length) ? `
-              <div class="client-notes-wrap">
-                <strong style="font-size:0.8rem;">
-                  <i class="fa-solid fa-circle-user" style="font-size:0.75rem;"></i>
-                  Client Notes
-                  <span class="client-notes-badge">from client portal</span>
-                </strong>
-                <ul class="notes-list" style="margin-top:0.5rem; max-height:120px; overflow-y:auto;">
-                  ${[...c.clientNotes].sort((a,b)=>(b.timestamp||'').localeCompare(a.timestamp||'')).map(n => `
-                    <li class="note-item">
-                      <div>${escHtml(n.text || '')}</div>
-                      <div class="note-ts">${new Date(n.timestamp).toLocaleString('en-IN')}</div>
-                    </li>
-                  `).join('')}
-                </ul>
-              </div>` : ''}
+              <!-- TAB: DOCS -->
+              <div class="client-tab-panel" id="tab-docs-${c.id}">
+                ${Object.keys(groupedDocs).length
+                  ? Object.entries(groupedDocs).map(([tag, docs]) => `
+                      <div class="docs-group">
+                        <div class="docs-group-label"><span class="doc-tag">${escHtml(tag)}</span></div>
+                        <div class="docs-chip-list">
+                          ${docs.map(d => `<span class="doc-chip"><i class="fa-solid fa-paperclip"></i>${escHtml(d.name || '')}</span>`).join('')}
+                        </div>
+                      </div>`).join('')
+                  : `<div class="muted-note">No documents attached.</div>`
+                }
+              </div>
+
+              <!-- TAB: VAULT -->
+              <div class="client-tab-panel" id="tab-vault-${c.id}">
+                <div class="details-grid-3">
+                  <div class="detail-item">
+                    <div class="detail-label">GST Portal</div>
+                    ${c.gstUsername ? `<div style="font-size:0.76rem; color:var(--text-3); margin-bottom:0.25rem;">User: <span class="mono">${escHtml(c.gstUsername)}</span></div>` : ''}
+                    <div class="password-row">
+                      <span class="pwd-mask" id="pass-${c.id}-gst" data-visible="false">${c.portalPasswords?.gst ? '••••••••' : '—'}</span>
+                      <button class="mini-btn" onclick="togglePasswordView('${c.id}','gst')">Show</button>
+                      <button class="mini-btn" onclick="copyPassword('${c.id}','gst')"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">TAN Portal</div>
+                    <div class="password-row">
+                      <span class="pwd-mask" id="pass-${c.id}-tan" data-visible="false">${c.portalPasswords?.tan ? '••••••••' : '—'}</span>
+                      <button class="mini-btn" onclick="togglePasswordView('${c.id}','tan')">Show</button>
+                      <button class="mini-btn" onclick="copyPassword('${c.id}','tan')"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-label">PAN Portal</div>
+                    <div class="password-row">
+                      <span class="pwd-mask" id="pass-${c.id}-pan" data-visible="false">${c.portalPasswords?.pan ? '••••••••' : '—'}</span>
+                      <button class="mini-btn" onclick="togglePasswordView('${c.id}','pan')">Show</button>
+                      <button class="mini-btn" onclick="copyPassword('${c.id}','pan')"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
             </div>
           </article>
@@ -2008,22 +2397,31 @@
       }).join('');
     }
 
+    // Tab switching
+    window.switchTab = function(clientId, tabName, btnEl) {
+      const body = document.getElementById(`details-${clientId}`);
+      if (!body) return;
+      body.querySelectorAll('.client-tab-btn').forEach(b => b.classList.remove('active'));
+      body.querySelectorAll('.client-tab-panel').forEach(p => p.classList.remove('active'));
+      btnEl.classList.add('active');
+      const panel = document.getElementById(`tab-${tabName}-${clientId}`);
+      if (panel) panel.classList.add('active');
+    };
+
     function renderNotesHtml(notes) {
-      if (!notes || !notes.length) return '<li class="muted-note" style="margin-top:0.4rem;">No notes yet.</li>';
-      const sorted = [...notes].sort((a,b) => (b.timestamp||'').localeCompare(a.timestamp||''));
-      return sorted.map(n => `
+      if (!notes || !notes.length) return '<li class="note-item" style="background:transparent; border:none; color:var(--text-3); font-size:0.8rem; font-style:italic;">No notes yet.</li>';
+      return [...notes].sort((a,b) => (b.timestamp||'').localeCompare(a.timestamp||'')).map(n => `
         <li class="note-item">
-          <div>${escHtml(n.text || '')}</div>
+          <div class="note-text">${escHtml(n.text || '')}</div>
           <div class="note-ts">${new Date(n.timestamp).toLocaleString('en-IN')}</div>
-        </li>
-      `).join('');
+        </li>`).join('');
     }
 
     window.addNote = async function(id) {
       const c = window.clients.find(x => x.id === id);
       if (!c) return;
       const input = document.getElementById(`note-input-${id}`);
-      if (!input.value.trim()) return;
+      if (!input?.value.trim()) return;
       c.notes = Array.isArray(c.notes) ? c.notes : [];
       c.notes.push({ text: input.value.trim(), timestamp: new Date().toISOString() });
       input.value = '';
@@ -2048,30 +2446,26 @@
       if (!c) return;
       c.status = c.status === 'active' ? 'inactive' : 'active';
       await syncClientToCloud(c);
-      renderCurrentPage();
       showToast(`Client marked as ${c.status}.`);
     };
 
     window.deleteClient = async function(id) {
-      if (!confirm('Delete this client permanently?')) return;
+      if (!confirm('Delete this client permanently? This cannot be undone.')) return;
       try {
         await deleteDoc(doc(db, "clients", id));
-        window.clients = window.clients.filter(c => c.id !== id);
-        renderCurrentPage();
         showToast('Client deleted.');
       } catch (e) {
         showToast('Error deleting client.', true);
       }
     };
 
-    // ─── PASSWORD VAULT ───
+    // ─── PASSWORD VAULT ───────────────────────────────────────────────────
     window.togglePasswordView = function(id, type) {
       const c  = window.clients.find(x => x.id === id);
-      if (!c) return;
-      const el  = document.getElementById(`pass-${id}-${type}`);
-      if (!el) return;
-      const pwd = (c.portalPasswords && c.portalPasswords[type]) || '';
-      if (!pwd) { el.textContent = '—'; el.dataset.visible = 'false'; return; }
+      const el = document.getElementById(`pass-${id}-${type}`);
+      if (!c || !el) return;
+      const pwd = c.portalPasswords?.[type] || '';
+      if (!pwd) { el.textContent = '—'; return; }
       if (el.dataset.visible === 'true') { el.textContent = '••••••••'; el.dataset.visible = 'false'; }
       else { el.textContent = pwd; el.dataset.visible = 'true'; }
     };
@@ -2079,63 +2473,60 @@
     window.copyPassword = async function(id, type) {
       const c = window.clients.find(x => x.id === id);
       if (!c || !navigator.clipboard) { showToast('Clipboard not available', true); return; }
-      const pwd = (c.portalPasswords && c.portalPasswords[type]) || '';
+      const pwd = c.portalPasswords?.[type] || '';
       if (!pwd) { showToast('No password stored.', true); return; }
-      try { await navigator.clipboard.writeText(pwd); showToast('Password copied.'); }
+      try { await navigator.clipboard.writeText(pwd); showToast('Password copied to clipboard.'); }
       catch (e) { showToast('Unable to copy.', true); }
     };
 
-    // ─── EDIT MODAL ───
+    // ─── EDIT MODAL ───────────────────────────────────────────────────────
     window.openEditModal = function(id) {
       const c = window.clients.find(x => x.id === id);
       if (!c) return;
 
-      document.getElementById('editClientId').value             = c.id;
-      document.getElementById('editName').value                 = c.name || '';
-      document.getElementById('editAddress').value             = c.address || '';
-      document.getElementById('editEmail').value               = c.email || '';
-      document.getElementById('editPhone').value               = c.phone || '';
-      document.getElementById('editGst').value                 = c.gst || '';
-      document.getElementById('editPan').value                 = c.pan || '';
-      document.getElementById('editTan').value                 = c.tan || '';
-      document.getElementById('editContractValue').value       = c.contractValue || '';
-      document.getElementById('editEsic').value               = c.esic || '';
-      document.getElementById('editPf').value                 = c.pf || '';
-      document.getElementById('editPt').value                 = c.pt || '';
-      document.getElementById('editStatus').value             = c.status || 'active';
-      document.getElementById('editGstPortalPassword').value   = c.portalPasswords?.gst || '';
-      document.getElementById('editTanPortalPassword').value   = c.portalPasswords?.tan || '';
-      document.getElementById('editPanPortalPassword').value   = c.portalPasswords?.pan || '';
-      document.getElementById('editDocuments').value           = '';
-      document.getElementById('editNotesNew').value             = '';
+      document.getElementById('editClientId').value           = c.id;
+      document.getElementById('editName').value               = c.name || '';
+      document.getElementById('editAddressLine1').value       = c.addressLine1 || (c.address || '');
+      document.getElementById('editAddressLine2').value       = c.addressLine2 || '';
+      document.getElementById('editCity').value               = c.city    || '';
+      document.getElementById('editState').value              = c.state   || '';
+      document.getElementById('editPincode').value            = c.pincode || '';
+      document.getElementById('editEmail').value              = c.email   || '';
+      document.getElementById('editPhone').value              = c.phone   || '';
+      document.getElementById('editGst').value                = c.gst     || '';
+      document.getElementById('editGstUsername').value        = c.gstUsername || '';
+      document.getElementById('editPan').value                = c.pan     || '';
+      document.getElementById('editTan').value                = c.tan     || '';
+      document.getElementById('editContractValue').value      = c.contractValue || '';
+      document.getElementById('editEsic').value               = c.esic    || '';
+      document.getElementById('editPf').value                 = c.pf      || '';
+      document.getElementById('editPt').value                 = c.pt      || '';
+      document.getElementById('editStatus').value             = c.status  || 'active';
+      document.getElementById('editGstPortalPassword').value  = c.portalPasswords?.gst || '';
+      document.getElementById('editTanPortalPassword').value  = c.portalPasswords?.tan || '';
+      document.getElementById('editPanPortalPassword').value  = c.portalPasswords?.pan || '';
+      document.getElementById('editDocuments').value          = '';
+      document.getElementById('editNotesNew').value           = '';
 
       if (window.userRole === 'admin') renderStaffCheckboxes('editClientStaffList', c.assignedTo || []);
 
-      // Portal section
       const portalSection = document.getElementById('editPortalSection');
       if (c.clientUid && c.clientPortalEmail) {
         portalSection.innerHTML = `
           <div class="portal-exists-box">
             <div class="pe-info">
               <i class="fa-solid fa-circle-check"></i>
-              <div>
-                <div style="font-weight:600;">Client Portal Active</div>
-                <div class="pe-email">${escHtml(c.clientPortalEmail)}</div>
-              </div>
+              <div><div style="font-weight:700;">Client Portal Active</div><div class="pe-email">${escHtml(c.clientPortalEmail)}</div></div>
             </div>
-            <div class="muted-note" style="text-align:right;">To change the password, contact Firebase Authentication console.</div>
-          </div>
-        `;
+            <div class="muted-note" style="text-align:right;">To change password, use Firebase Auth console.</div>
+          </div>`;
       } else {
         portalSection.innerHTML = `
           <div class="portal-creation-box">
-            <div class="portal-box-title">
-              <i class="fa-solid fa-circle-user"></i> Create Client Portal Login
-              <span style="font-weight:400; color:#166534;">(Optional)</span>
-            </div>
+            <div class="portal-box-title"><i class="fa-solid fa-circle-user"></i> Create Client Portal Login <span style="font-weight:400;">(Optional)</span></div>
             <div class="form-row">
               <div class="field">
-                <label for="editPortalEmail">Portal Login Email</label>
+                <label for="editPortalEmail">Portal Email</label>
                 <input class="input" id="editPortalEmail" type="email" placeholder="owner@business.in" />
               </div>
               <div class="field">
@@ -2143,17 +2534,13 @@
                 <input class="input" id="editPortalPass" type="password" placeholder="Min 6 characters" />
               </div>
             </div>
-            <div class="muted-note" style="margin-top:0.3rem;">Provide both fields to create a client portal login.</div>
-          </div>
-        `;
+          </div>`;
       }
 
       document.getElementById('editModal').classList.add('open');
     };
 
-    window.closeModal = function() {
-      document.getElementById('editModal').classList.remove('open');
-    };
+    window.closeModal = function() { document.getElementById('editModal').classList.remove('open'); };
 
     document.getElementById('editForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -2162,10 +2549,15 @@
       if (!c) return;
 
       c.name          = document.getElementById('editName').value.trim();
-      c.address       = document.getElementById('editAddress').value.trim();
+      c.addressLine1  = document.getElementById('editAddressLine1').value.trim();
+      c.addressLine2  = document.getElementById('editAddressLine2').value.trim();
+      c.city          = document.getElementById('editCity').value.trim();
+      c.state         = document.getElementById('editState').value.trim();
+      c.pincode       = document.getElementById('editPincode').value.trim();
       c.email         = document.getElementById('editEmail').value.trim();
       c.phone         = document.getElementById('editPhone').value.trim();
       c.gst           = document.getElementById('editGst').value.trim().toUpperCase();
+      c.gstUsername   = document.getElementById('editGstUsername').value.trim();
       c.pan           = document.getElementById('editPan').value.trim().toUpperCase();
       c.tan           = document.getElementById('editTan').value.trim().toUpperCase();
       c.contractValue = Number(document.getElementById('editContractValue').value || 0);
@@ -2190,19 +2582,15 @@
         c.notes.push({ text: noteText, timestamp: new Date().toISOString() });
       }
 
-      // Create portal if not existing and fields filled
       if (!c.clientUid) {
         const pEmail = document.getElementById('editPortalEmail')?.value?.trim();
         const pPass  = document.getElementById('editPortalPass')?.value;
         if (pEmail && pPass) {
           try {
             const cred = await createUserWithEmailAndPassword(secondaryAuth, pEmail, pPass);
-            const portalUid = cred.user.uid;
             await signOut(secondaryAuth);
-            await setDoc(doc(db, "users", portalUid), {
-              role: 'client', name: c.name, email: pEmail, clientId: c.id
-            });
-            c.clientUid = portalUid;
+            await setDoc(doc(db, "users", cred.user.uid), { role: 'client', name: c.name, email: pEmail, clientId: c.id });
+            c.clientUid = cred.user.uid;
             c.clientPortalEmail = pEmail;
             showToast('Client portal login created!');
           } catch (err) {
@@ -2213,29 +2601,36 @@
 
       closeModal();
       await syncClientToCloud(c);
-      renderCurrentPage();
       showToast('Client updated.');
     });
 
-    // ─── INVOICE TRACKER ───
-    function currentMonthKey() {
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    }
-    function monthLabel(key) {
-      if (!key) return '—';
-      const [y,m] = key.split('-');
-      return new Date(Number(y), Number(m)-1, 1).toLocaleDateString('en-IN', { month:'short', year:'numeric' });
-    }
-
+    // ─── INVOICE TRACKER ──────────────────────────────────────────────────
     function renderInvoiceTracker() {
       const wrap = document.getElementById('invoiceTrackerWrap');
+      const chipsEl = document.getElementById('invoiceSummaryChips');
+
       if (!window.clients.length) {
-        wrap.innerHTML = `<div class="empty"><h3>No Clients</h3><p>Add clients first to manage invoices.</p></div>`;
+        wrap.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><h3>No Clients</h3><p>Add clients first to manage invoices.</p></div>`;
+        chipsEl.innerHTML = '';
         return;
       }
+
+      // Summary chips
+      const counts = { not_raised: 0, raised: 0, paid: 0, follow_up: 0 };
+      let totalPaidAmt = 0;
+      window.clients.forEach(c => {
+        counts[c.invoiceStatus || 'not_raised']++;
+        if (c.invoiceStatus === 'paid') totalPaidAmt += Number(c.invoiceAmount || 0);
+      });
+      chipsEl.innerHTML = `
+        <span class="invoice-status-badge inv-not_raised"><i class="fa-solid fa-circle" style="font-size:0.5rem;"></i> Not Raised: ${counts.not_raised}</span>
+        <span class="invoice-status-badge inv-raised"><i class="fa-solid fa-circle" style="font-size:0.5rem;"></i> Raised: ${counts.raised}</span>
+        <span class="invoice-status-badge inv-paid"><i class="fa-solid fa-circle" style="font-size:0.5rem;"></i> Paid: ${counts.paid} (${formatCurrency(totalPaidAmt)})</span>
+        <span class="invoice-status-badge inv-follow_up"><i class="fa-solid fa-circle" style="font-size:0.5rem;"></i> Follow-up: ${counts.follow_up}</span>
+      `;
+
       wrap.innerHTML = `
-        <div class="invoice-table-wrap">
+        <div class="invoice-table-wrap" style="margin-top:0.8rem;">
           <table>
             <thead>
               <tr>
@@ -2250,19 +2645,18 @@
             <tbody>
               ${window.clients.map(c => `
                 <tr>
-                  <td>${escHtml(c.name)}</td>
-                  <td>${escHtml(c.status)}</td>
-                  <td>${escHtml(c.invoiceStatus || 'not_raised')}</td>
-                  <td><input class="input" style="min-width:120px;" type="month" id="inv-month-${c.id}" value="${escHtml(c.invoiceMonth || currentMonthKey())}"></td>
-                  <td><input class="input" style="min-width:110px;" type="number" min="0" step="0.01" id="inv-amount-${c.id}" value="${Number(c.invoiceAmount || 0)}"></td>
-                  <td>
+                  <td><strong>${escHtml(c.name)}</strong></td>
+                  <td><span class="status-pill ${c.status === 'inactive' ? 'inactive' : ''}">${escHtml(c.status)}</span></td>
+                  <td><span class="invoice-status-badge inv-${c.invoiceStatus || 'not_raised'}">${(c.invoiceStatus || 'not_raised').replace('_',' ')}</span></td>
+                  <td><input class="input" style="min-width:130px; padding:0.4rem 0.6rem;" type="month" id="inv-month-${c.id}" value="${escHtml(c.invoiceMonth || currentMonthKey())}"></td>
+                  <td><input class="input" style="min-width:110px; padding:0.4rem 0.6rem;" type="number" min="0" step="0.01" id="inv-amount-${c.id}" value="${Number(c.invoiceAmount || 0)}"></td>
+                  <td style="display:flex; gap:0.3rem; flex-wrap:wrap; padding:0.5rem 0.9rem;">
                     <button class="mini-btn" onclick="setInvoiceStatus('${c.id}','not_raised')">Not Raised</button>
-                    <button class="mini-btn" onclick="setInvoiceStatus('${c.id}','raised')">Raise</button>
-                    <button class="mini-btn" onclick="setInvoiceStatus('${c.id}','paid')">Paid</button>
-                    <button class="mini-btn" onclick="setInvoiceStatus('${c.id}','follow_up')">Follow-up</button>
+                    <button class="mini-btn" onclick="setInvoiceStatus('${c.id}','raised')">Raised</button>
+                    <button class="mini-btn mini-btn-success" onclick="setInvoiceStatus('${c.id}','paid')">Paid</button>
+                    <button class="mini-btn mini-btn-gold" onclick="setInvoiceStatus('${c.id}','follow_up')">Follow-up</button>
                   </td>
-                </tr>
-              `).join('')}
+                </tr>`).join('')}
             </tbody>
           </table>
         </div>
@@ -2276,94 +2670,66 @@
       c.invoiceAmount = Number(document.getElementById(`inv-amount-${id}`).value || 0);
       c.invoiceMonth  = document.getElementById(`inv-month-${id}`).value || currentMonthKey();
       await syncClientToCloud(c);
-      renderRevenueDashboard();
-      showToast(`Invoice status set to ${status}.`);
+      showToast(`Invoice status → ${status.replace('_', ' ')}`);
     };
 
-    // ─── REVENUE ───
-    function getRevenueData() {
+    // ─── REVENUE ──────────────────────────────────────────────────────────
+    function renderRevenueDashboard() {
       const map = {};
       window.clients.forEach(c => {
         const month = c.invoiceMonth || currentMonthKey();
         const amt   = Number(c.invoiceAmount || 0);
         if (!amt) return;
-        if (!map[month]) map[month] = { paid:0, unpaid:0 };
+        if (!map[month]) map[month] = { paid: 0, unpaid: 0 };
         if (c.invoiceStatus === 'paid') map[month].paid += amt;
         else map[month].unpaid += amt;
       });
-      return map;
-    }
 
-    function renderRevenueDashboard() {
-      const data    = getRevenueData();
-      const statsEl = document.getElementById('revenueStats');
       let totalPaid = 0, totalUnpaid = 0;
-      Object.values(data).forEach(v => { totalPaid += v.paid; totalUnpaid += v.unpaid; });
+      Object.values(map).forEach(v => { totalPaid += v.paid; totalUnpaid += v.unpaid; });
 
-      statsEl.innerHTML = `
-        <div class="stat-card">
-          <div class="stat-label">Total Paid</div>
-          <div class="stat-value" style="color:var(--color-success);">${formatCurrency(totalPaid)}</div>
-          <div class="stat-help">All months</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Unpaid</div>
-          <div class="stat-value" style="color:var(--color-warning);">${formatCurrency(totalUnpaid)}</div>
-          <div class="stat-help">Raised / follow-up</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Invoice Value</div>
-          <div class="stat-value">${formatCurrency(totalPaid + totalUnpaid)}</div>
-          <div class="stat-help">Paid + unpaid</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Months with Data</div>
-          <div class="stat-value">${Object.keys(data).length}</div>
-          <div class="stat-help">In recorded history</div>
-        </div>
-      `;
+      document.getElementById('revenueStats').innerHTML = `
+        <div class="stat-card"><div class="stat-label">Total Paid</div><div class="stat-value" style="color:var(--success);">${formatCurrency(totalPaid)}</div><div class="stat-help">All months</div></div>
+        <div class="stat-card"><div class="stat-label">Total Unpaid</div><div class="stat-value" style="color:var(--warn);">${formatCurrency(totalUnpaid)}</div><div class="stat-help">Raised / follow-up</div></div>
+        <div class="stat-card"><div class="stat-label">Total Value</div><div class="stat-value">${formatCurrency(totalPaid + totalUnpaid)}</div><div class="stat-help">Paid + unpaid</div></div>
+        <div class="stat-card"><div class="stat-label">Months on Record</div><div class="stat-value">${Object.keys(map).length}</div><div class="stat-help">In history</div></div>`;
 
       const ctx = document.getElementById('revenueChart');
       if (!ctx) return;
-      const months  = Object.keys(data).sort();
-      const labels  = months.map(monthLabel);
-      const paid    = months.map(m => data[m].paid);
-      const unpaid  = months.map(m => data[m].unpaid);
+      const months = Object.keys(map).sort();
       if (revenueChartInstance) revenueChartInstance.destroy();
       revenueChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: labels.length ? labels : ['No Data'],
+          labels: months.length ? months.map(monthLabel) : ['No Data'],
           datasets: [
-            { label:'Paid',   data: labels.length ? paid   : [0], backgroundColor:'rgba(34,197,94,0.85)', borderRadius:6 },
-            { label:'Unpaid', data: labels.length ? unpaid : [0], backgroundColor:'rgba(239,68,68,0.8)',  borderRadius:6 }
+            { label: 'Paid', data: months.length ? months.map(m => map[m].paid) : [0], backgroundColor: 'rgba(13,122,78,0.8)', borderRadius: 6 },
+            { label: 'Unpaid', data: months.length ? months.map(m => map[m].unpaid) : [0], backgroundColor: 'rgba(192,57,43,0.7)', borderRadius: 6 }
           ]
         },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position:'bottom' } },
-          scales: { y: { beginAtZero:true, ticks: { callback: (v) => '₹' + Number(v).toLocaleString('en-IN') } } }
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } },
+          scales: { y: { beginAtZero: true, ticks: { callback: v => '₹' + Number(v).toLocaleString('en-IN') } } }
         }
       });
     }
 
-    // ─── GLOBAL SEARCH ───
+    // ─── GLOBAL SEARCH ────────────────────────────────────────────────────
     document.getElementById('globalSearchInput').addEventListener('keyup', (e) => {
-      if (e.key === 'Enter') handleGlobalSearch();
+      if (e.key === 'Enter') {
+        const term = document.getElementById('globalSearchInput').value.trim().toLowerCase();
+        const c = window.clients.find(c => [c.name, c.gst, c.pan, c.tan, c.gstUsername].join(' ').toLowerCase().includes(term));
+        if (c) { showPage('clients'); setTimeout(() => jumpToClient(c.id), 50); }
+        else showToast('No matching client found.', true);
+      }
     });
-    function handleGlobalSearch() {
-      const term = document.getElementById('globalSearchInput').value.trim().toLowerCase();
-      if (!term) return;
-      const c = window.clients.find(c => [c.name,c.gst,c.pan,c.tan].join(' ').toLowerCase().includes(term));
-      if (c) { showPage('clients'); setTimeout(() => jumpToClient(c.id), 50); }
-      else showToast('No matching client found.', true);
-    }
+
     window.jumpToClient = function(id) {
       showPage('clients');
       setTimeout(() => {
         const row = document.getElementById(`client-row-${id}`);
-        if (row) { row.scrollIntoView({ behavior:'smooth', block:'center' }); toggleClientDetails(id); }
+        if (row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); toggleClientDetails(id); }
       }, 100);
     };
 
@@ -2371,28 +2737,33 @@
     document.getElementById('filterStatus').addEventListener('change', renderClients);
     document.getElementById('filterTasks').addEventListener('change', renderClients);
 
-    // ─── EXPORT ───
+    // ─── EXPORT ───────────────────────────────────────────────────────────
     window.exportExcel = function() {
       if (!window.clients.length) { showToast('No records to export.', true); return; }
       const rows = window.clients.map(c => ({
-        'Business Name':    c.name,
-        'Status':           c.status,
-        'Email':            c.email,
-        'Phone':            c.phone,
-        'GST':              c.gst,
-        'PAN':              c.pan,
-        'TAN':              c.tan,
-        'ESIC':             c.esic,
-        'PF':               c.pf,
-        'PT':               c.pt,
-        'Contract Value':   c.contractValue,
-        'Address':          c.address,
-        'Invoice Status':   c.invoiceStatus,
-        'Invoice Amount':   c.invoiceAmount,
-        'Invoice Month':    c.invoiceMonth,
-        'Staff Notes':      (c.notes || []).length,
-        'Client Notes':     (c.clientNotes || []).length,
-        'Portal Email':     c.clientPortalEmail || ''
+        'Business Name': c.name,
+        'Status':        c.status,
+        'Address Line 1': c.addressLine1 || c.address || '',
+        'Address Line 2': c.addressLine2 || '',
+        'City':          c.city,
+        'State':         c.state,
+        'Pincode':       c.pincode,
+        'Email':         c.email,
+        'Phone':         c.phone,
+        'GSTIN':         c.gst,
+        'GST Username':  c.gstUsername,
+        'PAN':           c.pan,
+        'TAN':           c.tan,
+        'ESIC':          c.esic,
+        'PF':            c.pf,
+        'PT':            c.pt,
+        'Contract Value': c.contractValue,
+        'Invoice Status': c.invoiceStatus,
+        'Invoice Amount': c.invoiceAmount,
+        'Invoice Month':  c.invoiceMonth,
+        'Staff Notes':    (c.notes || []).length,
+        'Client Notes':   (c.clientNotes || []).length,
+        'Portal Email':   c.clientPortalEmail || ''
       }));
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Clients');
@@ -2400,15 +2771,17 @@
       showToast('Exported to Excel.');
     };
 
-    // ─── TOAST ───
+    // ─── TOAST ────────────────────────────────────────────────────────────
     function showToast(msg, isError = false) {
       const t = document.getElementById('toast');
       t.textContent = msg;
-      t.className   = 'toast' + (isError ? ' error' : '') + ' show';
-      setTimeout(() => t.classList.remove('show'), 2600);
+      t.className = 'toast' + (isError ? ' error' : '') + ' show';
+      if (isError) t.style.setProperty('--tw-color', 'var(--error)');
+      setTimeout(() => t.classList.remove('show'), 2800);
     }
+    window.showToast = showToast;
 
-    // ─── INIT ───
+    // ─── INIT ─────────────────────────────────────────────────────────────
     showPage('today');
   </script>
 </body>
