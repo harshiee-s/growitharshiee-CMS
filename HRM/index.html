@@ -12,6 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <style>
     :root {
       --bg:#F4F3EE; --surface:#FFFFFF; --surface-2:#FAFAF8;
@@ -55,7 +57,7 @@
     .login-input::placeholder{color:rgba(255,255,255,.35);}
     .login-input:focus{border-color:var(--gold);background:rgba(255,255,255,.1);box-shadow:0 0 0 3px rgba(201,168,76,.15);}
     .login-btn{width:100%;padding:.9rem;border-radius:var(--r-sm);background:linear-gradient(135deg,#E2BC5E,#C9A84C);color:var(--primary);font-weight:700;font-size:.9rem;transition:var(--t);}
-    .login-btn:hover{filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 8px 24px rgb-a(201,168,76,.35);}
+    .login-btn:hover{filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 8px 24px rgba(201,168,76,.35);}
     #loginError{margin-top:.9rem;font-size:.84rem;color:#FCA5A5;display:none;background:rgba(239,68,68,.1);padding:.5rem .8rem;border-radius:var(--r-sm);border:1px solid rgba(239,68,68,.2);}
 
     /* LAYOUT */
@@ -295,11 +297,19 @@
   </style>
 </head>
 <body>
-
+<!-- BOOT SPLASH (shown until Firebase resolves auth state) -->
+<div id="bootSplash" style="position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0A1628 0%,#162847 50%,#0A1628 100%);transition:opacity .3s ease;">
+  <div style="text-align:center;">
+    <div style="font-size:2.4rem;color:#E2BC5E;margin-bottom:1rem;"><i class="fa-solid fa-spinner fa-spin"></i></div>
+    <div style="font-family:var(--font-head);font-size:1.3rem;color:#fff;">HRM Portal</div>
+    <div style="font-size:.82rem;color:rgba(255,255,255,.5);margin-top:.3rem;">Loading…</div>
+  </div>
+</div>
 <!-- LOGIN -->
-<div id="loginScreen">
+<div id="loginScreen" style="display:none;opacity:0;">
+
   <div class="login-card">
-    <div class="login-logo"><img src="logo.png" alt="Logo" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 rx=%2212%22 fill=%22rgba(201,168,76,0.2)%22/><text x=%2240%22 y=%2252%22 text-anchor=%22middle%22 font-size=%2236%22>🏢</text></svg>'"></div>
+    <div class="login-logo"><img src="YOUR_LOGO_URL_HERE" alt="Logo" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 rx=%2212%22 fill=%22rgba(201,168,76,0.2)%22/><text x=%2240%22 y=%2252%22 text-anchor=%22middle%22 font-size=%2236%22>🏢</text></svg>'"></div>
     <h2>HRM Portal</h2>
     <p>growitharshiee &nbsp;·&nbsp; Human Resources</p>
     <form id="loginForm">
@@ -315,7 +325,7 @@
 <div id="empPortalScreen">
   <header class="ep-header">
     <div class="ep-brand">
-      <div class="ep-brand-icon"><img src="logo.png" alt="Logo" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 36 36%22><rect width=%2236%22 height=%2236%22 rx=%228%22 fill=%22rgba(201,168,76,0.3)%22/><text x=%2218%22 y=%2225%22 text-anchor=%22middle%22 font-size=%2216%22>🏢</text></svg>'"></div>
+      <div class="ep-brand-icon"><img src="YOUR_LOGO_URL_HERE" alt="Logo" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 36 36%22><rect width=%2236%22 height=%2236%22 rx=%228%22 fill=%22rgba(201,168,76,0.3)%22/><text x=%2218%22 y=%2225%22 text-anchor=%22middle%22 font-size=%2216%22>🏢</text></svg>'"></div>
       <div>
         <div class="ep-brand-name">growitharshiee HRM</div>
         <div class="ep-brand-sub">Employee Self-Service</div>
@@ -335,7 +345,7 @@
 <div id="appContent" class="dashboard">
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-icon"><img src="logo.png" alt="Logo" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><rect width=%2240%22 height=%2240%22 rx=%228%22 fill=%22rgba(201,168,76,0.3)%22/><text x=%2220%22 y=%2228%22 text-anchor=%22middle%22 font-size=%2218%22>🏢</text></svg>'"></div>
+      <div class="brand-icon"><img src="YOUR_LOGO_URL_HERE" alt="Logo" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><rect width=%2240%22 height=%2240%22 rx=%228%22 fill=%22rgba(201,168,76,0.3)%22/><text x=%2220%22 y=%2228%22 text-anchor=%22middle%22 font-size=%2218%22>🏢</text></svg>'"></div>
       <div style="overflow:hidden;">
         <span class="brand-text">HRM Portal</span>
         <span class="brand-sub" id="userGreeting" style="color:var(--gold);"></span>
@@ -354,6 +364,8 @@
     <div class="nav-label">Admin</div>
     <nav class="nav-group">
       <div class="nav-item" data-page="roles" id="navRoles"><i class="fa-solid fa-shield-halved"></i><span>Roles & Assign</span></div>
+      <div class="nav-item" data-page="salarySlips" id="navSalarySlips"><i class="fa-solid fa-file-invoice-dollar"></i><span>Salary Slips</span></div>
+      <div class="nav-item" data-page="hrTeam" id="navHrTeam"><i class="fa-solid fa-user-tie"></i><span>HR Team</span></div>
       <div class="nav-item" data-page="editRequests" id="navEditRequests"><i class="fa-solid fa-pen-to-square"></i><span>Edit Requests <span id="editReqBadge" style="display:none;background:var(--error);color:#fff;border-radius:99px;font-size:.65rem;padding:.1rem .45rem;margin-left:.2rem;"></span></span></div>
       <div class="nav-item" data-page="adminDocs" id="navAdminDocs"><i class="fa-solid fa-folder-open"></i><span>Employee Docs</span></div>
       <div class="nav-item" onclick="exportAttendanceExcel()"><i class="fa-solid fa-file-excel"></i><span>Export Attendance</span></div>
@@ -455,6 +467,15 @@
             <div class="field"><label>Account Holder Name</label><input class="input" id="empBankHolder" placeholder="As per bank records"></div>
           </div>
 
+          <div class="form-section-title"><i class="fa-solid fa-shield-halved" style="font-size:.75rem;"></i> PF & Statutory</div>
+          <div style="display:flex;align-items:center;gap:.8rem;padding:.65rem .9rem;background:var(--surface-2);border:1px solid var(--border-2);border-radius:var(--r-sm);">
+            <input type="checkbox" id="empPfOptIn" style="width:18px;height:18px;accent-color:var(--gold);cursor:pointer;" onchange="document.getElementById('empUANWrap').style.display=this.checked?'block':'none'">
+            <label for="empPfOptIn" style="cursor:pointer;font-weight:600;font-size:.88rem;">Employee opted for PF (Provident Fund)</label>
+          </div>
+          <div id="empUANWrap" style="display:none;margin-top:.5rem;">
+            <div class="field"><label>UAN Number</label><input class="input" id="empUAN" placeholder="12-digit UAN e.g. 100123456789" maxlength="12"></div>
+          </div>
+
           <div class="form-section-title" style="background:rgba(13,122,78,.05);padding:.6rem .9rem;border-radius:var(--r-sm);border:none;margin:0;"><i class="fa-solid fa-lock" style="font-size:.75rem;color:var(--success);"></i> <span style="color:var(--success);">Create Login Credentials</span><span style="font-weight:400;color:var(--text-3);margin-left:.4rem;">(Required)</span></div>
           <div class="form-row">
             <div class="field"><label>Login Email <span class="req">*</span></label><input class="input" id="empLoginEmail" type="email" required placeholder="employee@growitharshiee.in"></div>
@@ -554,7 +575,36 @@
       </div>
     </section>
 
-    <!-- EMPLOYEE DOCUMENTS (Admin view) -->
+    <!-- SALARY SLIPS (Admin / HR upload) -->
+    <section class="page" id="pageSalarySlips">
+      <div class="card panel" style="padding:.9rem 1rem;margin-bottom:.8rem;">
+        <div class="panel-head">
+          <div><h2>Salary Slips</h2><p>Upload PDF salary slips for employees. They can download from their portal.</p></div>
+          <button class="btn btn-gold" onclick="openUploadSlipModal()"><i class="fa-solid fa-upload"></i> Upload Slip</button>
+        </div>
+        <div class="toolbar" style="margin-top:.5rem;">
+          <select class="select-filter" id="slipEmpFilter" style="flex:1;min-width:200px;"><option value="all">All Employees</option></select>
+          <input class="input" type="month" id="slipMonthFilter" style="width:155px;padding:.48rem .8rem;">
+          <button class="btn btn-secondary" onclick="loadAdminSlips()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        </div>
+      </div>
+      <div id="slipsTableWrap" class="card" style="padding:0;overflow:hidden;">
+        <div class="empty"><h3>Loading...</h3></div>
+      </div>
+    </section>
+
+    <!-- HR TEAM MANAGEMENT -->
+    <section class="page" id="pageHrTeam">
+      <div class="card panel" style="margin-bottom:.8rem;">
+        <div class="panel-head">
+          <div><h2>HR Team</h2><p>Create HR logins. HR can upload salary slips for employees.</p></div>
+          <button class="btn btn-gold" onclick="openCreateHRModal()"><i class="fa-solid fa-user-plus"></i> Add HR Member</button>
+        </div>
+        <div class="table-wrap" id="hrTeamTableWrap">
+          <div class="empty"><h3>Loading...</h3></div>
+        </div>
+      </div>
+    </section>
     <section class="page" id="pageAdminDocs">
       <div class="card panel" style="padding:.9rem 1rem;">
         <div class="panel-head">
@@ -676,7 +726,155 @@
   </div>
 </div>
 
-<!-- EMPLOYEE: REGULARIZATION REQUEST MODAL -->
+<!-- UPLOAD SALARY SLIP MODAL (Admin / HR) -->
+<div class="modal-backdrop" id="uploadSlipModal">
+  <div class="modal" style="max-width:500px;">
+    <div class="modal-head">
+      <h2><i class="fa-solid fa-file-invoice-dollar" style="color:var(--gold);font-size:1rem;"></i> Upload Salary Slip</h2>
+      <button class="modal-close" onclick="document.getElementById('uploadSlipModal').classList.remove('open')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="uploadSlipForm" class="form-grid" autocomplete="off">
+      <div class="form-row">
+        <div class="field">
+          <label>Employee <span class="req">*</span></label>
+          <select class="select-input" id="slipEmpSelect" required><option value="">— Select Employee —</option></select>
+        </div>
+        <div class="field">
+          <label>Pay Month <span class="req">*</span></label>
+          <input class="input" type="month" id="slipPayMonth" required>
+        </div>
+      </div>
+      <div class="field">
+        <label>Salary Slip PDF <span class="req">*</span></label>
+        <label style="display:flex;align-items:center;gap:.6rem;padding:.6rem 1rem;border:1.5px dashed var(--border);border-radius:var(--r-sm);cursor:pointer;background:var(--surface-2);transition:border-color .2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+          <i class="fa-solid fa-paperclip" style="color:var(--gold);"></i>
+          <span id="slipFileLabel" style="font-size:.85rem;color:var(--text-3);">Click to attach PDF (max 5 MB)</span>
+          <input type="file" id="slipFileInput" accept=".pdf" style="display:none" onchange="onSlipFileChosen(event)" required>
+        </label>
+      </div>
+      <div class="field"><label>Note (optional)</label><input class="input" id="slipNote" placeholder="e.g. April 2025 salary slip"></div>
+      <div id="slipUploadProgress" style="margin-top:.3rem;"></div>
+      <div style="display:flex;gap:.7rem;justify-content:flex-end;flex-wrap:wrap;">
+        <button class="btn btn-secondary" type="button" onclick="document.getElementById('uploadSlipModal').classList.remove('open')">Cancel</button>
+        <button class="btn btn-gold" type="submit" id="slipUploadBtn"><i class="fa-solid fa-upload"></i> Upload</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- CREATE HR MEMBER MODAL -->
+<div class="modal-backdrop" id="createHRModal">
+  <div class="modal" style="max-width:460px;">
+    <div class="modal-head">
+      <h2><i class="fa-solid fa-user-tie" style="color:var(--gold);font-size:1rem;"></i> Add HR Member</h2>
+      <button class="modal-close" onclick="document.getElementById('createHRModal').classList.remove('open')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="createHRForm" class="form-grid" autocomplete="off">
+      <div class="form-row">
+        <div class="field"><label>Full Name <span class="req">*</span></label><input class="input" id="hrName" required placeholder="e.g. Priya Sharma"></div>
+        <div class="field"><label>Employee ID</label><input class="input" id="hrEmpId" placeholder="e.g. HR-001"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Login Email <span class="req">*</span></label><input class="input" id="hrEmail" type="email" required placeholder="hr@growitharshiee.in"></div>
+        <div class="field"><label>Login Password <span class="req">*</span></label><input class="input" id="hrPassword" type="password" required placeholder="Min 6 characters"></div>
+      </div>
+      <div class="info-box"><i class="fa-solid fa-circle-info"></i> HR members can log in and upload salary slips. They cannot access employee personal data.</div>
+      <div style="display:flex;gap:.7rem;justify-content:flex-end;flex-wrap:wrap;">
+        <button class="btn btn-secondary" type="button" onclick="document.getElementById('createHRModal').classList.remove('open')">Cancel</button>
+        <button class="btn btn-gold" type="submit" id="createHRBtn"><i class="fa-solid fa-user-plus"></i> Create HR Login</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- HR PORTAL SCREEN -->
+<div id="hrPortalScreen" style="display:none;position:fixed;inset:0;z-index:200;background:var(--bg);flex-direction:column;overflow:auto;">
+  <header style="background:var(--primary);color:#fff;padding:.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 16px rgba(10,22,40,.25);">
+    <div style="display:flex;align-items:center;gap:.8rem;">
+      <div class="ep-brand-icon"><img src="YOUR_LOGO_URL_HERE" alt="Logo" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 36 36%22><rect width=%2236%22 height=%2236%22 rx=%228%22 fill=%22rgba(201,168,76,0.3)%22/><text x=%2218%22 y=%2225%22 text-anchor=%22middle%22 font-size=%2216%22>🏢</text></svg>'"></div>
+      <div>
+        <div style="font-family:var(--font-head);font-size:1.05rem;">growitharshiee HRM</div>
+        <div style="font-size:.7rem;color:rgba(255,255,255,.45);">HR Portal</div>
+      </div>
+      <span style="display:inline-flex;align-items:center;gap:.35rem;padding:.22rem .7rem;border-radius:var(--r-pill);background:rgba(201,168,76,.18);color:#E2BC5E;font-size:.72rem;font-weight:700;border:1px solid rgba(201,168,76,.3);text-transform:uppercase;letter-spacing:.05em;"><i class="fa-solid fa-user-tie"></i> HR</span>
+    </div>
+    <button class="ep-logout-btn" id="hrLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+  </header>
+  <div style="flex:1;padding:1.5rem;max-width:900px;margin:0 auto;width:100%;">
+    <div style="margin-bottom:1.2rem;">
+      <h2 style="font-family:var(--font-head);font-size:1.4rem;color:var(--primary);">Upload Salary Slips</h2>
+      <p style="font-size:.85rem;color:var(--text-3);">Select an employee and pay month, then attach the salary slip PDF.</p>
+    </div>
+    <div class="card panel" style="margin-bottom:1rem;">
+      <form id="hrSlipForm" class="form-grid" autocomplete="off">
+        <div class="form-row">
+          <div class="field">
+            <label>Employee <span class="req">*</span></label>
+            <select class="select-input" id="hrSlipEmpSelect" required><option value="">— Select Employee —</option></select>
+          </div>
+          <div class="field">
+            <label>Pay Month <span class="req">*</span></label>
+            <input class="input" type="month" id="hrSlipPayMonth" required>
+          </div>
+        </div>
+        <div class="field">
+          <label>Salary Slip PDF <span class="req">*</span></label>
+          <label style="display:flex;align-items:center;gap:.6rem;padding:.6rem 1rem;border:1.5px dashed var(--border);border-radius:var(--r-sm);cursor:pointer;background:var(--surface-2);transition:border-color .2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+            <i class="fa-solid fa-paperclip" style="color:var(--gold);"></i>
+            <span id="hrSlipFileLabel" style="font-size:.85rem;color:var(--text-3);">Click to attach PDF (max 5 MB)</span>
+            <input type="file" id="hrSlipFileInput" accept=".pdf" style="display:none" onchange="onHRSlipFileChosen(event)" required>
+          </label>
+        </div>
+        <div class="field"><label>Note (optional)</label><input class="input" id="hrSlipNote" placeholder="e.g. April 2025 salary slip"></div>
+        <div id="hrSlipProgress" style="margin-top:.3rem;"></div>
+        <div>
+          <button class="btn btn-gold" type="submit" id="hrSlipUploadBtn"><i class="fa-solid fa-upload"></i> Upload Salary Slip</button>
+        </div>
+      </form>
+    </div>
+<!-- HR: BULK SALARY SLIP UPLOAD -->
+    <div class="card panel" style="margin-bottom:1rem;">
+      <div class="panel-head">
+        <div><h2>Bulk Salary Slip Upload</h2><p>Pick a pay month, then drop or select multiple PDFs. Files auto-match to employees by Employee ID or name in the filename — review, then upload all.</p></div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+          <label style="font-size:.78rem;font-weight:600;color:var(--text-2);">Pay Month</label>
+          <input class="input" type="month" id="hrBulkPayMonth" style="width:160px;padding:.5rem .8rem;">
+        </div>
+      </div>
+      <div class="doc-drop-zone" id="hrBulkDropZone"
+           ondragover="hrBulkDragOver(event)" ondragleave="hrBulkDragLeave(event)" ondrop="hrBulkDrop(event)"
+           onclick="document.getElementById('hrBulkFileInput').click()">
+        <i class="fa-solid fa-file-arrow-up"></i>
+        <div style="font-size:.9rem;font-weight:600;color:var(--text-2);">Drop multiple PDFs here, or click to select</div>
+        <div style="font-size:.75rem;color:var(--text-3);">PDF only · Max 5 MB each</div>
+      </div>
+      <input type="file" id="hrBulkFileInput" accept=".pdf" multiple style="display:none" onchange="hrBulkFilesChosen(event)">
+      <div id="hrBulkQueueWrap"></div>
+    </div>
+<!-- HR: ACTIVE EMPLOYEES LIST (drag & drop salary slips) -->
+    <div class="card panel" style="margin-bottom:1rem;">
+      <div class="panel-head">
+        <div><h2>Active Employees</h2><p>Drag &amp; drop a PDF onto an employee — or click Attach — to upload their salary slip.</p></div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+          <label style="font-size:.78rem;font-weight:600;color:var(--text-2);">Pay Month</label>
+          <input class="input" type="month" id="hrListPayMonth" style="width:160px;padding:.5rem .8rem;">
+          <button class="btn btn-secondary" onclick="loadHREmployees()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        </div>
+      </div>
+      <input type="text" class="search" id="hrEmpSearch" placeholder="Search employees by name or ID..." style="margin-bottom:.5rem;" oninput="renderHREmployeeList()">
+      <div id="hrEmpListWrap"><div class="empty"><h3>Loading employees...</h3></div></div>
+    </div>
+
+    <div class="card panel">
+      <div class="panel-head"><h2>Uploaded Slips</h2><button class="btn btn-secondary" onclick="loadHRSlipsList()"><i class="fa-solid fa-rotate"></i> Refresh</button></div>
+    <div class="card panel">
+      <div class="panel-head"><h2>Uploaded Slips</h2><button class="btn btn-secondary" onclick="loadHRSlipsList()"><i class="fa-solid fa-rotate"></i> Refresh</button></div>
+      <div class="table-wrap" id="hrSlipsListWrap"><div class="empty"><h3>Loading...</h3></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- REGULARIZATION REQUEST MODAL -->
 <div class="modal-backdrop" id="regRequestModal">
   <div class="modal" style="max-width:500px;">
     <div class="modal-head">
@@ -687,8 +885,7 @@
     <form id="regRequestForm" class="form-grid" autocomplete="off">
       <input type="hidden" id="regEmpDocId">
       <div class="field"><label>Date <span class="req">*</span></label><input class="input" type="date" id="regDate" required></div>
-      <div class="field"><label>Reason <span class="req">*</span></label><textarea class="textarea" id="regReason" required placeholder="
-"></textarea></div>
+      <div class="field"><label>Reason <span class="req">*</span></label><textarea class="textarea" id="regReason" required placeholder="e.g. Forgot to check out, system issue, worked from site..."></textarea></div>
       <div style="display:flex;gap:.7rem;justify-content:flex-end;flex-wrap:wrap;">
         <button class="btn btn-secondary" type="button" onclick="document.getElementById('regRequestModal').classList.remove('open')">Cancel</button>
         <button class="btn btn-gold" type="submit" id="regSubmitBtn"><i class="fa-solid fa-paper-plane"></i> Submit</button>
@@ -871,6 +1068,130 @@ const firebaseConfig = {
   messagingSenderId: "37827893348",
   appId: "1:37827893348:web:c5ac357e38661ddba06771"
 };
+// ─── HR: REFETCH ACTIVE EMPLOYEES ──────────────────────────────
+window.loadHREmployees = async function() {
+  try {
+    const empSnap = await getDocs(query(collection(db,'hrm_employees'),where('status','==','active')));
+    window._hrEmps = empSnap.docs.map(d=>({id:d.id,...d.data()}));
+    const hrSel = document.getElementById('hrSlipEmpSelect');
+    if (hrSel) {
+      const cur = hrSel.value;
+      hrSel.innerHTML = '<option value="">— Select Employee —</option>' +
+        window._hrEmps.map(e=>`<option value="${escHtml(e.uid)}">${escHtml(e.name)} (${escHtml(e.employeeId||'')})</option>`).join('');
+      hrSel.value = cur;
+    }
+    renderHREmployeeList();
+    renderHRBulkQueue();
+    showToast('Employee list refreshed.');
+  } catch(err) { showToast('Refresh error: '+err.message, true); }
+};
+
+// ─── HR: BULK SALARY SLIP UPLOAD ───────────────────────────────
+window._hrBulkQueue = [];
+
+function hrBulkMatch(fileName) {
+  const norm = s => (s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  const fn = norm(fileName);
+  const emps = window._hrEmps || [];
+  for (const e of emps) {            // prefer Employee ID (more specific)
+    const id = norm(e.employeeId);
+    if (id && id.length >= 2 && fn.includes(id)) return e.uid;
+  }
+  for (const e of emps) {            // then full name
+    const nm = norm(e.name);
+    if (nm && nm.length >= 3 && fn.includes(nm)) return e.uid;
+  }
+  return '';
+}
+
+function hrBulkAddFiles(files) {
+  window._hrBulkQueue = window._hrBulkQueue || [];
+  let added = 0, skipped = 0;
+  for (const f of files) {
+    if (f.type !== 'application/pdf') { skipped++; continue; }
+    if (f.size > 5*1024*1024) { showToast(`${f.name}: exceeds 5 MB.`, true); skipped++; continue; }
+    window._hrBulkQueue.push({
+      id: 'b_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
+      file: f, fileName: f.name, empUID: hrBulkMatch(f.name), status: 'pending'
+    });
+    added++;
+  }
+  if (added)   showToast(`${added} file(s) added to queue.`);
+  if (skipped) showToast(`${skipped} file(s) skipped (PDF only / under 5 MB).`, true);
+  renderHRBulkQueue();
+}
+
+window.hrBulkFilesChosen = function(e){ hrBulkAddFiles(Array.from(e.target.files)); e.target.value=''; };
+window.hrBulkDragOver  = function(e){ e.preventDefault(); document.getElementById('hrBulkDropZone')?.classList.add('drag-over'); };
+window.hrBulkDragLeave = function(e){ document.getElementById('hrBulkDropZone')?.classList.remove('drag-over'); };
+window.hrBulkDrop = function(e){
+  e.preventDefault();
+  document.getElementById('hrBulkDropZone')?.classList.remove('drag-over');
+  hrBulkAddFiles(Array.from(e.dataTransfer?.files || []));
+};
+window.hrBulkSetEmp = function(id, uid){ const it=(window._hrBulkQueue||[]).find(x=>x.id===id); if(it){ it.empUID=uid; renderHRBulkQueue(); } };
+window.hrBulkRemove  = function(id){ window._hrBulkQueue=(window._hrBulkQueue||[]).filter(x=>x.id!==id); renderHRBulkQueue(); };
+window.hrBulkClear   = function(){ window._hrBulkQueue=[]; renderHRBulkQueue(); };
+
+window.renderHRBulkQueue = function() {
+  const wrap = document.getElementById('hrBulkQueueWrap');
+  if (!wrap) return;
+  const queue = window._hrBulkQueue || [];
+  if (!queue.length) { wrap.innerHTML = ''; return; }
+  const emps = window._hrEmps || [];
+  const opts = uid => '<option value="">— Select —</option>' +
+    emps.map(e=>`<option value="${escHtml(e.uid)}" ${uid===e.uid?'selected':''}>${escHtml(e.name)} (${escHtml(e.employeeId||'')})</option>`).join('');
+  const matchedCount   = queue.filter(i=>i.empUID && i.status!=='done').length;
+  const unmatchedCount = queue.filter(i=>!i.empUID && i.status!=='done').length;
+  wrap.innerHTML = `
+    <div class="table-wrap" style="margin-top:1rem;">
+      <table><thead><tr><th>File</th><th>Employee</th><th>Size</th><th>Status</th><th></th></tr></thead><tbody>
+      ${queue.map(item=>`<tr>
+        <td style="font-size:.8rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escHtml(item.fileName)}"><i class="fa-solid fa-file-pdf" style="color:var(--error);"></i> ${escHtml(item.fileName)}</td>
+        <td><select class="select-filter" style="padding:.35rem .7rem;font-size:.79rem;min-width:200px;" onchange="hrBulkSetEmp('${item.id}',this.value)" ${item.status==='done'?'disabled':''}>${opts(item.empUID)}</select></td>
+        <td style="font-size:.76rem;">${(item.file.size/1024).toFixed(0)} KB</td>
+        <td>${
+          item.status==='done'  ? '<span class="pill pill-approved">Uploaded</span>' :
+          item.status==='error' ? '<span class="pill pill-rejected">Failed</span>' :
+          item.empUID           ? '<span class="pill pill-active">Matched</span>' :
+                                  '<span class="pill pill-pending">No match</span>'
+        }</td>
+        <td>${item.status==='done'?'':`<button class="mini-btn mini-btn-danger" onclick="hrBulkRemove('${item.id}')"><i class="fa-solid fa-xmark"></i></button>`}</td>
+      </tr>`).join('')}
+      </tbody></table>
+    </div>
+    <div style="display:flex;gap:.7rem;align-items:center;margin-top:.8rem;flex-wrap:wrap;">
+      <button class="btn btn-gold" id="hrBulkUploadAllBtn" onclick="hrBulkUploadAll()"><i class="fa-solid fa-cloud-arrow-up"></i> Upload All Matched (${matchedCount})</button>
+      <button class="btn btn-secondary" onclick="hrBulkClear()"><i class="fa-solid fa-trash"></i> Clear Queue</button>
+      ${unmatchedCount?`<span style="font-size:.78rem;color:var(--warn);">${unmatchedCount} unmatched — assign manually.</span>`:''}
+    </div>`;
+};
+
+window.hrBulkUploadAll = async function() {
+  const payMonth = document.getElementById('hrBulkPayMonth')?.value;
+  if (!payMonth) { showToast('Select a Pay Month for the bulk upload.', true); return; }
+  const queue = (window._hrBulkQueue||[]).filter(i=>i.empUID && i.status!=='done');
+  if (!queue.length) { showToast('No matched files to upload.', true); return; }
+  const btn = document.getElementById('hrBulkUploadAllBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...'; }
+  const empMap = {}; (window._hrEmps||[]).forEach(e=>empMap[e.uid]=e);
+  let ok = 0, fail = 0;
+  for (const item of queue) {
+    try {
+      const emp = empMap[item.empUID] || {};
+      const base64Data = await fileToBase64(item.file);
+      const slipId = 'slip_'+item.empUID+'_'+payMonth.replace('-','')+'_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+      await setDoc(doc(db,'hrm_salary_slips',slipId), {
+        empUID: item.empUID, empName: emp.name||'', payMonth, note: item.fileName, base64Data,
+        uploadedBy: window.hrmCurrentUser?.uid || 'hr', uploadedAt: new Date().toISOString()
+      });
+      item.status = 'done'; ok++;
+    } catch(err) { item.status = 'error'; fail++; }
+    renderHRBulkQueue();
+  }
+  showToast(`Bulk upload complete: ${ok} uploaded${fail?`, ${fail} failed`:''}.`);
+  loadHRSlipsList();
+};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -930,6 +1251,8 @@ const pageConfig = {
   monthlyReport:   {t:'Monthly Report',         s:'Aggregate attendance & payroll report.'},
   regularization:  {t:'Regularization',         s:'Review and approve regularization requests.'},
   roles:           {t:'Roles & Assign',         s:'Manage roles, assignments, promotions.'},
+  salarySlips:     {t:'Salary Slips',           s:'Upload and manage employee salary slips.'},
+  hrTeam:          {t:'HR Team',                s:'Manage HR logins who can upload salary slips.'},
   editRequests:    {t:'Edit Requests',          s:'Review and approve profile change requests.'},
   adminDocs:       {t:'Employee Documents',     s:'View all documents uploaded by employees.'}
 };
@@ -942,7 +1265,10 @@ function showToast(msg, isError=false) {
   setTimeout(()=>t.classList.remove('show'), 3000);
 }
 window.showToast = showToast;
-
+function hideBootSplash(){
+  const b = document.getElementById('bootSplash');
+  if (b){ b.style.opacity='0'; setTimeout(()=>{ b.style.display='none'; }, 300); }
+}
 // ─── AUTH ───
 onAuthStateChanged(auth, async user => {
   if (user) {
@@ -976,22 +1302,26 @@ onAuthStateChanged(auth, async user => {
         showLoginError("Your account is inactive. Contact admin.");
         await signOut(auth); return;
       }
-      window.hrmCurrentRole = data.role;
-      if (data.role === 'admin') {
-        launchAdminApp(user, data.name || user.email.split('@')[0]);
-      } else {
-        launchEmpPortal(user, data);
-      }
+window.hrmCurrentRole = data.role;
+if (data.role === 'admin') {
+  launchAdminApp(user, data.name || user.email.split('@')[0]);
+} else if (data.role === 'hr') {
+  launchHRPortal(user);
+} else {
+  launchEmpPortal(user, data);
+}
     } catch(e) {
       console.error(e);
       showLoginError("Error: " + e.message);
       await signOut(auth);
     }
-  } else {
+
+ } else {
     window.hrmCurrentUser = null;
     window.hrmCurrentRole = null;
     document.getElementById('appContent').classList.remove('show-app');
     document.getElementById('empPortalScreen').classList.remove('ep-visible');
+    hideBootSplash();
     document.getElementById('loginScreen').style.display = 'flex';
     setTimeout(()=>document.getElementById('loginScreen').style.opacity='1', 30);
   }
@@ -1022,7 +1352,7 @@ document.getElementById('logoutBtn').addEventListener('click', async()=>{await s
 document.getElementById('epLogoutBtn').addEventListener('click', async()=>{await signOut(auth); window.location.reload();});
 
 // ─── LAUNCH ADMIN APP ───
-function launchAdminApp(user, name) {
+function launchAdminApp(user, name) {hideBootSplash();
   document.getElementById('userGreeting').textContent = name;
   document.getElementById('headerRoleBadge').className = 'role-badge role-admin';
   document.getElementById('headerRoleBadge').textContent = 'Admin';
@@ -1042,7 +1372,7 @@ function launchAdminApp(user, name) {
 }
 
 // ─── EMPLOYEE PORTAL LAUNCH ───
-async function launchEmpPortal(user, data) {
+async function launchEmpPortal(user, data) {hideBootSplash();
   document.getElementById('loginScreen').style.opacity='0';
   setTimeout(()=>document.getElementById('loginScreen').style.display='none',400);
   const screen = document.getElementById('empPortalScreen');
@@ -1114,6 +1444,7 @@ async function renderEmployeePortal(user, userData) {
       <button class="ep-tab" onclick="epSwitchTab('profile',this)"><i class="fa-solid fa-user"></i> My Profile</button>
       <button class="ep-tab" onclick="epSwitchTab('editreq',this)"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</button>
       <button class="ep-tab" onclick="epSwitchTab('documents',this);loadMyDocuments('${user.uid}')"><i class="fa-solid fa-folder-open"></i> Documents</button>
+      <button class="ep-tab" onclick="epSwitchTab('slips',this);loadMySlips('${user.uid}')"><i class="fa-solid fa-file-invoice-dollar"></i> Salary Slips</button>
       ${userData.role === 'manager' ? `<button class="ep-tab" onclick="epSwitchTab('manage',this)"><i class="fa-solid fa-users"></i> Team Leaves (${pendingCount})</button>` : ''}
     </div>
 
@@ -1168,7 +1499,7 @@ async function renderEmployeePortal(user, userData) {
     <div class="ep-tab-panel" id="ep-tab-report">
       <div class="card panel" style="padding:.9rem 1rem;margin-bottom:1rem;">
         <div class="panel-head">
-          <div><h2>My Monthly Report</h2><p></p></div>
+          <div><h2>My Monthly Report</h2><p>≥9 hrs logged = Present. Approved leave = Paid Leave.</p></div>
           <div style="display:flex;gap:.5rem;align-items:center;">
             <input class="input" type="month" id="empReportMonth" style="width:160px;padding:.5rem .8rem;">
             <button class="btn btn-gold" onclick="loadMyMonthlyReport('${user.uid}','${empDoc.id}')"><i class="fa-solid fa-rotate"></i> Load</button>
@@ -1237,17 +1568,9 @@ async function renderEmployeePortal(user, userData) {
         <div class="panel-head">
           <div><h2>My Documents</h2><p>Upload PAN card, Aadhaar, mark sheets, and other documents.</p></div>
         </div>
-        <div class="info-box" style="margin-bottom:1rem;"><i class="fa-solid fa-circle-info"></i> Supported formats: PDF, JPG, PNG, JPEG. Max size 5 MB per file.</div>
-        <div class="doc-drop-zone" id="docDropZone" onclick="document.getElementById('docFileInput').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleDocDrop(event,'${user.uid}')">
-          <i class="fa-solid fa-cloud-arrow-up"></i>
-          <div style="font-weight:600;font-size:.9rem;color:var(--text-2);">Click to upload or drag & drop</div>
-          <div style="font-size:.78rem;color:var(--text-3);margin-top:.3rem;">PDF, PNG, JPG, JPEG — Max 5 MB</div>
-        </div>
-        <input type="file" id="docFileInput" style="display:none" accept=".pdf,.jpg,.jpeg,.png" multiple onchange="handleDocFileSelect(event,'${user.uid}')">
-        <div id="docUploadStatus" style="margin-top:.5rem;"></div>
-        <div style="margin-top:1rem;">
-          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);margin-bottom:.6rem;">Document Type — select before uploading</div>
-          <select class="select-filter" id="docTypeSelect" style="width:100%;padding:.65rem 1rem;border-radius:var(--r-sm);">
+        <!-- Compact upload bar -->
+        <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;padding:.75rem;background:var(--surface-2);border:1px solid var(--border-2);border-radius:var(--r-md);margin-bottom:1rem;">
+          <select class="select-filter" id="docTypeSelect" style="flex:1;min-width:160px;">
             <option value="pan">PAN Card</option>
             <option value="aadhaar">Aadhaar Card</option>
             <option value="marksheet_10">10th Mark Sheet</option>
@@ -1258,13 +1581,26 @@ async function renderEmployeePortal(user, userData) {
             <option value="experience">Experience Certificate</option>
             <option value="other">Other</option>
           </select>
+          <label style="display:inline-flex;align-items:center;gap:.45rem;padding:.5rem 1rem;border-radius:var(--r-sm);background:var(--gold);color:var(--primary);font-weight:700;font-size:.82rem;cursor:pointer;white-space:nowrap;transition:filter .15s;" onmouseover="this.style.filter='brightness(1.08)'" onmouseout="this.style.filter=''">
+            <i class="fa-solid fa-paperclip"></i> Attach File
+            <input type="file" style="display:none" accept=".pdf,.jpg,.jpeg,.png" multiple onchange="handleDocFileSelect(event,'${user.uid}')">
+          </label>
+          <span style="font-size:.72rem;color:var(--text-3);">PDF, JPG, PNG — Max 5 MB</span>
         </div>
+        <div id="docUploadStatus"></div>
         <div id="docGrid" class="doc-grid"><div class="empty" style="grid-column:1/-1;border:none;"><h3><i class="fa-solid fa-spinner fa-spin"></i> Loading...</h3></div></div>
       </div>
     </div>
 
+    <!-- SALARY SLIPS TAB -->
+    <div class="ep-tab-panel" id="ep-tab-slips">
+      <div class="card panel">
+        <div class="panel-head"><div><h2>My Salary Slips</h2><p>Salary slips uploaded by HR or Admin. Click to download.</p></div></div>
+        <div class="table-wrap" id="empSlipsWrap"><div class="empty"><h3><i class="fa-solid fa-spinner fa-spin"></i> Loading...</h3></div></div>
+      </div>
+    </div>
+
     ${userData.role === 'manager' ? `
-    <!-- MANAGE TEAM LEAVES -->
     <div class="ep-tab-panel" id="ep-tab-manage">
       <div class="card panel">
         <div class="panel-head"><h2>Team Leave Requests</h2><p>Approve, reject, or delete your team's requests.</p></div>
@@ -1383,20 +1719,37 @@ window.onLeaveTypeChange = function() {
   const def = LEAVE_TYPES[t] || {};
   const toWrap = document.getElementById('leaveToWrap');
   const toInput = document.getElementById('leaveTo');
+  const fromInput = document.getElementById('leaveFrom');
   const fromLabel = document.getElementById('leaveFromLabel');
   const info = document.getElementById('leaveDaysInfo');
+  // Always show the From → To date range
+  toWrap.style.display = '';
+  fromLabel.textContent = 'From Date';
   if (def.half) {
-    toWrap.style.display = 'none';
-    if (toInput) { toInput.value=''; toInput.required=false; }
-    fromLabel.textContent = 'Date';
-    info.innerHTML = '<i class="fa-solid fa-circle-info"></i> Half-day leave — counts as <strong>0.5 day</strong>'+(def.cat==='lop'?' (unpaid, no balance used).':'.');
+    // Half day applies to a single date: lock To to From
+    if (toInput) {
+      toInput.readOnly = true;
+      toInput.required = false;
+      toInput.value = fromInput.value || '';
+      toInput.style.background = 'var(--border-2)';
+    }
+    info.innerHTML = '<i class="fa-solid fa-circle-info"></i> Half-day leave — <strong>0.5 day</strong> on the From date'+(def.cat==='lop'?' (unpaid, no balance used).':'.');
   } else {
-    toWrap.style.display = '';
-    fromLabel.textContent = 'From Date';
+    if (toInput) {
+      toInput.readOnly = false;
+      toInput.required = true;
+      toInput.style.background = '';
+    }
     info.innerHTML = '<i class="fa-solid fa-circle-info"></i> Full-day leave — counts as <strong>1 day per date</strong> in the range'+(def.cat==='lop'?' (unpaid, no balance used).':'.');
   }
 };
 window.closeLeaveModal = function() { document.getElementById('leaveModal').classList.remove('open'); };
+document.getElementById('leaveFrom').addEventListener('input', () => {
+  const t = document.getElementById('leaveType').value;
+  if (LEAVE_TYPES[t] && LEAVE_TYPES[t].half) {
+    document.getElementById('leaveTo').value = document.getElementById('leaveFrom').value;
+  }
+});
 
 document.getElementById('leaveForm').addEventListener('submit', async e => {
   e.preventDefault();
@@ -1560,6 +1913,8 @@ function renderCurrentAdminPage() {
   if (document.getElementById('pageEditRequests')?.classList.contains('active')) loadEditRequests();
   if (document.getElementById('pageAdminDocs')?.classList.contains('active')) loadAdminDocs();
   if (document.getElementById('pageRegularization')?.classList.contains('active')) loadRegularizations();
+  if (document.getElementById('pageSalarySlips')?.classList.contains('active')) loadAdminSlips();
+  if (document.getElementById('pageHrTeam')?.classList.contains('active')) loadHRTeam();
 }
 
 // ─── DASHBOARD ───
@@ -1641,6 +1996,8 @@ document.getElementById('addEmpForm').addEventListener('submit', async e => {
       ifsc: document.getElementById('empIFSC').value.trim().toUpperCase(),
       bankName: document.getElementById('empBankName').value.trim(),
       bankHolder: document.getElementById('empBankHolder').value.trim(),
+      pfOptIn: document.getElementById('empPfOptIn').checked,
+      uan: document.getElementById('empPfOptIn').checked ? document.getElementById('empUAN').value.trim() : '',
       email,
       status: 'active',
       casualLeave: 0.5,
@@ -2526,6 +2883,19 @@ function getDatesInMonth(ym) { // ym = "YYYY-MM"
   return Array.from({length:days},(_,i)=>`${ym}-${String(i+1).padStart(2,'0')}`);
 }
 
+function isWorkingDay(dateStr) {
+  // Returns false for Sundays (getDay() === 0)
+  return new Date(dateStr + 'T00:00:00').getDay() !== 0;
+}
+
+function getWorkingDaysInMonth(ym) {
+  // Returns all non-Sunday dates in the month (actual count, not capped at 26)
+  const [y,m] = ym.split('-').map(Number);
+  const totalDays = new Date(y, m, 0).getDate();
+  const all = Array.from({length:totalDays}, (_,i) => `${ym}-${String(i+1).padStart(2,'0')}`);
+  return all.filter(isWorkingDay);
+}
+
 async function buildMonthReport(uid, empDocId, ym) {
   // Attendance records
   const attSnap = await getDocs(query(collection(db,'hrm_attendance'),where('empUID','==',uid)));
@@ -2538,10 +2908,11 @@ async function buildMonthReport(uid, empDocId, ym) {
   const lopDates           = new Set();
   lvSnap.docs.forEach(d=>{
     const l = d.data();
-    const from = new Date(l.fromDate), to = new Date(l.toDate);
+    const from = new Date(l.fromDate+'T00:00:00'), to = new Date(l.toDate+'T00:00:00');
     const isLop = l.leaveType?.includes('lop');
     for (let dt=new Date(from); dt<=to; dt.setDate(dt.getDate()+1)) {
       const ds = dt.toISOString().split('T')[0];
+      if (!isWorkingDay(ds)) continue; // skip Sundays in leave ranges too
       if (isLop) lopDates.add(ds); else approvedLeaveDates.add(ds);
     }
   });
@@ -2550,37 +2921,42 @@ async function buildMonthReport(uid, empDocId, ym) {
   const regSnap = await getDocs(query(collection(db,'hrm_regularizations'),where('empUID','==',uid),where('status','==','approved')));
   const regDates = new Set(regSnap.docs.map(d=>d.data().date));
 
-  const allDates = getDatesInMonth(ym);
-  const today    = todayISO();
+  // Working days = all non-Sunday days in the month (auto-detected, no hard cap)
+  const allWorkingDates = getWorkingDaysInMonth(ym);
+  const workingDaysCount = allWorkingDates.length;
+  const today = todayISO();
   let presentDays=0, paidLeaveDays=0, lopDays=0, absentDays=0;
 
-  const dayRows = allDates.map(date=>{
+  const dayRows = allWorkingDates.map(date=>{
     if (date > today) return null; // future
-    const att = attMap[date];
+    const att  = attMap[date];
     const mins = att ? calcDurationMinutes(att.checkIn, att.checkOut) : 0;
     let status;
     if (regDates.has(date)) {
       status = 'regularized'; presentDays++;
-    } else if (mins >= 540) { // ≥9 hrs
+    } else if (mins >= 540) { // ≥9 hrs = Present
       status = 'present'; presentDays++;
     } else if (approvedLeaveDates.has(date)) {
-      status = 'paid_leave'; paidLeaveDays += 0.5; // half or full handled via leave days
+      status = 'paid_leave';
     } else if (lopDates.has(date)) {
-      status = 'lop'; lopDays++;
+      status = 'lop';
     } else if (att && att.checkIn) {
-      status = 'short'; // checked in but < 9 hrs — counts absent unless regularized
-      absentDays++;
+      status = 'short'; absentDays++; // checked in but < 9 hrs
     } else {
       status = 'absent'; absentDays++;
     }
     return {date, mins, status, checkIn:att?.checkIn||'', checkOut:att?.checkOut||''};
   }).filter(Boolean);
 
-  // Recalculate paid leave from leave records more accurately
-  paidLeaveDays = lvSnap.docs.filter(d=>!d.data().leaveType?.includes('lop')).reduce((s,d)=>s+Number(d.data().days||0),0);
-  lopDays       = lvSnap.docs.filter(d=> d.data().leaveType?.includes('lop')).reduce((s,d)=>s+Number(d.data().days||0),0);
+  // Count paid/lop from approved leave records (filter to this month only)
+  paidLeaveDays = lvSnap.docs
+    .filter(d=>!d.data().leaveType?.includes('lop') && (d.data().fromDate||'').startsWith(ym))
+    .reduce((s,d)=>s+Number(d.data().days||0),0);
+  lopDays = lvSnap.docs
+    .filter(d=> d.data().leaveType?.includes('lop') && (d.data().fromDate||'').startsWith(ym))
+    .reduce((s,d)=>s+Number(d.data().days||0),0);
 
-  return {dayRows, presentDays, paidLeaveDays, lopDays, absentDays, workingDays:26};
+  return {dayRows, presentDays, paidLeaveDays, lopDays, absentDays, workingDays: workingDaysCount};
 }
 
 function renderReportCard(emp, report, ym, includeRegBtn=false, empDocId='') {
@@ -2590,17 +2966,24 @@ function renderReportCard(emp, report, ym, includeRegBtn=false, empDocId='') {
   const deduction  = Math.round(dailyRate * (absentDays + lopDays));
   const netPay     = Math.max(0, monthlyCTC - deduction);
   const initials   = emp.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  // Serialize slip data safely for onclick
+  const slipEmp = {uid:emp.uid||'',name:emp.name,employeeId:emp.employeeId||'',title:emp.title||'',email:emp.email||'',phone:emp.phone||'',dateOfHiring:emp.dateOfHiring||'',pan:emp.pan||'',bankName:emp.bankName||'',bankAccount:emp.bankAccount||'',ifsc:emp.ifsc||'',bankHolder:emp.bankHolder||'',salary:emp.salary||0,photoURL:emp.photoURL||''};
+  const slipRpt = {presentDays,paidLeaveDays,lopDays,absentDays,workingDays,monthlyCTC,dailyRate,deduction,netPay};
+  const slipKey = 'slip_'+emp.uid+'_'+ym;
+  window[slipKey] = {emp:slipEmp, report:slipRpt, ym};
 
   return `<div class="report-card">
     <div class="report-card-head">
       <div class="report-card-avatar">
         ${emp.photoURL ? `<img src="${escHtml(emp.photoURL)}" alt="">` : initials}
       </div>
-      <div style="min-width:0;">
+      <div style="min-width:0;flex:1;">
         <div class="report-card-name">${escHtml(emp.name)}</div>
         <div class="report-card-meta">${escHtml(emp.employeeId||'')} · ${escHtml(emp.title||'')} · ${ym}</div>
       </div>
-      ${includeRegBtn ? `<button class="mini-btn" style="margin-left:auto;color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.1);flex-shrink:0;" onclick="openRegModal('${empDocId}','${emp.uid}')"><i class="fa-solid fa-clock-rotate-left"></i> Regularize</button>` : ''}
+      <div style="display:flex;gap:.4rem;flex-shrink:0;flex-wrap:wrap;align-items:center;">
+               ${includeRegBtn ? `<button class="mini-btn" style="color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.1);" onclick="openRegModal('${empDocId}','${emp.uid}')"><i class="fa-solid fa-clock-rotate-left"></i> Regularize</button>` : ''}
+      </div>
     </div>
     <div class="report-card-body">
       <div class="report-stat"><div class="report-stat-label">Working Days</div><div class="report-stat-value">${workingDays}</div></div>
@@ -2812,6 +3195,653 @@ async function initRegBadge() {
     if (badge) { badge.textContent=cnt; badge.style.display=cnt?'inline':'none'; }
   } catch(e){}
 }
+
+
+
+
+function fmtINR(n) {
+  // Safe Indian number format without rupee symbol (avoids font encoding issues)
+  const num = Math.round(Number(n)||0);
+  const s = num.toLocaleString('en-IN');
+  return 'Rs. ' + s;
+}
+
+window.downloadSalarySlip = async function(slipKey) {
+  const data = window[slipKey];
+  if (!data) { showToast('Report data not found. Please regenerate the report.', true); return; }
+  const {emp, report, ym} = data;
+  const {presentDays, paidLeaveDays, lopDays, absentDays, workingDays,
+         monthlyCTC, dailyRate, deduction} = report;
+
+  const {jsPDF} = window.jspdf;
+  const pdf = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+  const W = 210, M = 14;
+  let y = 0;
+
+  // Colours
+  const NAVY  = [10, 22, 40];
+  const GOLD  = [193, 154, 60];
+  const WHITE = [255,255,255];
+  const LGRAY = [248,248,246];
+  const GRAY  = [110,110,120];
+  const RED   = [190,55,55];
+
+  // ── HEADER ──────────────────────────────────────────────
+  pdf.setFillColor(...NAVY);
+  pdf.rect(0, 0, W, 42, 'F');
+
+  // Logo (embedded base64)
+  try {
+    pdf.addImage(COMPANY_LOGO_B64, 'PNG', M, 4, 32, 32);
+  } catch(e) {
+    pdf.setFillColor(...GOLD);
+    pdf.roundedRect(M, 5, 26, 26, 3, 3, 'F');
+    pdf.setFontSize(10); pdf.setTextColor(...NAVY); pdf.setFont('helvetica','bold');
+    pdf.text('HRM', M+13, 21, {align:'center'});
+  }
+
+  // Company name right of logo
+  pdf.setFontSize(17); pdf.setTextColor(...WHITE); pdf.setFont('helvetica','bold');
+  pdf.text('growitharshiee', M+36, 16);
+  pdf.setFontSize(8); pdf.setTextColor(...GOLD); pdf.setFont('helvetica','normal');
+  pdf.text('Human Resource Management', M+36, 22);
+
+  // SALARY SLIP badge
+  pdf.setFillColor(...GOLD);
+  pdf.roundedRect(W-M-38, 10, 38, 12, 2, 2, 'F');
+  pdf.setFontSize(9.5); pdf.setTextColor(...NAVY); pdf.setFont('helvetica','bold');
+  pdf.text('SALARY SLIP', W-M-19, 18, {align:'center'});
+
+  // Pay period
+  const [ymY, ymM] = ym.split('-').map(Number);
+  const monthName = new Date(ymY, ymM-1, 1).toLocaleString('en-IN',{month:'long',year:'numeric'});
+  pdf.setFontSize(7.5); pdf.setTextColor(170,165,140); pdf.setFont('helvetica','normal');
+  pdf.text('Pay Period: ' + monthName, W-M, 30, {align:'right'});
+
+  // Gold rule
+  pdf.setDrawColor(...GOLD); pdf.setLineWidth(0.7);
+  pdf.line(M, 42, W-M, 42);
+  y = 48;
+
+  // ── EMPLOYEE INFO ────────────────────────────────────────
+  const infoH = 30;
+  pdf.setFillColor(...LGRAY);
+  pdf.roundedRect(M, y, W-M*2, infoH, 2.5, 2.5, 'F');
+  pdf.setDrawColor(215,212,205); pdf.setLineWidth(0.3);
+  pdf.roundedRect(M, y, W-M*2, infoH, 2.5, 2.5, 'S');
+
+  // Profile photo
+  let textX = M+5;
+  if (emp.photoURL && emp.photoURL.startsWith('data:')) {
+    try {
+      pdf.addImage(emp.photoURL, 'JPEG', M+4, y+4, 20, 20);
+      textX = M+28;
+    } catch(e) {}
+  }
+
+  pdf.setFontSize(12); pdf.setTextColor(...NAVY); pdf.setFont('helvetica','bold');
+  pdf.text(emp.name, textX, y+9);
+  pdf.setFontSize(8.5); pdf.setTextColor(...GRAY); pdf.setFont('helvetica','normal');
+  pdf.text(emp.title||'', textX, y+15);
+
+  // Left column info
+  const leftInfo = [
+    ['Emp ID',  emp.employeeId||'—'],
+    ['Email',   emp.email||'—'],
+    ['Phone',   emp.phone||'—'],
+  ];
+  // Right column info
+  const rightInfo = [
+    ['Joining Date', emp.dateOfHiring||'—'],
+    ['PAN',          emp.pan||'—'],
+  ];
+  const midX = W/2 + 5;
+
+  leftInfo.forEach((item, i) => {
+    const iy = y + 20 + i * 4.5;
+    pdf.setFontSize(7); pdf.setTextColor(...GRAY); pdf.setFont('helvetica','normal');
+    pdf.text(item[0] + ': ', textX, iy);
+    pdf.setTextColor(...NAVY); pdf.setFont('helvetica','bold');
+    const labelW = pdf.getTextWidth(item[0] + ': ');
+    pdf.text(item[1], textX + labelW, iy);
+  });
+
+  rightInfo.forEach((item, i) => {
+    const iy = y + 20 + i * 4.5;
+    pdf.setFontSize(7); pdf.setTextColor(...GRAY); pdf.setFont('helvetica','normal');
+    pdf.text(item[0] + ': ', midX, iy);
+    pdf.setTextColor(...NAVY); pdf.setFont('helvetica','bold');
+    const labelW = pdf.getTextWidth(item[0] + ': ');
+    pdf.text(item[1], midX + labelW, iy);
+  });
+
+  y += infoH + 6;
+
+  // ── SALARY BREAKDOWN ─────────────────────────────────────
+  const basic     = Math.round(monthlyCTC * 0.40);
+  const hra       = Math.round(monthlyCTC * 0.20);
+  const transport = Math.round(monthlyCTC * 0.10);
+  const special   = monthlyCTC - basic - hra - transport;
+  const grossEarn = monthlyCTC; // same as sum
+  const pf        = Math.round(basic * 0.12);
+  const esi       = monthlyCTC <= 21000 ? Math.round(monthlyCTC * 0.0075) : 0;
+  const totalDed  = deduction + pf + esi;
+  const finalNet  = Math.max(0, grossEarn - totalDed);
+
+  const halfW = (W - M*2 - 4) / 2;
+  const col2  = M + halfW + 4;
+
+  // Section heads
+  const secHead = (label, sx, sw, sy) => {
+    pdf.setFillColor(...NAVY);
+    pdf.roundedRect(sx, sy, sw, 7, 1.5, 1.5, 'F');
+    pdf.setFontSize(8); pdf.setTextColor(...WHITE); pdf.setFont('helvetica','bold');
+    pdf.text(label, sx + 4, sy + 5);
+  };
+  secHead('EARNINGS', M, halfW, y);
+  secHead('DEDUCTIONS', col2, halfW, y);
+  y += 8;
+
+  const RH = 7;
+  const drawRows = (rows, sx, sw, sy) => {
+    rows.forEach((row, i) => {
+      pdf.setFillColor(i%2===0 ? 248 : 255, i%2===0 ? 248 : 255, i%2===0 ? 246 : 255);
+      pdf.rect(sx, sy + i*RH, sw, RH, 'F');
+      pdf.setFontSize(7.5); pdf.setTextColor(...NAVY); pdf.setFont('helvetica','normal');
+      pdf.text(row[0], sx + 3, sy + i*RH + 4.8);
+      pdf.setFont('helvetica','bold');
+      pdf.text(fmtINR(row[1]), sx + sw - 3, sy + i*RH + 4.8, {align:'right'});
+      pdf.setFont('helvetica','normal');
+    });
+    return sy + rows.length * RH;
+  };
+
+  const earnRows = [
+    ['Basic Salary',         basic],
+    ['House Rent Allowance', hra],
+    ['Transport Allowance',  transport],
+    ['Special Allowance',    special],
+  ];
+  const dedRows = [
+    ['Absent Deduction',       deduction],
+    ...(esi > 0 ? [['ESI (0.75%)',           esi]] : []),
+  ];
+
+  const earnEnd = drawRows(earnRows, M,    halfW, y);
+  const dedEnd  = drawRows(dedRows,  col2, halfW, y);
+  const tblEnd  = Math.max(earnEnd, dedEnd);
+
+  // Totals
+  pdf.setFillColor(...NAVY);
+  pdf.rect(M, tblEnd, halfW, RH, 'F');
+  pdf.setFontSize(8); pdf.setTextColor(...WHITE); pdf.setFont('helvetica','bold');
+  pdf.text('Gross Earnings', M+3, tblEnd+4.8);
+  pdf.text(fmtINR(grossEarn), M+halfW-3, tblEnd+4.8, {align:'right'});
+
+  pdf.setFillColor(...RED);
+  pdf.rect(col2, tblEnd, halfW, RH, 'F');
+  pdf.text('Total Deductions', col2+3, tblEnd+4.8);
+  pdf.text(fmtINR(totalDed), col2+halfW-3, tblEnd+4.8, {align:'right'});
+
+  y = tblEnd + RH + 6;
+
+  // ── NET PAY ──────────────────────────────────────────────
+  pdf.setFillColor(...GOLD);
+  pdf.roundedRect(M, y, W-M*2, 13, 2, 2, 'F');
+  pdf.setFontSize(9.5); pdf.setTextColor(...NAVY); pdf.setFont('helvetica','bold');
+  pdf.text('NET PAY FOR ' + monthName.toUpperCase(), M+5, y+8.5);
+  pdf.setFontSize(13);
+  pdf.text(fmtINR(finalNet), W-M-5, y+8.5, {align:'right'});
+  y += 19;
+
+  // ── ATTENDANCE SUMMARY ────────────────────────────────────
+  secHead('ATTENDANCE SUMMARY', M, W-M*2, y);
+  y += 8;
+  const attCols = [
+    ['Working Days', String(workingDays)],
+    ['Present',      String(presentDays)],
+    ['Paid Leave',   Number(paidLeaveDays).toFixed(1)],
+    ['Unpaid / LOP', Number(lopDays).toFixed(1)],
+    ['Absent',       String(absentDays)],
+    ['Daily Rate',   fmtINR(dailyRate)],
+  ];
+  const acw = (W - M*2) / attCols.length;
+  attCols.forEach((col, i) => {
+    const ax = M + i*acw;
+    pdf.setFillColor(i%2===0?246:255, i%2===0?246:255, i%2===0?244:255);
+    pdf.rect(ax, y, acw, 15, 'F');
+    pdf.setFontSize(6); pdf.setTextColor(...GRAY); pdf.setFont('helvetica','normal');
+    pdf.text(col[0], ax + acw/2, y+5.5, {align:'center'});
+    pdf.setFontSize(9); pdf.setTextColor(...NAVY); pdf.setFont('helvetica','bold');
+    pdf.text(col[1], ax + acw/2, y+12, {align:'center'});
+  });
+  y += 21;
+
+  // ── BANK DETAILS ──────────────────────────────────────────
+  secHead('BANK DETAILS', M, W-M*2, y);
+  y += 8;
+  const bankItems = [
+    ['Bank Name',       emp.bankName||'—'],
+    ['Account Number',  emp.bankAccount ? '••••' + emp.bankAccount.slice(-4) : '—'],
+    ['IFSC Code',       emp.ifsc||'—'],
+    ['Account Holder',  emp.bankHolder||emp.name],
+  ];
+  bankItems.forEach((item, i) => {
+    pdf.setFillColor(i%2===0?248:255, i%2===0?248:255, i%2===0?246:255);
+    pdf.rect(M, y+i*7, W-M*2, 7, 'F');
+    pdf.setFontSize(7.5); pdf.setTextColor(...GRAY); pdf.setFont('helvetica','normal');
+    pdf.text(item[0], M+4, y+i*7+4.8);
+    pdf.setTextColor(...NAVY); pdf.setFont('helvetica','bold');
+    pdf.text(item[1], W-M-4, y+i*7+4.8, {align:'right'});
+  });
+  y += bankItems.length * 7 + 6;
+
+  // ── FOOTER ───────────────────────────────────────────────
+  pdf.setFillColor(...NAVY);
+  pdf.rect(0, 284, W, 13, 'F');
+  pdf.setFontSize(7); pdf.setTextColor(...GOLD); pdf.setFont('helvetica','bold');
+  pdf.text('growitharshiee  |  Human Resources', M, 292);
+  pdf.setTextColor(165,162,140); pdf.setFont('helvetica','normal');
+  pdf.text('Computer-generated slip — no signature required.', W/2, 292, {align:'center'});
+  pdf.text('Generated: ' + new Date().toLocaleDateString('en-IN'), W-M, 292, {align:'right'});
+
+  const fileName = 'SalarySlip_' + emp.name.replace(/\s+/g,'_') + '_' + ym + '.pdf';
+  pdf.save(fileName);
+  showToast('Salary slip downloaded!');
+};
+
+// ─── SALARY SLIPS ───────────────────────────────────────────────────────────
+
+window._pendingSlipBase64 = null;
+
+window.onSlipFileChosen = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 5*1024*1024) { showToast('File exceeds 5 MB.', true); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    window._pendingSlipBase64 = e.target.result;
+    document.getElementById('slipFileLabel').textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+window.openUploadSlipModal = function() {
+  // Populate employee dropdown
+  const sel = document.getElementById('slipEmpSelect');
+  sel.innerHTML = '<option value="">— Select Employee —</option>' +
+    window.hrmEmployees.filter(e=>e.status==='active')
+      .map(e=>`<option value="${escHtml(e.uid)}">${escHtml(e.name)} (${escHtml(e.employeeId||'')})</option>`).join('');
+  document.getElementById('slipPayMonth').value = new Date().toISOString().slice(0,7);
+  document.getElementById('slipFileLabel').textContent = 'Click to attach PDF (max 5 MB)';
+  document.getElementById('slipNote').value = '';
+  window._pendingSlipBase64 = null;
+  document.getElementById('uploadSlipModal').classList.add('open');
+};
+
+document.getElementById('uploadSlipForm').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  await submitSlipUpload(
+    document.getElementById('slipEmpSelect').value,
+    document.getElementById('slipPayMonth').value,
+    document.getElementById('slipNote').value.trim(),
+    window._pendingSlipBase64,
+    document.getElementById('slipUploadBtn'),
+    document.getElementById('slipUploadProgress'),
+    () => { document.getElementById('uploadSlipModal').classList.remove('open'); loadAdminSlips(); }
+  );
+});
+
+async function submitSlipUpload(empUID, payMonth, note, base64Data, btn, progressEl, onDone) {
+  if (!empUID)    { showToast('Select an employee.', true); return; }
+  if (!payMonth)  { showToast('Select a pay month.', true); return; }
+  if (!base64Data){ showToast('Attach a PDF file.', true); return; }
+  const origLabel = btn.innerHTML;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...'; btn.disabled = true;
+  progressEl.innerHTML = `<div class="upload-progress"><div class="upload-progress-bar" style="width:60%"></div></div>`;
+  try {
+    const empSnap = await getDocs(query(collection(db,'hrm_employees'),where('uid','==',empUID)));
+    const empName = empSnap.empty ? '' : empSnap.docs[0].data().name;
+    const slipId  = 'slip_'+empUID+'_'+payMonth.replace('-','')+'_'+Date.now();
+    await setDoc(doc(db,'hrm_salary_slips',slipId), {
+      empUID, empName, payMonth, note, base64Data,
+      uploadedBy: window.hrmCurrentUser?.uid || 'hr',
+      uploadedAt: new Date().toISOString()
+    });
+    progressEl.innerHTML = '';
+    showToast(`Salary slip uploaded for ${empName}!`);
+    onDone();
+  } catch(err) {
+    progressEl.innerHTML = '';
+    showToast('Upload error: '+err.message, true);
+  } finally {
+    btn.innerHTML = origLabel; btn.disabled = false;
+  }
+}
+
+window.loadAdminSlips = async function() {
+  const wrap = document.getElementById('slipsTableWrap');
+  if (!wrap) return;
+  wrap.innerHTML = `<div class="empty"><h3><i class="fa-solid fa-spinner fa-spin"></i> Loading...</h3></div>`;
+
+  // Populate filter
+  const ef = document.getElementById('slipEmpFilter');
+  if (ef) {
+    const cur = ef.value;
+    ef.innerHTML = '<option value="all">All Employees</option>' +
+      window.hrmEmployees.map(e=>`<option value="${escHtml(e.uid)}">${escHtml(e.name)}</option>`).join('');
+    ef.value = cur;
+  }
+  const empF   = document.getElementById('slipEmpFilter')?.value   || 'all';
+  const monthF = document.getElementById('slipMonthFilter')?.value || '';
+
+  try {
+    const snap = await getDocs(collection(db,'hrm_salary_slips'));
+    let slips = snap.docs.map(d=>({id:d.id,...d.data()}));
+    if (empF   !== 'all') slips = slips.filter(s=>s.empUID===empF);
+    if (monthF)           slips = slips.filter(s=>s.payMonth===monthF);
+    slips.sort((a,b)=>(b.uploadedAt||'').localeCompare(a.uploadedAt||''));
+    if (!slips.length) { wrap.innerHTML=`<div class="empty"><div class="empty-icon">📄</div><h3>No salary slips found.</h3></div>`; return; }
+    wrap.innerHTML = `<div class="table-wrap" style="border:none;"><table>
+      <thead><tr><th>Employee</th><th>Pay Month</th><th>Note</th><th>Uploaded</th><th>Actions</th></tr></thead>
+      <tbody>${slips.map(s=>`<tr>
+        <td><strong>${escHtml(s.empName||'')}</strong></td>
+        <td><span class="pill pill-active" style="font-size:.72rem;">${escHtml(s.payMonth||'')}</span></td>
+        <td style="font-size:.8rem;">${escHtml(s.note||'—')}</td>
+        <td style="font-size:.75rem;">${s.uploadedAt?new Date(s.uploadedAt).toLocaleDateString('en-IN'):'—'}</td>
+        <td style="display:flex;gap:.3rem;">
+          <button class="mini-btn" onclick="previewAdminSlip('${s.id}')"><i class="fa-solid fa-eye"></i> View</button>
+          <button class="mini-btn mini-btn-danger" onclick="deleteAdminSlip('${s.id}')"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  } catch(err) { wrap.innerHTML=`<div class="empty"><h3>Error: ${escHtml(err.message)}</h3></div>`; }
+};
+
+['slipEmpFilter','slipMonthFilter'].forEach(id=>{
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', loadAdminSlips);
+});
+
+window.previewAdminSlip = async function(slipId) {
+  try {
+    const snap = await getDoc(doc(db,'hrm_salary_slips',slipId));
+    if (!snap.exists()) return;
+    const s = snap.data();
+    const win = window.open('','_blank');
+    win.document.write(`<html><body style="margin:0"><embed src="${s.base64Data}" type="application/pdf" width="100%" height="100%"></body></html>`);
+  } catch(err) { showToast('Error: '+err.message, true); }
+};
+
+window.deleteAdminSlip = async function(slipId) {
+  if (!confirm('Delete this salary slip permanently?')) return;
+  try {
+    await deleteDoc(doc(db,'hrm_salary_slips',slipId));
+    showToast('Salary slip deleted.');
+    loadAdminSlips();
+  } catch(err) { showToast('Error: '+err.message, true); }
+};
+
+// Employee: view own salary slips
+window.loadMySlips = async function(uid) {
+  const wrap = document.getElementById('empSlipsWrap');
+  if (!wrap) return;
+  try {
+    const snap = await getDocs(query(collection(db,'hrm_salary_slips'),where('empUID','==',uid)));
+    const slips = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.payMonth||'').localeCompare(a.payMonth||''));
+    if (!slips.length) { wrap.innerHTML=`<div class="empty" style="border:none;"><div class="empty-icon">📄</div><h3>No salary slips uploaded yet.</h3></div>`; return; }
+    wrap.innerHTML = `<table><thead><tr><th>Pay Month</th><th>Note</th><th>Uploaded On</th><th>Action</th></tr></thead><tbody>
+      ${slips.map(s=>`<tr>
+        <td><strong>${escHtml(s.payMonth||'')}</strong></td>
+        <td style="font-size:.82rem;">${escHtml(s.note||'—')}</td>
+        <td style="font-size:.76rem;">${s.uploadedAt?new Date(s.uploadedAt).toLocaleDateString('en-IN'):'—'}</td>
+        <td><button class="mini-btn mini-btn-success" onclick="downloadMySlip('${s.id}','${escHtml(s.payMonth||'')}')"><i class="fa-solid fa-download"></i> Download PDF</button></td>
+      </tr>`).join('')}
+    </tbody></table>`;
+  } catch(err) { wrap.innerHTML=`<div class="empty"><h3>Error loading slips.</h3></div>`; }
+};
+
+window.downloadMySlip = async function(slipId, payMonth) {
+  try {
+    const snap = await getDoc(doc(db,'hrm_salary_slips',slipId));
+    if (!snap.exists()) { showToast('Slip not found.', true); return; }
+    const s = snap.data();
+    // Trigger download
+    const a = document.createElement('a');
+    a.href = s.base64Data;
+    a.download = `SalarySlip_${payMonth}.pdf`;
+    a.click();
+    showToast('Downloading salary slip...');
+  } catch(err) { showToast('Error: '+err.message, true); }
+};
+
+// ─── HR TEAM ────────────────────────────────────────────────────────────────
+
+window.openCreateHRModal = function() {
+  document.getElementById('createHRForm').reset();
+  document.getElementById('createHRModal').classList.add('open');
+};
+
+document.getElementById('createHRForm').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  const btn = document.getElementById('createHRBtn');
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating...'; btn.disabled = true;
+  const name  = document.getElementById('hrName').value.trim();
+  const empId = document.getElementById('hrEmpId').value.trim();
+  const email = document.getElementById('hrEmail').value.trim();
+  const pass  = document.getElementById('hrPassword').value;
+  try {
+    const cred = await createUserWithEmailAndPassword(secondaryAuth, email, pass);
+    await signOut(secondaryAuth);
+    const uid = cred.user.uid;
+    await setDoc(doc(db,'hrm_users',uid), {
+      uid, name, employeeId:empId, email, role:'hr', status:'active',
+      createdAt: new Date().toISOString()
+    });
+    await setDoc(doc(db,'hrm_hr_team',uid), {
+      uid, name, employeeId:empId, email, status:'active',
+      createdAt: new Date().toISOString()
+    });
+    document.getElementById('createHRModal').classList.remove('open');
+    showToast(`HR member "${name}" created!`);
+    loadHRTeam();
+  } catch(err) { showToast('Error: '+err.message, true); }
+  finally { btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create HR Login'; btn.disabled = false; }
+});
+
+window.loadHRTeam = async function() {
+  const wrap = document.getElementById('hrTeamTableWrap');
+  if (!wrap) return;
+  wrap.innerHTML = `<div class="empty"><h3><i class="fa-solid fa-spinner fa-spin"></i> Loading...</h3></div>`;
+  try {
+    const snap = await getDocs(collection(db,'hrm_hr_team'));
+    const members = snap.docs.map(d=>({id:d.id,...d.data()}));
+    if (!members.length) { wrap.innerHTML=`<div class="empty"><div class="empty-icon">👤</div><h3>No HR members yet.</h3></div>`; return; }
+    wrap.innerHTML = `<table><thead><tr><th>Name</th><th>Employee ID</th><th>Email</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
+      <tbody>${members.map(m=>`<tr>
+        <td><strong>${escHtml(m.name||'')}</strong></td>
+        <td style="font-size:.78rem;">${escHtml(m.employeeId||'—')}</td>
+        <td style="font-size:.78rem;">${escHtml(m.email||'')}</td>
+        <td><span class="pill pill-${m.status==='active'?'active':'inactive'}">${escHtml(m.status||'active')}</span></td>
+        <td style="font-size:.75rem;">${m.createdAt?new Date(m.createdAt).toLocaleDateString('en-IN'):'—'}</td>
+        <td><button class="mini-btn mini-btn-danger" onclick="removeHRMember('${m.id}')"><i class="fa-solid fa-user-minus"></i> Remove</button></td>
+      </tr>`).join('')}
+    </tbody></table>`;
+  } catch(err) { wrap.innerHTML=`<div class="empty"><h3>Error: ${escHtml(err.message)}</h3></div>`; }
+};
+
+window.removeHRMember = async function(docId) {
+  if (!confirm('Remove this HR member? They will no longer be able to log in.')) return;
+  try {
+    await deleteDoc(doc(db,'hrm_hr_team',docId));
+    await setDoc(doc(db,'hrm_users',docId), {status:'inactive'}, {merge:true});
+    showToast('HR member removed.');
+    loadHRTeam();
+  } catch(err) { showToast('Error: '+err.message, true); }
+};
+
+// ─── HR PORTAL ──────────────────────────────────────────────────────────────
+
+window._hrCurrentUser = null;
+
+async function launchHRPortal(user) {hideBootSplash();
+  window._hrCurrentUser = user;
+  // Load all active employees
+  const empSnap = await getDocs(query(collection(db,'hrm_employees'),where('status','==','active')));
+  const emps = empSnap.docs.map(d=>({id:d.id,...d.data()}));
+  window._hrEmps = emps;
+
+  const hrSel = document.getElementById('hrSlipEmpSelect');
+  hrSel.innerHTML = '<option value="">— Select Employee —</option>' +
+    emps.map(e=>`<option value="${escHtml(e.uid)}">${escHtml(e.name)} (${escHtml(e.employeeId||'')})</option>`).join('');
+  const ym = new Date().toISOString().slice(0,7);
+  document.getElementById('hrSlipPayMonth').value = ym;
+const lp = document.getElementById('hrListPayMonth');
+  if (lp) lp.value = ym;
+  const bp = document.getElementById('hrBulkPayMonth');
+  if (bp) bp.value = ym;
+
+  document.getElementById('hrPortalScreen').style.display = 'flex';
+  document.getElementById('loginScreen').style.display = 'none';
+  renderHREmployeeList();
+  loadHRSlipsList();
+
+  document.getElementById('hrLogoutBtn').onclick = async () => {
+    await signOut(auth);
+    document.getElementById('hrPortalScreen').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+  };
+}
+
+// Render the active-employee list (list view, searchable, drag-drop targets)
+window.renderHREmployeeList = function() {
+  const wrap = document.getElementById('hrEmpListWrap');
+  if (!wrap) return;
+  let emps = window._hrEmps || [];
+  const q = (document.getElementById('hrEmpSearch')?.value || '').trim().toLowerCase();
+  if (q) emps = emps.filter(e => [e.name,e.employeeId,e.email,e.title].join(' ').toLowerCase().includes(q));
+  if (!emps.length) { wrap.innerHTML = `<div class="empty"><div class="empty-icon">👥</div><h3>No active employees found.</h3></div>`; return; }
+  wrap.innerHTML = emps.map(e => {
+    const initials = (e.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const avatar = e.photoURL
+      ? `<img class="emp-avatar-photo" src="${escHtml(e.photoURL)}" alt="">`
+      : `<div class="emp-avatar">${initials}</div>`;
+    const safeName = escHtml(e.name||'').replace(/'/g,"&#39;");
+    return `<div class="hr-emp-row" data-uid="${escHtml(e.uid)}"
+        ondragover="hrEmpDragOver(event,this)" ondragleave="hrEmpDragLeave(event,this)"
+        ondrop="hrEmpDrop(event,'${escHtml(e.uid)}','${safeName}')"
+        style="display:flex;align-items:center;gap:.8rem;padding:.7rem .9rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);margin-bottom:.5rem;transition:border-color .15s,background .15s;">
+      ${avatar}
+      <div style="min-width:0;flex:1;">
+        <div style="font-family:var(--font-head);font-size:.95rem;color:var(--primary);">${escHtml(e.name||'')}</div>
+        <div style="font-size:.74rem;color:var(--text-3);">${escHtml(e.employeeId||'—')} · ${escHtml(e.title||'')}</div>
+      </div>
+      <div class="hr-drop-hint" style="font-size:.72rem;color:var(--warn);font-weight:600;display:none;"><i class="fa-solid fa-arrow-down"></i> Drop PDF to upload</div>
+      <label style="display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .9rem;border-radius:var(--r-pill);background:var(--gold);color:var(--primary);font-weight:700;font-size:.78rem;cursor:pointer;white-space:nowrap;flex-shrink:0;" onmouseover="this.style.filter='brightness(1.08)'" onmouseout="this.style.filter=''">
+        <i class="fa-solid fa-paperclip"></i> Attach PDF
+        <input type="file" accept=".pdf" style="display:none" onchange="hrEmpFilePick(event,'${escHtml(e.uid)}','${safeName}')">
+      </label>
+    </div>`;
+  }).join('');
+};
+
+window.hrEmpDragOver = function(e, el) {
+  e.preventDefault();
+  el.style.borderColor = 'var(--gold)';
+  el.style.background = 'var(--gold-soft)';
+  const hint = el.querySelector('.hr-drop-hint'); if (hint) hint.style.display = 'block';
+};
+window.hrEmpDragLeave = function(e, el) {
+  el.style.borderColor = 'var(--border)';
+  el.style.background = 'var(--surface)';
+  const hint = el.querySelector('.hr-drop-hint'); if (hint) hint.style.display = 'none';
+};
+window.hrEmpDrop = function(e, uid, name) {
+  e.preventDefault();
+  const el = e.currentTarget;
+  if (el) {
+    el.style.borderColor = 'var(--border)';
+    el.style.background = 'var(--surface)';
+    const hint = el.querySelector('.hr-drop-hint'); if (hint) hint.style.display = 'none';
+  }
+  const files = e.dataTransfer?.files;
+  if (!files || !files.length) return;
+  hrUploadSlipForEmp(uid, name, files[0]);
+};
+window.hrEmpFilePick = function(e, uid, name) {
+  const file = e.target.files[0];
+  if (file) hrUploadSlipForEmp(uid, name, file);
+  e.target.value = '';
+};
+
+async function hrUploadSlipForEmp(empUID, empName, file) {
+  if (file.type !== 'application/pdf') { showToast('Please use a PDF file.', true); return; }
+  if (file.size > 5*1024*1024) { showToast('File exceeds 5 MB.', true); return; }
+  const payMonth = document.getElementById('hrListPayMonth')?.value;
+  if (!payMonth) { showToast('Select a Pay Month first.', true); return; }
+  showToast(`Uploading slip for ${empName}...`);
+  try {
+    const base64Data = await fileToBase64(file);
+    const slipId = 'slip_'+empUID+'_'+payMonth.replace('-','')+'_'+Date.now();
+    await setDoc(doc(db,'hrm_salary_slips',slipId), {
+      empUID, empName, payMonth, note: file.name, base64Data,
+      uploadedBy: window.hrmCurrentUser?.uid || 'hr',
+      uploadedAt: new Date().toISOString()
+    });
+    showToast(`Salary slip uploaded for ${empName} (${payMonth})!`);
+    loadHRSlipsList();
+  } catch(err) { showToast('Upload error: '+err.message, true); }
+}
+window._pendingHRSlipBase64 = null;
+
+window.onHRSlipFileChosen = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 5*1024*1024) { showToast('File exceeds 5 MB.', true); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    window._pendingHRSlipBase64 = e.target.result;
+    document.getElementById('hrSlipFileLabel').textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+};
+
+document.getElementById('hrSlipForm').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  await submitSlipUpload(
+    document.getElementById('hrSlipEmpSelect').value,
+    document.getElementById('hrSlipPayMonth').value,
+    document.getElementById('hrSlipNote').value.trim(),
+    window._pendingHRSlipBase64,
+    document.getElementById('hrSlipUploadBtn'),
+    document.getElementById('hrSlipProgress'),
+    () => {
+      document.getElementById('hrSlipForm').reset();
+      document.getElementById('hrSlipFileLabel').textContent = 'Click to attach PDF (max 5 MB)';
+      window._pendingHRSlipBase64 = null;
+      loadHRSlipsList();
+    }
+  );
+});
+
+window.loadHRSlipsList = async function() {
+  const wrap = document.getElementById('hrSlipsListWrap');
+  if (!wrap) return;
+  try {
+    const snap = await getDocs(collection(db,'hrm_salary_slips'));
+    const slips = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.uploadedAt||'').localeCompare(a.uploadedAt||'')).slice(0,50);
+    if (!slips.length) { wrap.innerHTML=`<div class="empty" style="border:none;"><h3>No slips uploaded yet.</h3></div>`; return; }
+    wrap.innerHTML = `<table><thead><tr><th>Employee</th><th>Pay Month</th><th>Note</th><th>Uploaded</th><th>Action</th></tr></thead><tbody>
+      ${slips.map(s=>`<tr>
+        <td><strong>${escHtml(s.empName||'')}</strong></td>
+        <td><span class="pill pill-active" style="font-size:.72rem;">${escHtml(s.payMonth||'')}</span></td>
+        <td style="font-size:.8rem;">${escHtml(s.note||'—')}</td>
+        <td style="font-size:.76rem;">${s.uploadedAt?new Date(s.uploadedAt).toLocaleDateString('en-IN'):'—'}</td>
+        <td><button class="mini-btn" onclick="previewAdminSlip('${s.id}')"><i class="fa-solid fa-eye"></i> View</button></td>
+      </tr>`).join('')}
+    </tbody></table>`;
+  } catch(err) { wrap.innerHTML=`<div class="empty"><h3>Error loading slips.</h3></div>`; }
+};
 
 // ─── INIT ───
 showAdminPage('dashboard');
