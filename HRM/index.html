@@ -368,7 +368,10 @@
       <div class="nav-item" data-page="hrTeam" id="navHrTeam"><i class="fa-solid fa-user-tie"></i><span>HR Team</span></div>
       <div class="nav-item" data-page="editRequests" id="navEditRequests"><i class="fa-solid fa-pen-to-square"></i><span>Edit Requests <span id="editReqBadge" style="display:none;background:var(--error);color:#fff;border-radius:99px;font-size:.65rem;padding:.1rem .45rem;margin-left:.2rem;"></span></span></div>
       <div class="nav-item" data-page="adminDocs" id="navAdminDocs"><i class="fa-solid fa-folder-open"></i><span>Employee Docs</span></div>
-      <div class="nav-item" onclick="exportAttendanceExcel()"><i class="fa-solid fa-file-excel"></i><span>Export Attendance</span></div>
+<div class="nav-item" onclick="window.open('https://harshiee-s.github.io/growitharshiee-CMS/HRM/Salary_Slip_generator/', '_blank')">
+  <i class="fa-solid fa-file-invoice"></i><span>Salary Slip Generator</span>
+</div>
+ <div class="nav-item" onclick="exportAttendanceExcel()"><i class="fa-solid fa-file-excel"></i><span>Export Attendance</span></div>
       <div class="nav-item logout-item" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></div>
     </nav>
     <div class="sidebar-footer">
@@ -788,6 +791,7 @@
 </div>
 
 <!-- HR PORTAL SCREEN -->
+<!-- HR PORTAL SCREEN -->
 <div id="hrPortalScreen" style="display:none;position:fixed;inset:0;z-index:200;background:var(--bg);flex-direction:column;overflow:auto;">
   <header style="background:var(--primary);color:#fff;padding:.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 16px rgba(10,22,40,.25);">
     <div style="display:flex;align-items:center;gap:.8rem;">
@@ -798,40 +802,192 @@
       </div>
       <span style="display:inline-flex;align-items:center;gap:.35rem;padding:.22rem .7rem;border-radius:var(--r-pill);background:rgba(201,168,76,.18);color:#E2BC5E;font-size:.72rem;font-weight:700;border:1px solid rgba(201,168,76,.3);text-transform:uppercase;letter-spacing:.05em;"><i class="fa-solid fa-user-tie"></i> HR</span>
     </div>
-    <button class="ep-logout-btn" id="hrLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    <div style="display:flex;gap:.6rem;align-items:center;">
+      <button class="ep-logout-btn" onclick="window.open('https://harshiee-s.github.io/growitharshiee-CMS/HRM/Salary_Slip_generator/', '_blank')" style="background:rgba(201,168,76,.18);color:#E2BC5E;border-color:rgba(201,168,76,.3);">
+        <i class="fa-solid fa-file-invoice"></i> Salary Slip Generator
+      </button>
+      <button class="ep-logout-btn" id="hrLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    </div>
   </header>
-  <div style="flex:1;padding:1.5rem;max-width:900px;margin:0 auto;width:100%;">
-    <div style="margin-bottom:1.2rem;">
-      <h2 style="font-family:var(--font-head);font-size:1.4rem;color:var(--primary);">Upload Salary Slips</h2>
-      <p style="font-size:.85rem;color:var(--text-3);">Select an employee and pay month, then attach the salary slip PDF.</p>
-    </div>
-    <div class="card panel" style="margin-bottom:1rem;">
-      <form id="hrSlipForm" class="form-grid" autocomplete="off">
-        <div class="form-row">
-          <div class="field">
-            <label>Employee <span class="req">*</span></label>
-            <select class="select-input" id="hrSlipEmpSelect" required><option value="">— Select Employee —</option></select>
+
+  <!-- HR TABS -->
+  <div style="background:var(--primary);padding:0 1.5rem;display:flex;gap:.3rem;border-top:1px solid rgba(255,255,255,.08);">
+    <button onclick="hrSwitchTab('slips',this)" id="hrTab-slips" style="padding:.65rem 1.1rem;font-size:.82rem;font-weight:600;border:none;background:rgba(201,168,76,.2);color:#E2BC5E;cursor:pointer;border-bottom:2px solid #E2BC5E;">
+      <i class="fa-solid fa-file-invoice-dollar"></i> Salary Slips
+    </button>
+    <button onclick="hrSwitchTab('addEmp',this)" id="hrTab-addEmp" style="padding:.65rem 1.1rem;font-size:.82rem;font-weight:600;border:none;background:transparent;color:rgba(255,255,255,.55);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;">
+      <i class="fa-solid fa-user-plus"></i> Add Employee
+    </button>
+  </div>
+
+  <!-- HR TAB: SALARY SLIPS -->
+  <div id="hrTabPanel-slips" style="flex:1;padding:1.5rem;overflow-y:auto;">
+    <div style="max-width:900px;margin:0 auto;display:grid;gap:1.2rem;">
+
+      <div class="card panel" style="margin-bottom:0;">
+        <div class="panel-head">
+          <div><h2>Upload Salary Slip</h2><p>Select an employee and pay month, then attach the salary slip PDF.</p></div>
+        </div>
+        <form id="hrSlipForm" class="form-grid" autocomplete="off">
+          <div class="form-row">
+            <div class="field">
+              <label>Employee <span class="req">*</span></label>
+              <select class="select-input" id="hrSlipEmpSelect" required><option value="">— Select Employee —</option></select>
+            </div>
+            <div class="field">
+              <label>Pay Month <span class="req">*</span></label>
+              <input class="input" type="month" id="hrSlipPayMonth" required>
+            </div>
           </div>
           <div class="field">
-            <label>Pay Month <span class="req">*</span></label>
-            <input class="input" type="month" id="hrSlipPayMonth" required>
+            <label>Salary Slip PDF <span class="req">*</span></label>
+            <label style="display:flex;align-items:center;gap:.6rem;padding:.6rem 1rem;border:1.5px dashed var(--border);border-radius:var(--r-sm);cursor:pointer;background:var(--surface-2);transition:border-color .2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+              <i class="fa-solid fa-paperclip" style="color:var(--gold);"></i>
+              <span id="hrSlipFileLabel" style="font-size:.85rem;color:var(--text-3);">Click to attach PDF (max 5 MB)</span>
+              <input type="file" id="hrSlipFileInput" accept=".pdf" style="display:none" onchange="onHRSlipFileChosen(event)" required>
+            </label>
+          </div>
+          <div class="field"><label>Note (optional)</label><input class="input" id="hrSlipNote" placeholder="e.g. April 2025 salary slip"></div>
+          <div id="hrSlipProgress" style="margin-top:.3rem;"></div>
+          <div>
+            <button class="btn btn-gold" type="submit" id="hrSlipUploadBtn"><i class="fa-solid fa-upload"></i> Upload Salary Slip</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- HR: BULK SALARY SLIP UPLOAD -->
+      <div class="card panel">
+        <div class="panel-head">
+          <div><h2>Bulk Salary Slip Upload</h2><p>Pick a pay month, then drop or select multiple PDFs. Files auto-match to employees by Employee ID or name in the filename.</p></div>
+          <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+            <label style="font-size:.78rem;font-weight:600;color:var(--text-2);">Pay Month</label>
+            <input class="input" type="month" id="hrBulkPayMonth" style="width:160px;padding:.5rem .8rem;">
           </div>
         </div>
-        <div class="field">
-          <label>Salary Slip PDF <span class="req">*</span></label>
-          <label style="display:flex;align-items:center;gap:.6rem;padding:.6rem 1rem;border:1.5px dashed var(--border);border-radius:var(--r-sm);cursor:pointer;background:var(--surface-2);transition:border-color .2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-            <i class="fa-solid fa-paperclip" style="color:var(--gold);"></i>
-            <span id="hrSlipFileLabel" style="font-size:.85rem;color:var(--text-3);">Click to attach PDF (max 5 MB)</span>
-            <input type="file" id="hrSlipFileInput" accept=".pdf" style="display:none" onchange="onHRSlipFileChosen(event)" required>
-          </label>
+        <div class="doc-drop-zone" id="hrBulkDropZone"
+             ondragover="hrBulkDragOver(event)" ondragleave="hrBulkDragLeave(event)" ondrop="hrBulkDrop(event)"
+             onclick="document.getElementById('hrBulkFileInput').click()">
+          <i class="fa-solid fa-file-arrow-up"></i>
+          <div style="font-size:.9rem;font-weight:600;color:var(--text-2);">Drop multiple PDFs here, or click to select</div>
+          <div style="font-size:.75rem;color:var(--text-3);">PDF only · Max 5 MB each</div>
         </div>
-        <div class="field"><label>Note (optional)</label><input class="input" id="hrSlipNote" placeholder="e.g. April 2025 salary slip"></div>
-        <div id="hrSlipProgress" style="margin-top:.3rem;"></div>
-        <div>
-          <button class="btn btn-gold" type="submit" id="hrSlipUploadBtn"><i class="fa-solid fa-upload"></i> Upload Salary Slip</button>
+        <input type="file" id="hrBulkFileInput" accept=".pdf" multiple style="display:none" onchange="hrBulkFilesChosen(event)">
+        <div id="hrBulkQueueWrap"></div>
+      </div>
+
+      <!-- HR: ACTIVE EMPLOYEES LIST -->
+      <div class="card panel">
+        <div class="panel-head">
+          <div><h2>Active Employees</h2><p>Drag &amp; drop a PDF onto an employee — or click Attach — to upload their salary slip.</p></div>
+          <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+            <label style="font-size:.78rem;font-weight:600;color:var(--text-2);">Pay Month</label>
+            <input class="input" type="month" id="hrListPayMonth" style="width:160px;padding:.5rem .8rem;">
+            <button class="btn btn-secondary" onclick="loadHREmployees()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+          </div>
         </div>
-      </form>
+        <input type="text" class="search" id="hrEmpSearch" placeholder="Search employees by name or ID..." style="margin-bottom:.5rem;" oninput="renderHREmployeeList()">
+        <div id="hrEmpListWrap"><div class="empty"><h3>Loading employees...</h3></div></div>
+      </div>
+
+      <div class="card panel">
+        <div class="panel-head"><h2>Uploaded Slips</h2><button class="btn btn-secondary" onclick="loadHRSlipsList()"><i class="fa-solid fa-rotate"></i> Refresh</button></div>
+        <div class="table-wrap" id="hrSlipsListWrap"><div class="empty"><h3>Loading...</h3></div></div>
+      </div>
+
     </div>
+  </div>
+
+  <!-- HR TAB: ADD EMPLOYEE -->
+  <div id="hrTabPanel-addEmp" style="display:none;flex:1;padding:1.5rem;overflow-y:auto;">
+    <div style="max-width:900px;margin:0 auto;">
+      <div class="card panel">
+        <div class="panel-head">
+          <div><h2>Add Employee</h2><p>Fill in all required details. Login credentials are created here.</p></div>
+        </div>
+        <form id="hrAddEmpForm" class="form-grid" autocomplete="off">
+
+          <div class="form-section-title"><i class="fa-solid fa-user" style="font-size:.75rem;"></i> Personal Information</div>
+          <div class="form-row">
+            <div class="field"><label>Full Name <span class="req">*</span></label><input class="input" id="hrEmpName" required placeholder="e.g. Rahul Kumar"></div>
+            <div class="field"><label>Employee ID <span class="req">*</span></label><input class="input" id="hrEmpIdField" required placeholder="e.g. GWA-001"></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Phone Number</label><input class="input" id="hrEmpPhone" placeholder="+91 XXXXX XXXXX"></div>
+            <div class="field"><label>Gender</label>
+              <select class="select-input" id="hrEmpGender">
+                <option value="">Select Gender</option>
+                <option>Male</option><option>Female</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Date of Hiring <span class="req">*</span></label><input class="input" id="hrEmpDOH" type="date" required></div>
+            <div class="field"><label>Job Title <span class="req">*</span></label><input class="input" id="hrEmpTitle" required placeholder="e.g. Senior Accountant"></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Role</label>
+              <select class="select-input" id="hrEmpRole">
+                <option value="employee">Employee</option>
+                <option value="manager">Manager</option>
+              </select>
+            </div>
+            <div class="field"><label>Annual Salary (₹) <span class="req">*</span></label><input class="input" id="hrEmpSalary" type="number" min="0" required placeholder="e.g. 480000"></div>
+          </div>
+
+          <div class="field">
+            <label>Assign to Manager</label>
+            <select class="select-input" id="hrEmpManagerAssign">
+              <option value="">— No Manager —</option>
+            </select>
+            <div class="muted-note">Manager's leave requests go to Admin.</div>
+          </div>
+
+          <div class="form-section-title"><i class="fa-solid fa-id-card" style="font-size:.75rem;"></i> Identity Documents</div>
+          <div class="form-row">
+            <div class="field"><label>PAN Card Number</label><input class="input" id="hrEmpPan" placeholder="ABCDE1234F" maxlength="10"></div>
+            <div class="field"><label>Aadhaar Card Number</label><input class="input" id="hrEmpAadhaar" placeholder="XXXX XXXX XXXX" maxlength="14"></div>
+          </div>
+
+          <div class="form-section-title"><i class="fa-solid fa-building-columns" style="font-size:.75rem;"></i> Bank Details</div>
+          <div class="form-row">
+            <div class="field"><label>Bank Account Number</label><input class="input" id="hrEmpBankAcc" placeholder="Account number"></div>
+            <div class="field"><label>IFSC Code</label><input class="input" id="hrEmpIFSC" placeholder="e.g. SBIN0001234"></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Bank Name</label><input class="input" id="hrEmpBankName" placeholder="e.g. State Bank of India"></div>
+            <div class="field"><label>Account Holder Name</label><input class="input" id="hrEmpBankHolder" placeholder="As per bank records"></div>
+          </div>
+
+          <div class="form-section-title"><i class="fa-solid fa-shield-halved" style="font-size:.75rem;"></i> PF & Statutory</div>
+          <div style="display:flex;align-items:center;gap:.8rem;padding:.65rem .9rem;background:var(--surface-2);border:1px solid var(--border-2);border-radius:var(--r-sm);">
+            <input type="checkbox" id="hrEmpPfOptIn" style="width:18px;height:18px;accent-color:var(--gold);cursor:pointer;" onchange="document.getElementById('hrEmpUANWrap').style.display=this.checked?'block':'none'">
+            <label for="hrEmpPfOptIn" style="cursor:pointer;font-weight:600;font-size:.88rem;">Employee opted for PF (Provident Fund)</label>
+          </div>
+          <div id="hrEmpUANWrap" style="display:none;margin-top:.5rem;">
+            <div class="field"><label>UAN Number</label><input class="input" id="hrEmpUAN" placeholder="12-digit UAN e.g. 100123456789" maxlength="12"></div>
+          </div>
+
+          <div class="form-section-title" style="background:rgba(13,122,78,.05);padding:.6rem .9rem;border-radius:var(--r-sm);border:none;margin:0;">
+            <i class="fa-solid fa-lock" style="font-size:.75rem;color:var(--success);"></i>
+            <span style="color:var(--success);">Create Login Credentials</span>
+            <span style="font-weight:400;color:var(--text-3);margin-left:.4rem;">(Required)</span>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Login Email <span class="req">*</span></label><input class="input" id="hrEmpLoginEmail" type="email" required placeholder="employee@growitharshiee.in"></div>
+            <div class="field"><label>Login Password <span class="req">*</span></label><input class="input" id="hrEmpLoginPass" type="password" required placeholder="Min 6 characters"></div>
+          </div>
+          <div class="success-box"><i class="fa-solid fa-circle-check"></i> Employee will receive 0.5 Casual + 0.5 Sick leave on joining automatically.</div>
+
+          <div style="display:flex;gap:.75rem;margin-top:.3rem;flex-wrap:wrap;">
+            <button class="btn btn-gold" type="submit" id="hrAddEmpBtn"><i class="fa-solid fa-user-plus"></i> Create Employee</button>
+            <button class="btn btn-secondary" type="button" onclick="document.getElementById('hrAddEmpForm').reset()"><i class="fa-solid fa-rotate-left"></i> Clear</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
 <!-- HR: BULK SALARY SLIP UPLOAD -->
     <div class="card panel" style="margin-bottom:1rem;">
       <div class="panel-head">
@@ -3851,6 +4007,102 @@ showAdminPage('dashboard');
   const r = document.getElementById('reportMonth');
   if (r) r.value = ym;
 })();
+// ─── HR: TAB SWITCHER ────────────────────────────────────────────
+window.hrSwitchTab = function(name, btn) {
+  ['slips','addEmp'].forEach(t => {
+    const panel = document.getElementById('hrTabPanel-'+t);
+    const tab   = document.getElementById('hrTab-'+t);
+    if (panel) panel.style.display = 'none';
+    if (tab) {
+      tab.style.background    = 'transparent';
+      tab.style.color         = 'rgba(255,255,255,.55)';
+      tab.style.borderBottom  = '2px solid transparent';
+    }
+  });
+  const active = document.getElementById('hrTabPanel-'+name);
+  if (active) active.style.display = 'block';
+  if (btn) {
+    btn.style.background   = 'rgba(201,168,76,.2)';
+    btn.style.color        = '#E2BC5E';
+    btn.style.borderBottom = '2px solid #E2BC5E';
+  }
+  if (name === 'addEmp') populateHRManagerDropdown();
+};
+
+// ─── HR: POPULATE MANAGER DROPDOWN ──────────────────────────────
+async function populateHRManagerDropdown() {
+  const sel = document.getElementById('hrEmpManagerAssign');
+  if (!sel) return;
+  const managers = (window._hrEmps || []).filter(e => e.role === 'manager');
+  sel.innerHTML = '<option value="">— No Manager —</option>' +
+    managers.map(m => `<option value="${escHtml(m.uid)}">${escHtml(m.name)} (${escHtml(m.employeeId||'')})</option>`).join('');
+}
+
+// ─── HR: ADD EMPLOYEE FORM SUBMIT ────────────────────────────────
+document.getElementById('hrAddEmpForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('hrAddEmpBtn');
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating...';
+  btn.disabled = true;
+
+  const email = document.getElementById('hrEmpLoginEmail').value.trim();
+  const pass  = document.getElementById('hrEmpLoginPass').value;
+  const name  = document.getElementById('hrEmpName').value.trim();
+  const empId = document.getElementById('hrEmpIdField').value.trim();
+  const role  = document.getElementById('hrEmpRole').value;
+
+  try {
+    const cred = await createUserWithEmailAndPassword(secondaryAuth, email, pass);
+    await signOut(secondaryAuth);
+    const uid = cred.user.uid;
+
+    const empData = {
+      uid, name, employeeId: empId,
+      phone:       document.getElementById('hrEmpPhone').value.trim(),
+      gender:      document.getElementById('hrEmpGender').value,
+      dateOfHiring:document.getElementById('hrEmpDOH').value,
+      title:       document.getElementById('hrEmpTitle').value.trim(),
+      role,
+      salary:      Number(document.getElementById('hrEmpSalary').value || 0),
+      managerId:   document.getElementById('hrEmpManagerAssign').value || null,
+      pan:         document.getElementById('hrEmpPan').value.trim().toUpperCase(),
+      aadhaar:     document.getElementById('hrEmpAadhaar').value.trim(),
+      bankAccount: document.getElementById('hrEmpBankAcc').value.trim(),
+      ifsc:        document.getElementById('hrEmpIFSC').value.trim().toUpperCase(),
+      bankName:    document.getElementById('hrEmpBankName').value.trim(),
+      bankHolder:  document.getElementById('hrEmpBankHolder').value.trim(),
+      pfOptIn:     document.getElementById('hrEmpPfOptIn').checked,
+      uan:         document.getElementById('hrEmpPfOptIn').checked ? document.getElementById('hrEmpUAN').value.trim() : '',
+      email,
+      status:      'active',
+      casualLeave: 0.5,
+      sickLeave:   0.5,
+      createdAt:   new Date().toISOString()
+    };
+
+    const docId = 'emp_' + uid;
+    await setDoc(doc(db, 'hrm_employees', docId), empData);
+    await setDoc(doc(db, 'hrm_users', uid), {
+      role, name, email, status: 'active',
+      casualLeave: 0.5, sickLeave: 0.5,
+      managerId: empData.managerId
+    });
+
+    document.getElementById('hrAddEmpForm').reset();
+    document.getElementById('hrEmpUANWrap').style.display = 'none';
+    showToast(`Employee "${name}" created successfully!`);
+
+    // Refresh employee list so new emp appears in slip dropdowns
+    await loadHREmployees();
+    hrSwitchTab('slips', document.getElementById('hrTab-slips'));
+
+  } catch(err) {
+    showToast('Error: ' + err.message, true);
+  } finally {
+    btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Employee';
+    btn.disabled = false;
+  }
+});
 </script>
 </body>
 </html>
