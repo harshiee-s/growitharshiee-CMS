@@ -988,46 +988,7 @@
   </div>
 
 </div>
-<!-- HR: BULK SALARY SLIP UPLOAD -->
-    <div class="card panel" style="margin-bottom:1rem;">
-      <div class="panel-head">
-        <div><h2>Bulk Salary Slip Upload</h2><p>Pick a pay month, then drop or select multiple PDFs. Files auto-match to employees by Employee ID or name in the filename — review, then upload all.</p></div>
-        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
-          <label style="font-size:.78rem;font-weight:600;color:var(--text-2);">Pay Month</label>
-          <input class="input" type="month" id="hrBulkPayMonth" style="width:160px;padding:.5rem .8rem;">
-        </div>
-      </div>
-      <div class="doc-drop-zone" id="hrBulkDropZone"
-           ondragover="hrBulkDragOver(event)" ondragleave="hrBulkDragLeave(event)" ondrop="hrBulkDrop(event)"
-           onclick="document.getElementById('hrBulkFileInput').click()">
-        <i class="fa-solid fa-file-arrow-up"></i>
-        <div style="font-size:.9rem;font-weight:600;color:var(--text-2);">Drop multiple PDFs here, or click to select</div>
-        <div style="font-size:.75rem;color:var(--text-3);">PDF only · Max 5 MB each</div>
-      </div>
-      <input type="file" id="hrBulkFileInput" accept=".pdf" multiple style="display:none" onchange="hrBulkFilesChosen(event)">
-      <div id="hrBulkQueueWrap"></div>
-    </div>
-<!-- HR: ACTIVE EMPLOYEES LIST (drag & drop salary slips) -->
-    <div class="card panel" style="margin-bottom:1rem;">
-      <div class="panel-head">
-        <div><h2>Active Employees</h2><p>Drag &amp; drop a PDF onto an employee — or click Attach — to upload their salary slip.</p></div>
-        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
-          <label style="font-size:.78rem;font-weight:600;color:var(--text-2);">Pay Month</label>
-          <input class="input" type="month" id="hrListPayMonth" style="width:160px;padding:.5rem .8rem;">
-          <button class="btn btn-secondary" onclick="loadHREmployees()"><i class="fa-solid fa-rotate"></i> Refresh</button>
-        </div>
-      </div>
-      <input type="text" class="search" id="hrEmpSearch" placeholder="Search employees by name or ID..." style="margin-bottom:.5rem;" oninput="renderHREmployeeList()">
-      <div id="hrEmpListWrap"><div class="empty"><h3>Loading employees...</h3></div></div>
-    </div>
 
-    <div class="card panel">
-      <div class="panel-head"><h2>Uploaded Slips</h2><button class="btn btn-secondary" onclick="loadHRSlipsList()"><i class="fa-solid fa-rotate"></i> Refresh</button></div>
-    <div class="card panel">
-      <div class="panel-head"><h2>Uploaded Slips</h2><button class="btn btn-secondary" onclick="loadHRSlipsList()"><i class="fa-solid fa-rotate"></i> Refresh</button></div>
-      <div class="table-wrap" id="hrSlipsListWrap"><div class="empty"><h3>Loading...</h3></div></div>
-    </div>
-  </div>
 </div>
 
 <!-- REGULARIZATION REQUEST MODAL -->
@@ -1477,6 +1438,7 @@ if (data.role === 'admin') {
     window.hrmCurrentRole = null;
     document.getElementById('appContent').classList.remove('show-app');
     document.getElementById('empPortalScreen').classList.remove('ep-visible');
+document.getElementById('hrPortalScreen').style.display = 'none';
     hideBootSplash();
     document.getElementById('loginScreen').style.display = 'flex';
     setTimeout(()=>document.getElementById('loginScreen').style.opacity='1', 30);
